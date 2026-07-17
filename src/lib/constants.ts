@@ -6,9 +6,9 @@ export const defaultSettings: PlaygroundSettings = {
   mode: 'strict',
   solver: 'new',
   optimizationLevel: 1,
-  debugLevel: 1,
+  debugLevel: 2,
   outputFormat: 0,
-  compilerRemarks: false,
+  compilerRemarks: true,
 };
 
 // Key for localStorage persistence of settings
