@@ -62,10 +62,8 @@ function toMinimalState(state: ShareState): MinimalShareState {
 /**
  * Encode state to a URL-safe string.
  */
-export function encodeState(state: ShareState): string {
-  const minimal = toMinimalState(state);
-  const json = JSON.stringify(minimal);
-  return LZString.compressToEncodedURIComponent(json);
+function encodeState(state: ShareState): string {
+  return LZString.compressToEncodedURIComponent(JSON.stringify(toMinimalState(state)));
 }
 
 /**
@@ -89,7 +87,7 @@ export function generatePlaygroundUrl(): URL {
 /**
  * Generate an embed URL for the current playground state.
  */
-export function generateEmbedUrl(theme: ThemeMode = 'system'): URL {
+function generateEmbedUrl(theme: ThemeMode = 'system'): URL {
   if (typeof window === 'undefined') return new URL('https://play.luau.org/');
 
   const state: ShareState = {
