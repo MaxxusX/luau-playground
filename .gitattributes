@@ -6,7 +6,6 @@
 .gitignore      text
 .editorconfig   text
 .prettierignore text
-.prettierrc     text
 .npmrc          text
 LICENSE         text
 README.md       text
