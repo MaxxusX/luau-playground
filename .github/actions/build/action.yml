@@ -64,20 +64,25 @@ runs:
         cd wasm
         ./build.sh release
 
+    - name: Setup PNPM
+      uses: pnpm/action-setup@6.0.9
+
     - name: Setup Node.js
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
-        node-version: 24
-        cache: npm
+        node-version-file: "./package.json"
+        check-latest: true
+        cache: "pnpm"
+        cache-dependency-path: "./pnpm-lock.yaml"
 
     - name: Install dependencies
       shell: bash
-      run: npm ci
+      run: pnpm ci
 
     - name: Type check
       shell: bash
-      run: npm run check
+      run: pnpm run check
 
     - name: Build
       shell: bash
-      run: npx vite build --base=./
+      run: pnx vite build --base=./
