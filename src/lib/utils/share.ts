@@ -69,18 +69,15 @@ function encodeState(state: ShareState): string {
 /**
  * Generate a playground URL with encoded state.
  */
-export function generatePlaygroundUrl(): URL {
-  const state: ShareState = {
+export function generatePlaygroundUrl(): URL {  
+  const url = new URL(window.location.origin + window.location.pathname);
+  url.hash = encodeState({
     files: get(files),
     active: get(activeFile),
     v: CURRENT_VERSION,
     settings: get(settings),
     showBytecode: get(showBytecode),
-  };
-  
-  const url = new URL(window.location.origin + window.location.pathname);
-  const encoded = encodeState(state);
-  url.hash = encoded;
+  });
   return url;
 }
 
@@ -90,18 +87,16 @@ export function generatePlaygroundUrl(): URL {
 function generateEmbedUrl(theme: ThemeMode = 'system'): URL {
   if (typeof window === 'undefined') return new URL('https://play.luau.org/');
 
-  const state: ShareState = {
+  const url = new URL(window.location.origin + window.location.pathname);
+  url.searchParams.set('embed', 'true');
+  if (theme !== 'system') url.searchParams.set('theme', theme);
+  url.hash = encodeState({
     files: get(files),
     active: get(activeFile),
     v: CURRENT_VERSION,
     settings: get(settings),
     showBytecode: get(showBytecode),
-  };
-
-  const url = new URL(window.location.origin + window.location.pathname);
-  url.searchParams.set('embed', 'true');
-  if (theme !== 'system') url.searchParams.set('theme', theme);
-  url.hash = encodeState(state);
+  });
   return url;
 }
 
@@ -109,8 +104,17 @@ function generateEmbedUrl(theme: ThemeMode = 'system'): URL {
  * Generate an iframe embed code snippet for the current playground state.
  */
 export function generateEmbedCode(theme: ThemeMode = 'system', height = '400px'): string {
-  const url = generateEmbedUrl(theme);
-  return `<iframe\n  src="${url.toString()}"\n  width="100%"\n  height="${height}"\n  style="border: 1px solid #e2e8f0; border-radius: 8px;"\n  loading="lazy"\n  allow="clipboard-write"\n  title="Luau Playground"\n></iframe>`;
+  const url = generateEmbedUrl(theme).toString();
+  return `\
+<iframe
+  src="${url}"
+  width="100%"
+  height="${height}"
+  style="border: 1px solid #e2e8f0; border-radius: 8px;"
+  loading="lazy"
+  allow="clipboard-write"
+  title="Luau Playground"
+></iframe>`;
 }
 
 /**
