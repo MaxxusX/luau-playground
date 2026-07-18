@@ -2,11 +2,6 @@ import "./app.css";
 import App from "./App.svelte";
 import { hydrate, mount } from "svelte";
 
-// Polyfill popover API if not supported
-if (!HTMLElement.prototype.hasOwnProperty("popover")) {
-	import("@oddbird/popover-polyfill");
-}
-
 // Polyfill CSS anchor positioning if not supported
 if (!CSS.supports("anchor-name", "--a")) {
 	import("@oddbird/css-anchor-positioning");
