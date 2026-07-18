@@ -21,6 +21,7 @@ source ~/emsdk/emsdk_env.sh
 ```
 
 The build script will:
+
 1. Clone the Luau source if not present
 2. Configure with CMake using Emscripten
 3. Build the WASM module
@@ -49,7 +50,7 @@ The build script will:
 
 All functions return JSON strings. Example responses:
 
-```json
+````json
 // luau_execute
 { "success": true, "output": "Hello, World!" }
 { "success": false, "output": "", "error": "attempt to call nil" }
@@ -66,5 +67,4 @@ All functions return JSON strings. Example responses:
 
 // luau_hover
 { "content": "```luau\nprint: (string) -> ()\n```" }
-```
-
+````

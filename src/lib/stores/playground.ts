@@ -1,22 +1,22 @@
-import { writable, get } from 'svelte/store';
-import { parseStateFromHash } from '$lib/utils/decode';
-import type { OutputLine } from '$lib/utils/output';
-import { DEFAULT_FILENAME, PLAYGROUND_STORAGE_KEY } from '$lib/constants';
-import { detectEmbedMode } from '$lib/stores/embed';
+import { writable, get } from "svelte/store";
+import { parseStateFromHash } from "$lib/utils/decode";
+import type { OutputLine } from "$lib/utils/output";
+import { DEFAULT_FILENAME, PLAYGROUND_STORAGE_KEY } from "$lib/constants";
+import { detectEmbedMode } from "$lib/stores/embed";
 
 // Re-export for backwards compatibility
 export type { OutputLine };
 
 export interface PlaygroundState {
-  files: Record<string, string>;
-  activeFile: string;
-  output: OutputLine[];
-  isRunning: boolean;
+	files: Record<string, string>;
+	activeFile: string;
+	output: OutputLine[];
+	isRunning: boolean;
 }
 
 interface PersistedPlaygroundState {
-  files: Record<string, string>;
-  activeFile: string;
+	files: Record<string, string>;
+	activeFile: string;
 }
 
 // Default initial code
@@ -38,45 +38,62 @@ end
 print("Sum:", sum)
 `;
 
-function loadFromStorage(): { files: Record<string, string>; activeFile: string } | null {
-  if (typeof window === 'undefined') return null;
-  if (detectEmbedMode()) return null;
+function loadFromStorage(): {
+	files: Record<string, string>;
+	activeFile: string;
+} | null {
+	if (typeof window === "undefined") return null;
+	if (detectEmbedMode()) return null;
 
-  try {
-    const stored = localStorage.getItem(PLAYGROUND_STORAGE_KEY);
-    if (!stored) return null;
+	try {
+		const stored = localStorage.getItem(PLAYGROUND_STORAGE_KEY);
+		if (!stored) return null;
 
-    const parsed = JSON.parse(stored) as Partial<PersistedPlaygroundState>;
-    if (!parsed.files || typeof parsed.files !== 'object') return null;
-    if (!parsed.activeFile || typeof parsed.activeFile !== 'string') return null;
+		const parsed = JSON.parse(stored) as Partial<PersistedPlaygroundState>;
+		if (!parsed.files || typeof parsed.files !== "object") return null;
+		if (!parsed.activeFile || typeof parsed.activeFile !== "string")
+			return null;
 
-    const fileNames = Object.keys(parsed.files);
-    if (fileNames.length === 0) return null;
-    if (!(parsed.activeFile in parsed.files)) return null;
-    return { files: parsed.files as Record<string, string>, activeFile: parsed.activeFile };
-  } catch {
-    return null;
-  }
+		const fileNames = Object.keys(parsed.files);
+		if (fileNames.length === 0) return null;
+		if (!(parsed.activeFile in parsed.files)) return null;
+		return {
+			files: parsed.files as Record<string, string>,
+			activeFile: parsed.activeFile,
+		};
+	} catch {
+		return null;
+	}
 }
 
 // Load initial state from URL if available
-function getInitialState(): { files: Record<string, string>; activeFile: string } {
-  const defaultState = { files: { [DEFAULT_FILENAME]: defaultCode }, activeFile: DEFAULT_FILENAME };
-  
-  if (typeof window === 'undefined') {
-    return defaultState;
-  }
-  
-  const state = parseStateFromHash(window.location.hash);
-  if (state && Object.keys(state.files).length > 0 && state.active in state.files) {
-    return { files: state.files, activeFile: state.active };
-  }
+function getInitialState(): {
+	files: Record<string, string>;
+	activeFile: string;
+} {
+	const defaultState = {
+		files: { [DEFAULT_FILENAME]: defaultCode },
+		activeFile: DEFAULT_FILENAME,
+	};
 
-  if (detectEmbedMode()) {
-    return defaultState;
-  }
+	if (typeof window === "undefined") {
+		return defaultState;
+	}
 
-  return loadFromStorage() ?? defaultState;
+	const state = parseStateFromHash(window.location.hash);
+	if (
+		state &&
+		Object.keys(state.files).length > 0 &&
+		state.active in state.files
+	) {
+		return { files: state.files, activeFile: state.active };
+	}
+
+	if (detectEmbedMode()) {
+		return defaultState;
+	}
+
+	return loadFromStorage() ?? defaultState;
 }
 
 const initialState = getInitialState();
@@ -90,114 +107,114 @@ export const executionTime = writable<number | null>(null);
 export const cursorLine = writable<number>(1);
 
 export function setExecutionTime(ms: number | null) {
-  executionTime.set(ms);
+	executionTime.set(ms);
 }
 
 function debounce(fn: () => void, ms: number): () => void {
-  let t: ReturnType<typeof setTimeout> | null = null;
-  return () => {
-    if (t) clearTimeout(t);
-    t = setTimeout(() => {
-      t = null;
-      fn();
-    }, ms);
-  };
+	let t: ReturnType<typeof setTimeout> | null = null;
+	return () => {
+		if (t) clearTimeout(t);
+		t = setTimeout(() => {
+			t = null;
+			fn();
+		}, ms);
+	};
 }
 
 function saveToStorage(): void {
-  if (typeof window === 'undefined') return;
-  if (detectEmbedMode()) return;
+	if (typeof window === "undefined") return;
+	if (detectEmbedMode()) return;
 
-  try {
-    const f = get(files);
-    const a = get(activeFile);
-    const fileNames = Object.keys(f);
-    if (fileNames.length === 0) return;
-    if (!(a in f)) return;
+	try {
+		const f = get(files);
+		const a = get(activeFile);
+		const fileNames = Object.keys(f);
+		if (fileNames.length === 0) return;
+		if (!(a in f)) return;
 
-    const state: PersistedPlaygroundState = {
-      files: f,
-      activeFile: a,
-    };
+		const state: PersistedPlaygroundState = {
+			files: f,
+			activeFile: a,
+		};
 
-    localStorage.setItem(PLAYGROUND_STORAGE_KEY, JSON.stringify(state));
-  } catch {
-    // Ignore storage errors
-  }
+		localStorage.setItem(PLAYGROUND_STORAGE_KEY, JSON.stringify(state));
+	} catch {
+		// Ignore storage errors
+	}
 }
 
 // Persist editor state (files + active file) between reloads
-if (typeof window !== 'undefined' && !detectEmbedMode()) {
-  const scheduleSave = debounce(saveToStorage, 250);
-  files.subscribe(() => scheduleSave());
-  activeFile.subscribe(() => scheduleSave());
+if (typeof window !== "undefined" && !detectEmbedMode()) {
+	const scheduleSave = debounce(saveToStorage, 250);
+	files.subscribe(() => scheduleSave());
+	activeFile.subscribe(() => scheduleSave());
 }
 
 // Actions
-export function addFile(name: string, content: string = '') {
-  files.update((f) => ({ ...f, [name]: content }));
-  activeFile.set(name);
+export function addFile(name: string, content: string = "") {
+	files.update((f) => ({ ...f, [name]: content }));
+	activeFile.set(name);
 }
 
 export function removeFile(name: string) {
-  files.update((f) => {
-    const { [name]: _, ...rest } = f;
-    return rest;
-  });
-  
-  // Switch to another file if we removed the active one
-  const currentActive = get(activeFile);
-  if (currentActive === name) {
-    const remaining = Object.keys(get(files));
-    if (remaining.length > 0) {
-      activeFile.set(remaining[0]);
-    }
-  }
+	files.update((f) => {
+		const { [name]: _, ...rest } = f;
+		return rest;
+	});
+
+	// Switch to another file if we removed the active one
+	const currentActive = get(activeFile);
+	if (currentActive === name) {
+		const remaining = Object.keys(get(files));
+		if (remaining.length > 0) {
+			activeFile.set(remaining[0]);
+		}
+	}
 }
 
 export function updateFile(name: string, content: string) {
-  files.update((f) => ({ ...f, [name]: content }));
+	files.update((f) => ({ ...f, [name]: content }));
 }
 
 export function renameFile(oldName: string, newName: string) {
-  if (oldName === newName) return;
-  
-  files.update((f) => {
-    const content = f[oldName];
-    const { [oldName]: _, ...rest } = f;
-    return { ...rest, [newName]: content };
-  });
-  
-  // Update active file if we renamed it
-  const currentActive = get(activeFile);
-  if (currentActive === oldName) {
-    activeFile.set(newName);
-  }
+	if (oldName === newName) return;
+
+	files.update((f) => {
+		const content = f[oldName];
+		const { [oldName]: _, ...rest } = f;
+		return { ...rest, [newName]: content };
+	});
+
+	// Update active file if we renamed it
+	const currentActive = get(activeFile);
+	if (currentActive === oldName) {
+		activeFile.set(newName);
+	}
 }
 
 export function setActiveFile(name: string) {
-  activeFile.set(name);
+	activeFile.set(name);
 }
 
 export function appendOutput(line: OutputLine) {
-  output.update((o) => [...o, line]);
+	output.update((o) => [...o, line]);
 }
 
 export function clearOutput() {
-  output.set([]);
+	output.set([]);
 }
 
 export function setRunning(running: boolean) {
-  isRunning.set(running);
+	isRunning.set(running);
 }
 
 // Get all files content for execution
 export function getAllFiles(): Record<string, string> {
-  return get(files);
+	return get(files);
 }
 
 export function getActiveFileContent(): string {
-  const f = get(files);
-  const active = get(activeFile);
-  return f[active] || '';
+	const f = get(files);
+	const active = get(activeFile);
+	return f[active] || "";
 }

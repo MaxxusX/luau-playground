@@ -1,7 +1,6 @@
-import { render } from 'svelte/server';
-import App from '../src/App.svelte';
+import { render } from "svelte/server";
+import App from "../src/App.svelte";
 
 export function renderApp() {
-  return render(App);
+	return render(App);
 }
-

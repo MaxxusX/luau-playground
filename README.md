@@ -9,7 +9,7 @@ A browser-based Luau code playground with execution and IDE features.
 - **Code Execution**: Run Luau code directly in the browser via WebAssembly
 - **Type Checking**: Type check Luau code directly in the browser via WebAssembly
 - **Syntax Highlighting**: Full Luau syntax support with light/dark themes
-- **IDE Features**: 
+- **IDE Features**:
   - Real-time diagnostics (type errors, lint warnings)
   - Autocomplete with type information
   - Hover tooltips for type inspection
@@ -81,6 +81,7 @@ https://play.luau.org/#<compressed-state>
 The state is LZ-String compressed and versioned JSON:
 
 v2:
+
 - `c`: Optional single file code contents, mutually exclusive with `f`
 - `f`: Optional object mapping filenames to content, mutually exclusive with `c`
 - `a`: Currently active filename, optional if only one file exists
@@ -94,6 +95,7 @@ v2:
 - `b`: Optional boolean to show bytecode panel, default false
 
 v1:
+
 - `files`: Object mapping filenames to content
 - `active`: Currently active filename
 - `v: 1`: Version number for compatibility
@@ -114,5 +116,6 @@ https://play.luau.org/?embed=true#<compressed-state>
 ```
 
 Query parameters:
+
 - `embed=true`: Enables embed mode (hides settings, bytecode toggle, share button)
 - `theme=light|dark`: Force a specific theme (defaults to `auto` which follows system preference)

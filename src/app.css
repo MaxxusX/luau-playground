@@ -19,244 +19,249 @@
 
 /* Builder Sans font family */
 @font-face {
-  font-family: "Builder Sans";
-  font-style: normal;
-  font-display: fallback;
-  src: url("/font/BuilderSans-Regular.woff2") format("woff2");
+	font-family: "Builder Sans";
+	font-style: normal;
+	font-display: fallback;
+	src: url("/font/BuilderSans-Regular.woff2") format("woff2");
 }
 
 /* Builder Mono font family */
 @font-face {
-  font-family: "Builder Mono";
-  font-style: normal;
-  font-display: fallback;
-  font-variant-ligatures: none;
-  src: url("/font/BuilderMono-Regular.woff2") format("woff2");
+	font-family: "Builder Mono";
+	font-style: normal;
+	font-display: fallback;
+	font-variant-ligatures: none;
+	src: url("/font/BuilderMono-Regular.woff2") format("woff2");
 }
 
 /* Fallback fonts for improved CLS */
 @font-face {
-  font-family: "Arial Builder Fallback";
-  src: local(Arial);
-  size-adjust: 100%;
-  ascent-override: 96%;
-  descent-override: 25%;
-  line-gap-override: 5%;
+	font-family: "Arial Builder Fallback";
+	src: local(Arial);
+	size-adjust: 100%;
+	ascent-override: 96%;
+	descent-override: 25%;
+	line-gap-override: 5%;
 }
 
 @font-face {
-  font-family: "Courier Builder Fallback";
-  src: local(Courier New);
-  size-adjust: 100%;
-  ascent-override: 96%;
-  descent-override: 25%;
-  line-gap-override: 5%;
+	font-family: "Courier Builder Fallback";
+	src: local(Courier New);
+	size-adjust: 100%;
+	ascent-override: 96%;
+	descent-override: 25%;
+	line-gap-override: 5%;
 }
 
 @theme {
-  --font-sans: "Builder Sans", "Arial Builder Fallback", system-ui, -apple-system, sans-serif;
-  --font-mono: "Builder Mono", "Courier Builder Fallback", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-  
-  /* Extended color palette */
-  --color-extended-white-100: #ffffff;
-  --color-extended-gray-100: rgb(247, 247, 248);
-  --color-extended-gray-200: rgb(238, 239, 241);
-  --color-extended-gray-300: rgb(230, 231, 234);
-  --color-extended-gray-400: rgb(213, 215, 221);
-  --color-extended-gray-500: rgb(188, 190, 200);
-  --color-extended-gray-600: rgb(106, 111, 129);
-  --color-extended-gray-700: rgb(73, 77, 90);
-  --color-extended-gray-800: rgb(53, 55, 65);
-  --color-extended-gray-900: rgb(39, 41, 48);
-  --color-extended-gray-1000: rgb(32, 34, 39);
-  --color-extended-gray-1100: rgb(25, 26, 31);
-  --color-extended-gray-1200: rgb(18, 18, 21);
-  
-  /* Accent, error, and warning colors */
-  --color-accent-400: oklch(0.6 0.25 270);
-  --color-accent-500: oklch(0.5 0.28 270);  /* #3335FF */
-  --color-accent-600: oklch(0.45 0.25 270);
-  
-  --color-error-400: oklch(0.7 0.2 25);
-  --color-error-500: oklch(0.6 0.22 25);
-  
-  --color-warning-400: oklch(0.8 0.15 85);
-  --color-warning-500: oklch(0.7 0.17 85);
-  
-  /* Syntax highlighting palette */
-  --color-blue-400: rgb(143, 180, 255);
-  --color-blue-500: rgb(112, 160, 255);
-  --color-blue-900: rgb(0, 53, 245);
-  --color-blue-1000: rgb(0, 45, 214);
-  
-  --color-green-400: rgb(101, 215, 157);
-  --color-green-900: rgb(2, 114, 64);
-  
-  --color-purple-500: rgb(197, 156, 249);
-  --color-purple-1000: rgb(108, 33, 198);
-  
-  --color-carmine-400: rgb(255, 155, 192);
-  --color-carmine-900: rgb(190, 26, 97);
-  
-  --color-red-700: rgb(231, 87, 80);
-  --color-red-900: rgb(197, 18, 10);
-  
-  --color-yellow-400: rgb(242, 186, 42);
-  --color-yellow-800: rgb(151, 108, 0);
+	--font-sans:
+		"Builder Sans", "Arial Builder Fallback", system-ui, -apple-system,
+		sans-serif;
+	--font-mono:
+		"Builder Mono", "Courier Builder Fallback", ui-monospace,
+		SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+	/* Extended color palette */
+	--color-extended-white-100: #ffffff;
+	--color-extended-gray-100: rgb(247, 247, 248);
+	--color-extended-gray-200: rgb(238, 239, 241);
+	--color-extended-gray-300: rgb(230, 231, 234);
+	--color-extended-gray-400: rgb(213, 215, 221);
+	--color-extended-gray-500: rgb(188, 190, 200);
+	--color-extended-gray-600: rgb(106, 111, 129);
+	--color-extended-gray-700: rgb(73, 77, 90);
+	--color-extended-gray-800: rgb(53, 55, 65);
+	--color-extended-gray-900: rgb(39, 41, 48);
+	--color-extended-gray-1000: rgb(32, 34, 39);
+	--color-extended-gray-1100: rgb(25, 26, 31);
+	--color-extended-gray-1200: rgb(18, 18, 21);
+
+	/* Accent, error, and warning colors */
+	--color-accent-400: oklch(0.6 0.25 270);
+	--color-accent-500: oklch(0.5 0.28 270); /* #3335FF */
+	--color-accent-600: oklch(0.45 0.25 270);
+
+	--color-error-400: oklch(0.7 0.2 25);
+	--color-error-500: oklch(0.6 0.22 25);
+
+	--color-warning-400: oklch(0.8 0.15 85);
+	--color-warning-500: oklch(0.7 0.17 85);
+
+	/* Syntax highlighting palette */
+	--color-blue-400: rgb(143, 180, 255);
+	--color-blue-500: rgb(112, 160, 255);
+	--color-blue-900: rgb(0, 53, 245);
+	--color-blue-1000: rgb(0, 45, 214);
+
+	--color-green-400: rgb(101, 215, 157);
+	--color-green-900: rgb(2, 114, 64);
+
+	--color-purple-500: rgb(197, 156, 249);
+	--color-purple-1000: rgb(108, 33, 198);
+
+	--color-carmine-400: rgb(255, 155, 192);
+	--color-carmine-900: rgb(190, 26, 97);
+
+	--color-red-700: rgb(231, 87, 80);
+	--color-red-900: rgb(197, 18, 10);
+
+	--color-yellow-400: rgb(242, 186, 42);
+	--color-yellow-800: rgb(151, 108, 0);
 }
 
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: var(--font-sans);
-  font-synthesis: weight style;
+html,
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	font-family: var(--font-sans);
+	font-synthesis: weight style;
 }
 
 #app {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 #app main {
-  font-variant-ligatures: none;
+	font-variant-ligatures: none;
 }
 
 /* Light theme (default) */
 :root {
-  color-scheme: light;
-  --bg-primary: var(--color-extended-white-100);
-  --bg-secondary: var(--color-extended-gray-100);
-  --bg-tertiary: var(--color-extended-gray-200);
-  --bg-editor: var(--color-extended-white-100);
-  --text-primary: var(--color-extended-gray-900);
-  --text-secondary: var(--color-extended-gray-700);
-  --text-muted: var(--color-extended-gray-600);
-  --border-color: var(--color-extended-gray-300);
-  --accent: var(--color-accent-500);
-  --accent-hover: var(--color-accent-600);
-  
-  /* Light mode surface colors for editor */
-  --editor-surface-0: var(--color-extended-white-100);
-  --editor-surface-100: var(--color-extended-gray-100);
-  --editor-surface-200: var(--color-extended-white-100);
-  --editor-surface-300: var(--color-extended-gray-100);
+	color-scheme: light;
+	--bg-primary: var(--color-extended-white-100);
+	--bg-secondary: var(--color-extended-gray-100);
+	--bg-tertiary: var(--color-extended-gray-200);
+	--bg-editor: var(--color-extended-white-100);
+	--text-primary: var(--color-extended-gray-900);
+	--text-secondary: var(--color-extended-gray-700);
+	--text-muted: var(--color-extended-gray-600);
+	--border-color: var(--color-extended-gray-300);
+	--accent: var(--color-accent-500);
+	--accent-hover: var(--color-accent-600);
+
+	/* Light mode surface colors for editor */
+	--editor-surface-0: var(--color-extended-white-100);
+	--editor-surface-100: var(--color-extended-gray-100);
+	--editor-surface-200: var(--color-extended-white-100);
+	--editor-surface-300: var(--color-extended-gray-100);
 }
 
 /* Dark theme */
 .dark {
-  color-scheme: dark;
-  --bg-primary: var(--color-extended-gray-1100);
-  --bg-secondary: var(--color-extended-gray-1000);
-  --bg-tertiary: var(--color-extended-gray-900);
-  --bg-editor: var(--color-extended-gray-1200);
-  --text-primary: var(--color-extended-gray-200);
-  --text-secondary: var(--color-extended-gray-500);
-  --text-muted: var(--color-extended-gray-600);
-  --border-color: var(--color-extended-gray-800);
-  --accent: var(--color-accent-400);
-  --accent-hover: var(--color-accent-500);
-  
-  /* Dark mode surface colors for editor */
-  --editor-surface-0: var(--color-extended-gray-1200);
-  --editor-surface-100: var(--color-extended-gray-1100);
-  --editor-surface-200: var(--color-extended-gray-1000);
-  --editor-surface-300: var(--color-extended-gray-900);
+	color-scheme: dark;
+	--bg-primary: var(--color-extended-gray-1100);
+	--bg-secondary: var(--color-extended-gray-1000);
+	--bg-tertiary: var(--color-extended-gray-900);
+	--bg-editor: var(--color-extended-gray-1200);
+	--text-primary: var(--color-extended-gray-200);
+	--text-secondary: var(--color-extended-gray-500);
+	--text-muted: var(--color-extended-gray-600);
+	--border-color: var(--color-extended-gray-800);
+	--accent: var(--color-accent-400);
+	--accent-hover: var(--color-accent-500);
+
+	/* Dark mode surface colors for editor */
+	--editor-surface-0: var(--color-extended-gray-1200);
+	--editor-surface-100: var(--color-extended-gray-1100);
+	--editor-surface-200: var(--color-extended-gray-1000);
+	--editor-surface-300: var(--color-extended-gray-900);
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
 }
 
 /* Ghost button hover/active states */
 .ghost-btn {
-  position: relative;
+	position: relative;
 }
 
 .ghost-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: currentColor;
-  opacity: 0;
-  transition: opacity 0.15s;
-  pointer-events: none;
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: currentColor;
+	opacity: 0;
+	transition: opacity 0.15s;
+	pointer-events: none;
 }
 
 .ghost-btn:hover::before {
-  opacity: 0.1;
+	opacity: 0.1;
 }
 
 .ghost-btn:active::before {
-  opacity: 0.15;
+	opacity: 0.15;
 }
 
 /* Secondary/standard button hover/active states */
 .secondary-btn {
-  position: relative;
+	position: relative;
 }
 
 .secondary-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: currentColor;
-  opacity: 0;
-  transition: opacity 0.15s;
-  pointer-events: none;
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: currentColor;
+	opacity: 0;
+	transition: opacity 0.15s;
+	pointer-events: none;
 }
 
 .secondary-btn:hover::before {
-  opacity: 0.08;
+	opacity: 0.08;
 }
 
 .secondary-btn:active::before {
-  opacity: 0.12;
+	opacity: 0.12;
 }
 
 .cm-lineNumbers .cm-gutterElement {
-  padding-left: 12px !important;
+	padding-left: 12px !important;
 }
 
 /* CodeMirror lint gutter - custom minimal markers using SVG */
 .cm-gutterElement .cm-lint-marker,
 .cm-lint-marker {
-  width: 8px;
-  height: 8px;
-  margin: 4px;
-  border-radius: 50%;
+	width: 8px;
+	height: 8px;
+	margin: 4px;
+	border-radius: 50%;
 }
 
 .cm-gutterElement .cm-lint-marker-error,
 .cm-lint-marker-error {
-  background: var(--color-error-500);
-  content: '';
+	background: var(--color-error-500);
+	content: "";
 }
 
 .cm-gutterElement .cm-lint-marker-warning,
 .cm-lint-marker-warning {
-  background: var(--color-warning-500);
-  content: '';
+	background: var(--color-warning-500);
+	content: "";
 }
 
 .cm-gutterElement .cm-lint-marker-info,
 .cm-lint-marker-info {
-  background: var(--color-accent-500);
-  content: '';
+	background: var(--color-accent-500);
+	content: "";
 }
 
 /* Prevent iOS auto-zoom on focus by ensuring font is at least 16px on mobile (except in embed mode) */
 @media screen and (max-width: 768px) {
-  body:not(.embed-mode) .cm-content,
-  body:not(.embed-mode) .cm-gutters {
-    font-size: 16px !important;
-  }
+	body:not(.embed-mode) .cm-content,
+	body:not(.embed-mode) .cm-gutters {
+		font-size: 16px !important;
+	}
 }
