@@ -8,8 +8,20 @@
 	"trailingComma": "es5",
 	"objectWrap": "collapse",
 	"proseWrap": "always",
-	"vueIndentScriptAndStyle": true,
+	"plugins": ["prettier-plugin-svelte"],
 	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		},
+		{
+			"files": "*.json",
+			"options": {
+				"tabWidth": 2
+			}
+		},
 		{
 			"files": [".*", "*.md", "*.yml", "*.yaml"],
 			"options": {
