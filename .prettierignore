@@ -1,0 +1,28 @@
+# build output
+dist/
+
+# dependencies
+node_modules/
+
+# lockfile
+pnpm-lock.yaml
+
+# WASM build artifacts
+wasm/build/
+wasm/luau/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# TypeScript
+*.tsbuildinfo
