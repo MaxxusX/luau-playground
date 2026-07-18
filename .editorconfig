@@ -14,3 +14,8 @@ spelling_language = en-US
 indent_style = space
 indent_size = 2
 tab_width = 2
+
+[{CMakeLists.txt,*.sh,*.cpp}]
+indent_style = space
+indent_size = 4
+tab_width = 4
