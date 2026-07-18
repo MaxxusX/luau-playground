@@ -37,7 +37,7 @@
 		"svelte": "^5.56.6",
 		"svelte-check": "^4.7.3",
 		"tailwindcss": "^4.3.3",
-		"typescript": "^5.9.3",
+		"typescript": "^6.0.3",
 		"vite": "^8.1.5"
 	},
 	"packageManager": "pnpm@11.13.1",
