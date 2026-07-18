@@ -17,6 +17,7 @@ index.html      text
 *.json          text
 *.svg           text
 *.yml           text
+*.yaml          text
 
 # binary files
 *.woff2         binary
