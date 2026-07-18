@@ -7,9 +7,9 @@
 		"module": "ESNext",
 		"types": ["svelte", "vite/client"],
 		"noEmit": true,
-		"baseUrl": ".",
+		"rootDir": "./src",
 		"paths": {
-			"$lib/*": ["src/lib/*"]
+			"$lib/*": ["./src/lib/*"]
 		},
 		/**
 		 * Typecheck JS in `.svelte` and `.js` files by default.
@@ -22,9 +22,9 @@
 		"moduleDetection": "force"
 	},
 	"include": [
-		"src/**/*.ts",
-		"src/**/*.d.ts",
-		"src/**/*.js",
-		"src/**/*.svelte"
+		"./src/**/*.ts",
+		"./src/**/*.d.ts",
+		"./src/**/*.js",
+		"./src/**/*.svelte"
 	]
 }
