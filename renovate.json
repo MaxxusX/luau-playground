@@ -1,0 +1,45 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended", "abandonments:recommended", "mergeConfidence:all-badges"],
+	"ignorePresets": [":semanticPrefixFixDepsChoreOthers"],
+	"enabledManagers": ["npm", "github-actions", "renovate-config"],
+	"configMigration": true,
+	"assignees": ["MaxxusX"],
+	"reviewers": ["MaxxusX"],
+	"labels": ["dependencies"],
+	"semanticCommits": "enabled",
+	"semanticCommitType": "chore",
+	"prHourlyLimit": 0,
+	"rangeStrategy": "bump",
+	"vulnerabilityAlerts": {
+		"enabled": true,
+		"rangeStrategy": "bump"
+	},
+	"lockFileMaintenance": {
+		"enabled": true,
+		"schedule": ["before 8am on friday"]
+	},
+	"npm": {
+		"enabled": true
+	},
+	"postUpdateOptions": ["pnpmDedupe"],
+	"packageRules": [
+		{
+			"matchPackageNames": ["*"],
+			"semanticCommitType": "chore"
+		},
+		{
+			"matchDatasources": ["npm"],
+			"minimumReleaseAge": "1 days",
+			"internalChecksFilter": "strict"
+		},
+		{
+			"matchManagers": ["npm"],
+			"addLabels": ["javascript"]
+		},
+		{
+			"matchManagers": ["github-actions"],
+			"addLabels": ["github_actions"]
+		}
+	]
+}
