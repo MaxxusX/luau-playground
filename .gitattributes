@@ -7,8 +7,11 @@
 .editorconfig   text
 .prettierignore text
 LICENSE         text
-README.md       text
 index.html      text
+*.txt           text
+*.md            text
+*.sh            text
+*.cpp           text
 *.js            text
 *.ts            text
 *.css           text
