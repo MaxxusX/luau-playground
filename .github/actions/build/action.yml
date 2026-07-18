@@ -65,7 +65,7 @@ runs:
         ./build.sh release
 
     - name: Setup PNPM
-      uses: pnpm/action-setup@6.0.9
+      uses: pnpm/action-setup@v6
 
     - name: Setup Node.js
       uses: actions/setup-node@v7
