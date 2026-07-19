@@ -9,7 +9,6 @@
 			"fileFormat": "json",
 			"managerFilePatterns": ["package.json"],
 			"matchStrings": [
-				"{ 'currentValue': $substring(packageManager, 5) }",
 				"{ 'currentValue': devEngines.packageManager.version }"
 			],
 			"depNameTemplate": "pnpm",
