@@ -2,7 +2,25 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:recommended", "abandonments:recommended", "mergeConfidence:all-badges"],
 	"ignorePresets": [":semanticPrefixFixDepsChoreOthers"],
-	"enabledManagers": ["npm", "github-actions", "renovate-config"],
+	"enabledManagers": ["custom.jsonata", "npm", "github-actions", "renovate-config"],
+	"customManagers": [
+		{
+			"customType": "jsonata",
+			"fileFormat": "json",
+			"managerFilePatterns": ["package.json"],
+			"matchStrings": [
+				"{ 'currentValue': $substring(packageManager, 5) }",
+				"{ 'currentValue': devEngines.packageManager.version }"
+			],
+			"depNameTemplate": "pnpm",
+			"datasourceTemplate": "npm",
+			"depTypeTemplate": "packageManager",
+			"versioningTemplate": "semver"
+		}
+	],
+	"constraints": {
+		"node": "^26.3.1"
+	},
 	"configMigration": true,
 	"assignees": ["MaxxusX"],
 	"reviewers": ["MaxxusX"],
@@ -24,10 +42,6 @@
 	},
 	"postUpdateOptions": ["pnpmDedupe"],
 	"packageRules": [
-		{
-			"matchPackageNames": ["*"],
-			"semanticCommitType": "chore"
-		},
 		{
 			"matchDatasources": ["npm"],
 			"minimumReleaseAge": "1 days",
