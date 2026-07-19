@@ -43,6 +43,12 @@
 	"postUpdateOptions": ["pnpmDedupe"],
 	"packageRules": [
 		{
+			"matchManagers": ["renovate-config"],
+			"matchDepTypes": ["tool-constraint"],
+			"matchDepNames": ["node"],
+			"enabled": false
+		},
+		{
 			"matchDatasources": ["npm"],
 			"minimumReleaseAge": "1 days",
 			"internalChecksFilter": "strict"
@@ -54,6 +60,13 @@
 		{
 			"matchManagers": ["github-actions"],
 			"addLabels": ["github_actions"]
+		},
+		{
+			"matchManagers": ["custom.jsonata"],
+			"matchDepTypes": ["packageManager"],
+			"matchDepNames": ["pnpm"],
+			"commitMessageTopic": "pnpm",
+			"addLabels": ["javascript"]
 		}
 	]
 }
