@@ -41,11 +41,11 @@
 		"typescript": "^6.0.3",
 		"vite": "^8.1.5"
 	},
-	"packageManager": "pnpm@11.13.1",
+	"packageManager": "pnpm@11.14.0",
 	"devEngines": {
 		"packageManager": {
 			"name": "pnpm",
-			"version": "11.13.1",
+			"version": "11.14.0",
 			"onFail": "download"
 		},
 		"runtime": {
