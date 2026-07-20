@@ -173,7 +173,7 @@
             onclick={(e) => { e.stopPropagation(); removeFile(fileName); }}
             aria-label="Close tab"
           >
-            <Icon name="x" size={16} />
+            <Icon name="x" size="16px" />
           </button>
         {/if}
       </div>
@@ -210,7 +210,7 @@
             onclick={(e) => e.stopPropagation()}
           />
         {:else}
-          <span class="h-5 flex items-center"><Icon name="plus" size={16} /></span>
+          <span class="h-5 flex items-center"><Icon name="plus" size="16px" /></span>
         {/if}
       </div>
     {/if}
@@ -221,7 +221,7 @@
     {#if !$isEmbed}
       <ConfigPopover />
       <Button size="sm" variant="ghost" onclick={toggleTheme} class="w-8 sm:w-9 px-0" title="Toggle theme">
-        <Icon name={getThemeIcon($themeMode)} size={16} />
+        <Icon name={getThemeIcon($themeMode)} size="16px" />
       </Button>
       <Button 
         size="sm" 
@@ -231,23 +231,23 @@
         title="Toggle bytecode view"
       >
         <span class="hidden sm:inline">Bytecode</span>
-        <span class="sm:hidden"><Icon name="binary" size={16} /></span>
+        <span class="sm:hidden"><Icon name="binary" size="16px" /></span>
       </Button>
       <Button size="sm" variant="secondary" onclick={handleShare} class="px-2 sm:px-3 sm:min-w-14" title="Share playground">
         {#if shareSuccess === true}
-          <Icon name="check" size={16} />
+          <Icon name="check" size="16px" />
         {:else if shareSuccess === false}
-          <span class="flex items-center gap-1">URL <Icon name="external" size={16} /></span>
+          <span class="flex items-center gap-1">URL <Icon name="external" size="16px" /></span>
         {:else}
           <span class="hidden sm:inline-flex items-center gap-1">Share</span>
-          <span class="sm:hidden"><Icon name="share" size={16} /></span>
+          <span class="sm:hidden"><Icon name="share" size="16px" /></span>
         {/if}
       </Button>
       <EmbedPopover />
     {/if}
     <Button size="sm" variant="secondary" onclick={handleCheck} class="px-2 sm:px-3" title="Check code for errors">
       <span class="hidden sm:inline">Check</span>
-      <span class="sm:hidden"><Icon name="check"size={16} /></span>
+      <span class="sm:hidden"><Icon name="check"size="16px" /></span>
     </Button>
     <Button
       size="sm"
@@ -256,13 +256,13 @@
       class="px-2 sm:px-3"
       title={showStopButton ? 'Stop execution' : `Run code (${runShortcut})`}
     >
-      <span class="sm:mr-1"><Icon name={showStopButton ? 'stop' : 'play'} size={16} /></span>
+      <span class="sm:mr-1"><Icon name={showStopButton ? 'stop' : 'play'} size="16px" /></span>
       <span class="hidden sm:inline">{showStopButton ? 'Stop' : 'Run'}</span>
     </Button>
     {#if $isEmbed}
       <Button size="sm" variant="secondary" onclick={handleOpenInPlayground} class="px-2 sm:px-3" title="Open in playground">
         <span class="hidden sm:inline items-center gap-1">Open</span>
-        <span class="sm:hidden"><Icon name="external"size={16} /></span>
+        <span class="sm:hidden"><Icon name="external" size="16px" /></span>
       </Button>
     {/if}
   </div>
