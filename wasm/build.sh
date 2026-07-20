@@ -24,7 +24,7 @@ fi
 LUAU_DIR="$SCRIPT_DIR/luau"
 if [ ! -d "$LUAU_DIR" ] || [ ! -f "$LUAU_DIR/CMakeLists.txt" ]; then
     echo "Luau source not found. Cloning..."
-    git clone --depth 1 https://github.com/Roblox/luau.git "$LUAU_DIR"
+    git clone --depth 1 https://github.com/luau-lang/luau "$LUAU_DIR"
 fi
 
 # Create build directory
@@ -61,4 +61,3 @@ echo "Build complete!"
 echo "Output files:"
 [ -f "$OUTPUT_DIR/luau.wasm" ] && echo "  - $OUTPUT_DIR/luau.wasm"
 echo "  - $SRC_OUTPUT (bundled)"
-
