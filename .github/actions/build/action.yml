@@ -85,4 +85,4 @@ runs:
 
     - name: Build
       shell: bash
-      run: pnx vite build --base=./
+      run: pnpm exec vite build --base=./
