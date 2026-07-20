@@ -131,7 +131,7 @@
         aria-label={isExpanded ? 'Collapse object' : 'Expand object'}
         aria-expanded={isExpanded}
         ><span class="ov-chevron" class:expanded={isExpanded}
-          ><Icon name="chevronRight" size={10} /></span
+          ><Icon name="chevronRight" size="10px" /></span
         >{"{"}{#if !isExpanded}<span class="ov-preview">{getPreview()}</span
           >{"}"}{/if}</button
       >{#if isExpanded}{"\n"}{#each entries as entry}{nextIndentStr}<ObjectView
