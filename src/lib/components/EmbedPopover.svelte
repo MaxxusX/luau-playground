@@ -34,7 +34,7 @@
   popovertarget="embed-popover"
 >
   <span class="hidden sm:inline">Embed</span>
-  <span class="sm:hidden"><Icon name="code" size={16} /></span>
+  <span class="sm:hidden"><Icon name="code" size="16px" /></span>
 </Button>
 
 <div
@@ -83,7 +83,7 @@
         class="w-full"
       >
         {#if copySuccess}
-          <Icon name="check" size={14} />
+          <Icon name="check" size="14px" />
           <span class="ml-1.5">Copied!</span>
         {:else}
           Copy Code
