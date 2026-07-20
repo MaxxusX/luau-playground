@@ -16,14 +16,12 @@ export function preloadDynamicChunks(): Plugin {
 					fileName.startsWith("assets/setup-") &&
 					fileName.endsWith(".js")
 				) {
-					preloads.push(
-						`<link rel="modulepreload" crossorigin href="/${fileName}">`,
-					);
+					preloads.push(`<link rel="modulepreload" crossorigin href="/${fileName}">`);
 				}
 			}
 
 			if (preloads.length === 0) return html;
-			return html.replace("</head>", `${preloads.join("\n")}\n</head>`);
+			return html.replace("</head>", preloads.join("")+"</head>");
 		},
 	};
 }
