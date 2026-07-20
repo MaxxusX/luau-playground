@@ -3,13 +3,12 @@
 
   interface Props {
     name: IconName;
-    size?: number | string;
-    class?: string;
+    size: string;
   }
 
-  let { name, size = '1em', class: className = '' }: Props = $props();
+  let { name, size }: Props = $props();
 
-  const sizeValue = $derived(typeof size === 'number' ? `${size}px` : size);
+  const sizeValue = $derived(size);
   
   // Extract the inner content from the SVG (everything between <svg> tags)
   const svgContent = $derived(() => {
@@ -25,7 +24,6 @@
   fill="currentColor"
   width={sizeValue}
   height={sizeValue}
-  class={className}
   aria-hidden="true"
 >
   {@html svgContent()}
