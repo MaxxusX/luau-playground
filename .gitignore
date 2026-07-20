@@ -7,6 +7,7 @@ dist/
 # WASM build artifacts
 wasm/build/
 wasm/luau/
+public/wasm/
 src/lib/luau/luau-module.js
 
 # IDE
