@@ -8,6 +8,7 @@ node_modules/
 pnpm-lock.yaml
 
 # WASM build artifacts
+src/lib/luau/luau-module.js
 wasm/build/
 wasm/luau/
 
