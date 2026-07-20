@@ -80,7 +80,7 @@
         class="transition-transform duration-200" 
         style="transform: rotate({isExpanded ? 90 : 0}deg)"
       >
-        <Icon name="chevronRight" size={16} />
+        <Icon name="chevronRight" size="16px" />
       </span>
       <span>Output</span>
       {#if $isRunning}
