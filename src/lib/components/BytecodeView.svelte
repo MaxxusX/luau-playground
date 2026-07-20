@@ -428,7 +428,7 @@
         {/if}
       </div>
       <Button size="none" variant="ghost" onclick={toggleBytecode} class="h-6 w-6 p-0 min-w-0" title="Close bytecode view">
-        <Icon name="x" size={16} />
+        <Icon name="x" size="16px" />
       </Button>
     </div>
 
