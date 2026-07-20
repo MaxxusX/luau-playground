@@ -1,9 +1,9 @@
 import { build, type Plugin } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
-import { rmSync } from "fs";
-import { fileURLToPath } from "url";
-import path from "path";
+import { rmSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 import { compileGrammarPlugin } from "./compile-grammar";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
