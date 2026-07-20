@@ -9,6 +9,7 @@ pnpm-lock.yaml
 
 # WASM build artifacts
 src/lib/luau/luau-module.js
+public/wasm/
 wasm/build/
 wasm/luau/
 
