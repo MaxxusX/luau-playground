@@ -1,8 +1,6 @@
 /// <reference types="vite/client" />
 
-interface Window {
-	dataLayer?: unknown[];
-}
+interface Window {}
 
 declare module "virtual:compiled-patterns" {
 	/** Map of Oniguruma pattern string -> [source, flags] tuple, or null if compilation failed */
