@@ -10,8 +10,8 @@
 
 import type { Plugin } from "vite";
 import { toRegExp } from "oniguruma-to-es";
-import { readFileSync } from "fs";
-import { resolve } from "path";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 const VIRTUAL_MODULE_ID = "virtual:compiled-patterns";
 const RESOLVED_VIRTUAL_MODULE_ID = "\0" + VIRTUAL_MODULE_ID;
@@ -132,7 +132,7 @@ function generateModule(
  * Failed: ${failed}
  */
 
-export const compiledPatterns = ${JSON.stringify(compiledPatterns, null, 2)};
+export const compiledPatterns = ${JSON.stringify(compiledPatterns)};
 `;
 }
 
