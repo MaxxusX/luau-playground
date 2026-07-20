@@ -68,7 +68,7 @@
   title="Settings"
   popovertarget="config-popover"
 >
-  <Icon name="gear" size={16} />
+  <Icon name="gear" size="16px" />
 </Button>
 
 <div
