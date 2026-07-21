@@ -22,7 +22,7 @@ let modulePromise: Promise<LuauWasmModule> | null = null;
 let compiledWasmModule: WebAssembly.Module | null = null;
 
 // Message types for worker communication
-export type WorkerRequest =
+export type WorkerRequest = (
 	| { type: "init"; wasmModule: WebAssembly.Module }
 	| { type: "execute"; code: string }
 	| { type: "getDiagnostics"; code: string }
@@ -41,9 +41,10 @@ export type WorkerRequest =
 			showRemarks: boolean;
 	  }
 	| { type: "registerModules"; modules: Record<string, string> }
-	| { type: "registerSources"; sources: Record<string, string> };
+	| { type: "registerSources"; sources: Record<string, string> })
+	& { requestId: string };
 
-export type WorkerResponse =
+export type WorkerResponse = (
 	| { type: "ready" }
 	| { type: "execute"; result: ExecuteResult; elapsed: number }
 	| { type: "getDiagnostics"; result: DiagnosticsResult; elapsed: number }
@@ -56,15 +57,14 @@ export type WorkerResponse =
 	| { type: "getBytecode"; result: { success: boolean; bytecode: string; error?: string } }
 	| { type: "registerModules"; success: boolean }
 	| { type: "registerSources"; success: boolean }
-	| { type: "error"; error: string };
+	| { type: "error"; error: string })
+	& { requestId: string };
 
 async function loadModule(): Promise<LuauWasmModule> {
 	if (wasmModule) return wasmModule;
 	if (modulePromise) return modulePromise;
 
-	if (!compiledWasmModule) {
-		throw new Error("WASM module not initialized - call init first");
-	}
+	if (!compiledWasmModule) throw new Error("WASM module not initialized - call init first");
 
 	modulePromise = (async () => {
 		// Use instantiateWasm to leverage the pre-compiled WebAssembly.Module
@@ -108,8 +108,9 @@ function respond(requestId: string, response: WorkerResponse): void {
 }
 
 // Handle messages from main thread
-self.onmessage = async (e: MessageEvent<WorkerRequest & { requestId: string }>) => {
-	const { requestId, ...request } = e.data;
+self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
+	const request = e.data;
+	const requestId = request.requestId;
 
 	try {
 		switch (request.type) {
@@ -117,6 +118,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest & { requestId: string }>) 
 				// Store the pre-compiled WebAssembly.Module from main thread
 				compiledWasmModule = request.wasmModule;
 				await loadModule();
+				// self.postMessage({ type: "ready", requestId });
 				respond(requestId, { type: "ready" });
 				break;
 			}
@@ -264,7 +266,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest & { requestId: string }>) 
 				const exhaustiveCheck: never = request;
 				respond(requestId, {
 					type: "error",
-					error: `Unknown request type: ${(exhaustiveCheck as WorkerRequest).type}`,
+					error: "Unknown request type: "+(exhaustiveCheck as WorkerRequest).type,
 				});
 				break;
 			}
