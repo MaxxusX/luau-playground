@@ -8,11 +8,7 @@
  * This eliminates the need for oniguruma WASM at runtime.
  */
 
-import {
-	StreamLanguage,
-	LanguageSupport,
-	type StringStream,
-} from "@codemirror/language";
+import { StreamLanguage, LanguageSupport, type StringStream } from "@codemirror/language";
 import * as vsctm from "vscode-textmate";
 import { createJsOnigLib } from "./js-regex-engine";
 import luauGrammar from "./Luau.tmLanguage.json";
@@ -42,10 +38,7 @@ async function initTextMate(): Promise<void> {
 			onigLib: createJsOnigLib(),
 			loadGrammar: async (scopeName) => {
 				if (scopeName === "source.luau") {
-					return vsctm.parseRawGrammar(
-						grammarJson,
-						"Luau.tmLanguage.json",
-					);
+					return vsctm.parseRawGrammar(grammarJson, "Luau.tmLanguage.json");
 				}
 				return null;
 			},
@@ -58,9 +51,7 @@ async function initTextMate(): Promise<void> {
 			throw new Error("Failed to load Luau grammar");
 		}
 
-		console.log(
-			"[TextMate] Luau grammar loaded successfully (JS regex engine)",
-		);
+		console.log("[TextMate] Luau grammar loaded successfully (JS regex engine)");
 	})();
 
 	await initPromise;
@@ -102,15 +93,12 @@ function scopeToToken(scopes: string[]): string | null {
 		if (scope.startsWith("support.type")) return "typeName";
 
 		// Functions
-		if (scope.startsWith("entity.name.function"))
-			return "variableName.function";
-		if (scope.startsWith("support.function"))
-			return "variableName.function";
+		if (scope.startsWith("entity.name.function")) return "variableName.function";
+		if (scope.startsWith("support.function")) return "variableName.function";
 		if (scope.includes("function-call")) return "variableName.function";
 
 		// Variables
-		if (scope.startsWith("variable.parameter"))
-			return "variableName.definition";
+		if (scope.startsWith("variable.parameter")) return "variableName.definition";
 		if (scope.startsWith("variable")) return "variableName";
 
 		// Operators
@@ -131,11 +119,7 @@ function scopeToToken(scopes: string[]): string | null {
  */
 interface TMState {
 	ruleStack: vsctm.StateStack;
-	lineTokens: Array<{
-		startIndex: number;
-		endIndex: number;
-		scopes: string[];
-	}> | null;
+	lineTokens: Array<{ startIndex: number; endIndex: number; scopes: string[] }> | null;
 	lineText: string;
 }
 
@@ -146,11 +130,7 @@ function createTextMateLanguage(): StreamLanguage<TMState> {
 	return StreamLanguage.define<TMState>({
 		name: "luau",
 
-		startState: (): TMState => ({
-			ruleStack: vsctm.INITIAL,
-			lineTokens: null,
-			lineText: "",
-		}),
+		startState: (): TMState => ({ ruleStack: vsctm.INITIAL, lineTokens: null, lineText: "" }),
 
 		copyState: (state: TMState): TMState => ({
 			ruleStack: state.ruleStack,
@@ -176,10 +156,7 @@ function createTextMateLanguage(): StreamLanguage<TMState> {
 				// Convert tokens to our format
 				state.lineTokens = result.tokens.map((t, i, arr) => ({
 					startIndex: t.startIndex,
-					endIndex:
-						i < arr.length - 1
-							? arr[i + 1].startIndex
-							: lineText.length,
+					endIndex: i < arr.length - 1 ? arr[i + 1].startIndex : lineText.length,
 					scopes: t.scopes,
 				}));
 			}
@@ -249,9 +226,7 @@ function isDarkTheme(): boolean {
 	try {
 		const root = document?.documentElement;
 		const body = document?.body;
-		return !!(
-			root?.classList.contains("dark") || body?.classList.contains("dark")
-		);
+		return !!(root?.classList.contains("dark") || body?.classList.contains("dark"));
 	} catch {
 		return false;
 	}
@@ -266,15 +241,9 @@ function tokenStyle(token: string | null): string | null {
 		bool: dark ? "var(--color-purple-500)" : "var(--color-purple-1000)",
 		typeName: dark ? "var(--color-blue-400)" : "var(--color-blue-900)",
 		func: dark ? "var(--color-carmine-400)" : "var(--color-carmine-900)",
-		variable: dark
-			? "var(--color-extended-gray-300)"
-			: "var(--color-extended-gray-900)",
-		operator: dark
-			? "var(--color-carmine-400)"
-			: "var(--color-carmine-900)",
-		punctuation: dark
-			? "var(--color-extended-gray-400)"
-			: "var(--color-extended-gray-800)",
+		variable: dark ? "var(--color-extended-gray-300)" : "var(--color-extended-gray-900)",
+		operator: dark ? "var(--color-carmine-400)" : "var(--color-carmine-900)",
+		punctuation: dark ? "var(--color-extended-gray-400)" : "var(--color-extended-gray-800)",
 		comment: "var(--color-extended-gray-600)",
 	};
 
@@ -325,10 +294,7 @@ export async function highlightLuauHtml(snippet: string): Promise<string> {
 		for (let i = 0; i < res.tokens.length; i++) {
 			const t = res.tokens[i];
 			const start = t.startIndex;
-			const end =
-				i < res.tokens.length - 1
-					? res.tokens[i + 1].startIndex
-					: line.length;
+			const end = i < res.tokens.length - 1 ? res.tokens[i + 1].startIndex : line.length;
 			const text = escapeHtml(line.slice(start, end));
 			const tok = scopeToToken(t.scopes);
 			const style = tokenStyle(tok);

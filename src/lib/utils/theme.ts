@@ -6,9 +6,7 @@ export const themeMode = writable<ThemeMode>("system");
 
 function getSystemTheme(): "light" | "dark" {
 	if (typeof window === "undefined") return "dark";
-	return window.matchMedia("(prefers-color-scheme: dark)").matches
-		? "dark"
-		: "light";
+	return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function applyTheme(mode: ThemeMode) {

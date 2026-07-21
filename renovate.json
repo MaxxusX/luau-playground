@@ -8,18 +8,14 @@
 			"customType": "jsonata",
 			"fileFormat": "json",
 			"managerFilePatterns": ["package.json"],
-			"matchStrings": [
-				"{ 'currentValue': devEngines.packageManager.version }"
-			],
+			"matchStrings": ["{ 'currentValue': devEngines.packageManager.version }"],
 			"depNameTemplate": "pnpm",
 			"datasourceTemplate": "npm",
 			"depTypeTemplate": "packageManager",
 			"versioningTemplate": "semver"
 		}
 	],
-	"constraints": {
-		"node": ">=26.3.1"
-	},
+	"constraints": { "node": ">=26.3.1" },
 	"configMigration": true,
 	"assignees": ["MaxxusX"],
 	"reviewers": ["MaxxusX"],
@@ -28,17 +24,9 @@
 	"semanticCommitType": "chore",
 	"prHourlyLimit": 0,
 	"rangeStrategy": "bump",
-	"vulnerabilityAlerts": {
-		"enabled": true,
-		"rangeStrategy": "bump"
-	},
-	"lockFileMaintenance": {
-		"enabled": true,
-		"schedule": ["before 8am on friday"]
-	},
-	"npm": {
-		"enabled": true
-	},
+	"vulnerabilityAlerts": { "enabled": true, "rangeStrategy": "bump" },
+	"lockFileMaintenance": { "enabled": true, "schedule": ["before 8am on friday"] },
+	"npm": { "enabled": true },
 	"postUpdateOptions": ["pnpmDedupe"],
 	"packageRules": [
 		{
@@ -52,14 +40,8 @@
 			"minimumReleaseAge": "1 days",
 			"internalChecksFilter": "strict"
 		},
-		{
-			"matchManagers": ["npm"],
-			"addLabels": ["javascript"]
-		},
-		{
-			"matchManagers": ["github-actions"],
-			"addLabels": ["github_actions"]
-		},
+		{ "matchManagers": ["npm"], "addLabels": ["javascript"] },
+		{ "matchManagers": ["github-actions"], "addLabels": ["github_actions"] },
 		{
 			"matchManagers": ["custom.jsonata"],
 			"matchDepTypes": ["packageManager"],

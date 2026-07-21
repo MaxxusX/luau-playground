@@ -38,10 +38,7 @@ end
 print("Sum:", sum)
 `;
 
-function loadFromStorage(): {
-	files: Record<string, string>;
-	activeFile: string;
-} | null {
+function loadFromStorage(): { files: Record<string, string>; activeFile: string } | null {
 	if (typeof window === "undefined") return null;
 	if (detectEmbedMode()) return null;
 
@@ -51,26 +48,19 @@ function loadFromStorage(): {
 
 		const parsed = JSON.parse(stored) as Partial<PersistedPlaygroundState>;
 		if (!parsed.files || typeof parsed.files !== "object") return null;
-		if (!parsed.activeFile || typeof parsed.activeFile !== "string")
-			return null;
+		if (!parsed.activeFile || typeof parsed.activeFile !== "string") return null;
 
 		const fileNames = Object.keys(parsed.files);
 		if (fileNames.length === 0) return null;
 		if (!(parsed.activeFile in parsed.files)) return null;
-		return {
-			files: parsed.files as Record<string, string>,
-			activeFile: parsed.activeFile,
-		};
+		return { files: parsed.files as Record<string, string>, activeFile: parsed.activeFile };
 	} catch {
 		return null;
 	}
 }
 
 // Load initial state from URL if available
-function getInitialState(): {
-	files: Record<string, string>;
-	activeFile: string;
-} {
+function getInitialState(): { files: Record<string, string>; activeFile: string } {
 	const defaultState = {
 		files: { [DEFAULT_FILENAME]: defaultCode },
 		activeFile: DEFAULT_FILENAME,
@@ -81,11 +71,7 @@ function getInitialState(): {
 	}
 
 	const state = parseStateFromHash(window.location.hash);
-	if (
-		state &&
-		Object.keys(state.files).length > 0 &&
-		state.active in state.files
-	) {
+	if (state && Object.keys(state.files).length > 0 && state.active in state.files) {
 		return { files: state.files, activeFile: state.active };
 	}
 
@@ -132,10 +118,7 @@ function saveToStorage(): void {
 		if (fileNames.length === 0) return;
 		if (!(a in f)) return;
 
-		const state: PersistedPlaygroundState = {
-			files: f,
-			activeFile: a,
-		};
+		const state: PersistedPlaygroundState = { files: f, activeFile: a };
 
 		localStorage.setItem(PLAYGROUND_STORAGE_KEY, JSON.stringify(state));
 	} catch {

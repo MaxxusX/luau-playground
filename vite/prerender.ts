@@ -28,23 +28,17 @@ export function prerenderPlugin(): Plugin {
 			await build({
 				configFile: false,
 				plugins: [compileGrammarPlugin(), svelte(), tailwindcss()],
-				resolve: {
-					alias: { $lib: path.resolve(rootDir, "./src/lib") },
-				},
+				resolve: { alias: { $lib: path.resolve(rootDir, "./src/lib") } },
 				build: {
 					ssr: true,
 					outDir: serverOutDir,
-					rollupOptions: {
-						input: path.resolve(__dirname, "entry-server.ts"),
-					},
+					rollupOptions: { input: path.resolve(__dirname, "entry-server.ts") },
 				},
 				logLevel: "warn",
 			});
 
 			// Import and render
-			const { renderApp } = await import(
-				path.join(serverOutDir, "entry-server.js")
-			);
+			const { renderApp } = await import(path.join(serverOutDir, "entry-server.js"));
 			renderedHtml = renderApp();
 
 			console.log("✅ Prerender complete!");

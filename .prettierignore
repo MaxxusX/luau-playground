@@ -3,6 +3,7 @@ dist/
 
 # dependencies
 node_modules/
+src/lib/editor/Luau.tmLanguage.json
 
 # lockfile
 pnpm-lock.yaml

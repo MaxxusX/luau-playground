@@ -13,8 +13,6 @@ const target = document.getElementById("app")!;
 // Check for actual element children (not just text/comment nodes)
 const hasPrerenderedContent = target.firstElementChild !== null;
 
-const app = hasPrerenderedContent
-	? hydrate(App, { target })
-	: mount(App, { target });
+const app = hasPrerenderedContent ? hydrate(App, { target }) : mount(App, { target });
 
 export default app;

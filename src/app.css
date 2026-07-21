@@ -54,12 +54,10 @@
 }
 
 @theme {
-	--font-sans:
-		"Builder Sans", "Arial Builder Fallback", system-ui, -apple-system,
-		sans-serif;
+	--font-sans: "Builder Sans", "Arial Builder Fallback", system-ui, -apple-system, sans-serif;
 	--font-mono:
-		"Builder Mono", "Courier Builder Fallback", ui-monospace,
-		SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+		"Builder Mono", "Courier Builder Fallback", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+		Consolas, monospace;
 
 	/* Extended color palette */
 	--color-extended-white-100: #ffffff;

@@ -5,17 +5,9 @@
  */
 
 import { files, activeFile } from "$lib/stores/playground";
-import {
-	settings,
-	showBytecode,
-	type PlaygroundSettings,
-} from "$lib/stores/settings";
+import { settings, showBytecode, type PlaygroundSettings } from "$lib/stores/settings";
 import { type ThemeMode } from "$lib/utils/theme";
-import {
-	defaultSettings,
-	CURRENT_VERSION,
-	DEFAULT_FILENAME,
-} from "$lib/constants";
+import { defaultSettings, CURRENT_VERSION, DEFAULT_FILENAME } from "$lib/constants";
 import { get } from "svelte/store";
 import LZString from "lz-string";
 import { type ShareState, type MinimalShareState } from "$lib/utils/decode";
@@ -23,18 +15,14 @@ import { type ShareState, type MinimalShareState } from "$lib/utils/decode";
 /**
  * Check if settings differ from defaults.
  */
-function getNonDefaultSettings(
-	s: PlaygroundSettings,
-): Partial<PlaygroundSettings> | null {
+function getNonDefaultSettings(s: PlaygroundSettings): Partial<PlaygroundSettings> | null {
 	const diff: Partial<PlaygroundSettings> = {};
 	if (s.mode !== defaultSettings.mode) diff.mode = s.mode;
 	if (s.solver !== defaultSettings.solver) diff.solver = s.solver;
 	if (s.optimizationLevel !== defaultSettings.optimizationLevel)
 		diff.optimizationLevel = s.optimizationLevel;
-	if (s.debugLevel !== defaultSettings.debugLevel)
-		diff.debugLevel = s.debugLevel;
-	if (s.outputFormat !== defaultSettings.outputFormat)
-		diff.outputFormat = s.outputFormat;
+	if (s.debugLevel !== defaultSettings.debugLevel) diff.debugLevel = s.debugLevel;
+	if (s.outputFormat !== defaultSettings.outputFormat) diff.outputFormat = s.outputFormat;
 	if (s.compilerRemarks !== defaultSettings.compilerRemarks)
 		diff.compilerRemarks = s.compilerRemarks;
 	return Object.keys(diff).length > 0 ? diff : null;
@@ -47,8 +35,7 @@ function toMinimalState(state: ShareState): MinimalShareState {
 	const minimal: MinimalShareState = { v: state.v };
 
 	const fileNames = Object.keys(state.files);
-	const isSingleDefaultFile =
-		fileNames.length === 1 && fileNames[0] === DEFAULT_FILENAME;
+	const isSingleDefaultFile = fileNames.length === 1 && fileNames[0] === DEFAULT_FILENAME;
 
 	if (isSingleDefaultFile) {
 		minimal.c = state.files[DEFAULT_FILENAME];
@@ -78,9 +65,7 @@ function toMinimalState(state: ShareState): MinimalShareState {
  * Encode state to a URL-safe string.
  */
 function encodeState(state: ShareState): string {
-	return LZString.compressToEncodedURIComponent(
-		JSON.stringify(toMinimalState(state)),
-	);
+	return LZString.compressToEncodedURIComponent(JSON.stringify(toMinimalState(state)));
 }
 
 /**
@@ -120,10 +105,7 @@ function generateEmbedUrl(theme: ThemeMode = "system"): URL {
 /**
  * Generate an iframe embed code snippet for the current playground state.
  */
-export function generateEmbedCode(
-	theme: ThemeMode = "system",
-	height = "400px",
-): string {
+export function generateEmbedCode(theme: ThemeMode = "system", height = "400px"): string {
 	const url = generateEmbedUrl(theme).toString();
 	return `\
 <iframe

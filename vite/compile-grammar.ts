@@ -34,10 +34,7 @@ interface GrammarNode {
  * Extract all unique regex patterns from the grammar.
  * Also generates vscode-textmate's internal transformations for anchored patterns.
  */
-function extractPatterns(
-	obj: unknown,
-	patterns = new Set<string>(),
-): Set<string> {
+function extractPatterns(obj: unknown, patterns = new Set<string>()): Set<string> {
 	if (!obj || typeof obj !== "object") return patterns;
 
 	if (Array.isArray(obj)) {
@@ -73,9 +70,7 @@ function extractPatterns(
 /**
  * Compile all patterns to JavaScript RegExp.
  */
-function compilePatterns(
-	patterns: string[],
-): Record<string, [string, string] | null> {
+function compilePatterns(patterns: string[]): Record<string, [string, string] | null> {
 	const compiled: Record<string, [string, string] | null> = {};
 
 	for (const pattern of patterns) {
@@ -115,13 +110,9 @@ function compilePatterns(
 /**
  * Generate the virtual module code.
  */
-function generateModule(
-	compiledPatterns: Record<string, [string, string] | null>,
-): string {
+function generateModule(compiledPatterns: Record<string, [string, string] | null>): string {
 	const total = Object.keys(compiledPatterns).length;
-	const failed = Object.values(compiledPatterns).filter(
-		(v) => v === null,
-	).length;
+	const failed = Object.values(compiledPatterns).filter((v) => v === null).length;
 
 	return `/**
  * Pre-compiled regex patterns for the Luau TextMate grammar.
@@ -144,10 +135,7 @@ export function compileGrammarPlugin(): Plugin {
 		name: "compile-grammar",
 
 		configResolved(config) {
-			grammarPath = resolve(
-				config.root,
-				"src/lib/editor/Luau.tmLanguage.json",
-			);
+			grammarPath = resolve(config.root, "src/lib/editor/Luau.tmLanguage.json");
 		},
 
 		resolveId(id) {
@@ -174,9 +162,7 @@ export function compileGrammarPlugin(): Plugin {
 				// Generate and cache module
 				cachedModule = generateModule(compiled);
 
-				console.log(
-					`[compile-grammar] Compiled ${patterns.length} patterns`,
-				);
+				console.log(`[compile-grammar] Compiled ${patterns.length} patterns`);
 
 				return cachedModule;
 			}
@@ -186,9 +172,7 @@ export function compileGrammarPlugin(): Plugin {
 			// Invalidate cache when grammar file changes
 			if (file.endsWith("Luau.tmLanguage.json")) {
 				cachedModule = null;
-				console.log(
-					"[compile-grammar] Grammar changed, will recompile patterns",
-				);
+				console.log("[compile-grammar] Grammar changed, will recompile patterns");
 			}
 		},
 	};

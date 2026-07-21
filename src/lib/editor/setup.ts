@@ -17,12 +17,7 @@ import {
 } from "@codemirror/view";
 import { EditorState, Compartment } from "@codemirror/state";
 import type { Extension } from "@codemirror/state";
-import {
-	defaultKeymap,
-	history,
-	historyKeymap,
-	indentWithTab,
-} from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import { bracketMatching, indentOnInput } from "@codemirror/language";
 import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
@@ -55,8 +50,7 @@ function getThemeExtension(): Extension {
 	const mode = get(themeMode);
 	const isDark =
 		mode === "dark" ||
-		(mode === "system" &&
-			window.matchMedia("(prefers-color-scheme: dark)").matches);
+		(mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 	return isDark ? darkTheme : lightTheme;
 }
 
@@ -111,17 +105,9 @@ function createExtensions(onChange: (content: string) => void): Extension[] {
 
 		// Base styling
 		EditorView.theme({
-			"&": {
-				height: "100%",
-				fontSize: "14px",
-			},
-			".cm-scroller": {
-				fontFamily: "var(--font-mono)",
-				overflow: "auto",
-			},
-			".cm-content": {
-				padding: "12px 0",
-			},
+			"&": { height: "100%", fontSize: "14px" },
+			".cm-scroller": { fontFamily: "var(--font-mono)", overflow: "auto" },
+			".cm-content": { padding: "12px 0" },
 		}),
 
 		// Update listener
@@ -146,7 +132,7 @@ function createExtensions(onChange: (content: string) => void): Extension[] {
 export function createEditor(
 	container: HTMLElement,
 	initialContent: string,
-	onChange: (content: string) => void,
+	onChange: (content: string) => void
 ): EditorView {
 	onChangeCallback = onChange;
 
@@ -155,17 +141,12 @@ export function createEditor(
 		extensions: createExtensions(onChange),
 	});
 
-	editorView = new EditorView({
-		state,
-		parent: container,
-	});
+	editorView = new EditorView({ state, parent: container });
 
 	// Subscribe to theme changes
 	unsubscribeTheme = themeMode.subscribe(() => {
 		if (editorView) {
-			editorView.dispatch({
-				effects: themeCompartment.reconfigure(getThemeExtension()),
-			});
+			editorView.dispatch({ effects: themeCompartment.reconfigure(getThemeExtension()) });
 		}
 	});
 
@@ -173,9 +154,7 @@ export function createEditor(
 	const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 	const handleMediaChange = () => {
 		if (get(themeMode) === "system" && editorView) {
-			editorView.dispatch({
-				effects: themeCompartment.reconfigure(getThemeExtension()),
-			});
+			editorView.dispatch({ effects: themeCompartment.reconfigure(getThemeExtension()) });
 		}
 	};
 	mediaQuery.addEventListener("change", handleMediaChange);
@@ -209,11 +188,7 @@ export function updateEditorContent(content: string): void {
 		const currentContent = editorView.state.doc.toString();
 		if (currentContent !== content) {
 			editorView.dispatch({
-				changes: {
-					from: 0,
-					to: currentContent.length,
-					insert: content,
-				},
+				changes: { from: 0, to: currentContent.length, insert: content },
 			});
 		}
 	}

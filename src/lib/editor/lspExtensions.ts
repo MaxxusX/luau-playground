@@ -9,11 +9,7 @@ import { EditorView, hoverTooltip, ViewPlugin } from "@codemirror/view";
 import type { Tooltip } from "@codemirror/view";
 import { linter } from "@codemirror/lint";
 import type { Diagnostic } from "@codemirror/lint";
-import {
-	autocompletion,
-	startCompletion,
-	type CompletionContext,
-} from "@codemirror/autocomplete";
+import { autocompletion, startCompletion, type CompletionContext } from "@codemirror/autocomplete";
 import type { CompletionResult, Completion } from "@codemirror/autocomplete";
 import type { Extension } from "@codemirror/state";
 import {
@@ -40,40 +36,28 @@ function createLuauLinter() {
 			const code = view.state.doc.toString();
 
 			try {
-				const { diagnostics: luauDiagnostics } =
-					await getDiagnostics(code);
+				const { diagnostics: luauDiagnostics } = await getDiagnostics(code);
 
 				const lineCount = view.state.doc.lines;
 				const diagnostics: Diagnostic[] = [];
 
 				for (const d of luauDiagnostics) {
-					const startLineNumber = Math.min(
-						Math.max(d.startLine + 1, 1),
-						lineCount,
-					);
-					const endLineNumber = Math.min(
-						Math.max(d.endLine + 1, 1),
-						lineCount,
-					);
+					const startLineNumber = Math.min(Math.max(d.startLine + 1, 1), lineCount);
+					const endLineNumber = Math.min(Math.max(d.endLine + 1, 1), lineCount);
 					const startLine = view.state.doc.line(startLineNumber);
 					const endLine = view.state.doc.line(endLineNumber);
 
 					const from =
-						startLine.from +
-						Math.min(Math.max(d.startCol, 0), startLine.length);
-					const to =
-						endLine.from +
-						Math.min(Math.max(d.endCol, 0), endLine.length);
+						startLine.from + Math.min(Math.max(d.startCol, 0), startLine.length);
+					const to = endLine.from + Math.min(Math.max(d.endCol, 0), endLine.length);
 
 					diagnostics.push({
 						from: Math.max(0, from),
 						to: Math.max(from, to),
 						severity:
-							d.severity === "error"
-								? "error"
-								: d.severity === "warning"
-									? "warning"
-									: "info",
+							d.severity === "error" ? "error"
+							: d.severity === "warning" ? "warning"
+							: "info",
 						message: d.message,
 					});
 				}
@@ -86,7 +70,7 @@ function createLuauLinter() {
 		},
 		{
 			delay: 300, // Debounce diagnostics by 300ms
-		},
+		}
 	);
 }
 
@@ -118,10 +102,7 @@ function mapCompletionKind(kind: LuauCompletion["kind"]): string {
 	}
 }
 
-function toRequirePathCompletions(
-	modules: string[],
-	currentFile: string,
-): string[] {
+function toRequirePathCompletions(modules: string[], currentFile: string): string[] {
 	type VariantInfo = { exact: boolean; luau: boolean; lua: boolean };
 	const variants = new Map<string, VariantInfo>();
 	const currentBase = currentFile.replace(/\.(luau|lua)$/, "");
@@ -135,8 +116,7 @@ function toRequirePathCompletions(
 	};
 
 	for (const mod of modules) {
-		if (!mod || mod === "main" || mod === "main.luau" || mod.includes("/"))
-			continue;
+		if (!mod || mod === "main" || mod === "main.luau" || mod.includes("/")) continue;
 		if (mod === currentFile) continue;
 		if (mod.replace(/\.(luau|lua)$/, "") === currentBase) continue;
 
@@ -169,7 +149,7 @@ function toRequirePathCompletions(
 
 function getRequireStringBounds(
 	lineText: string,
-	colInLine: number,
+	colInLine: number
 ): { from: number; to: number } | null {
 	const requireMatch = lineText.match(/require\s*\(\s*(["'])([^"']*)/);
 	if (!requireMatch) return null;
@@ -181,8 +161,7 @@ function getRequireStringBounds(
 
 	const restOfLine = lineText.substring(afterQuote);
 	const closingQuoteIdx = restOfLine.indexOf(quoteChar);
-	const closePos =
-		closingQuoteIdx >= 0 ? afterQuote + closingQuoteIdx : lineText.length;
+	const closePos = closingQuoteIdx >= 0 ? afterQuote + closingQuoteIdx : lineText.length;
 	if (colInLine > closePos) return null;
 
 	return { from: afterQuote, to: closePos };
@@ -192,7 +171,7 @@ function getRequireStringBounds(
  * Check if we're inside a require string and provide module completions.
  */
 async function requireCompletionSource(
-	context: CompletionContext,
+	context: CompletionContext
 ): Promise<CompletionResult | null> {
 	// Check if we're inside require("...") or require('...')
 	const line = context.state.doc.lineAt(context.pos);
@@ -233,9 +212,7 @@ async function requireCompletionSource(
 /**
  * Create an autocomplete source that fetches completions from the WASM module.
  */
-async function luauCompletionSource(
-	context: CompletionContext,
-): Promise<CompletionResult | null> {
+async function luauCompletionSource(context: CompletionContext): Promise<CompletionResult | null> {
 	// First check if we're inside a require statement
 	const requireResult = await requireCompletionSource(context);
 	if (requireResult) {
@@ -285,11 +262,7 @@ async function luauCompletionSource(
 		// Otherwise, start from the beginning of the word being typed
 		const from = word ? word.from : pos;
 
-		return {
-			from,
-			options: completions,
-			validFor: /^[\w]*$/,
-		};
+		return { from, options: completions, validFor: /^[\w]*$/ };
 	} catch (error) {
 		console.error("[Luau Autocomplete] Error:", error);
 		return null;
@@ -330,7 +303,7 @@ function createLuauAutocomplete(): Extension[] {
 					}
 				},
 			},
-		},
+		}
 	);
 
 	return [
@@ -371,9 +344,7 @@ function createLuauHover() {
 
 				// Precompute highlighted HTML if the content is a fenced luau block
 				let highlighted: string | null = null;
-				const codeBlockMatch = content
-					? content.match(/```luau\n([\s\S]*?)\n```/)
-					: null;
+				const codeBlockMatch = content ? content.match(/```luau\n([\s\S]*?)\n```/) : null;
 				if (codeBlockMatch) {
 					highlighted = await highlightLuauHtml(codeBlockMatch[1]);
 				}
@@ -433,9 +404,7 @@ function createLuauHover() {
 				return null;
 			}
 		},
-		{
-			hoverTime: 150,
-		},
+		{ hoverTime: 150 }
 	);
 }
 

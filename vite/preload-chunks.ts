@@ -12,16 +12,13 @@ export function preloadDynamicChunks(): Plugin {
 
 			const preloads: string[] = [];
 			for (const [fileName] of Object.entries(ctx.bundle)) {
-				if (
-					fileName.startsWith("assets/setup-") &&
-					fileName.endsWith(".js")
-				) {
+				if (fileName.startsWith("assets/setup-") && fileName.endsWith(".js")) {
 					preloads.push(`<link rel="modulepreload" crossorigin href="/${fileName}">`);
 				}
 			}
 
 			if (preloads.length === 0) return html;
-			return html.replace("</head>", preloads.join("")+"</head>");
+			return html.replace("</head>", preloads.join("") + "</head>");
 		},
 	};
 }

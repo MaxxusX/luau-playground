@@ -57,10 +57,8 @@ const darkColors: ThemeColors = {
 	lineNumber: "var(--color-extended-gray-600)",
 	lineNumberActive: "var(--color-extended-gray-500)",
 	gutterBackground: "var(--editor-surface-0)",
-	matchingBracketBg:
-		"color-mix(in srgb, var(--color-green-900) 40%, transparent)",
-	matchingBracketOutline:
-		"color-mix(in srgb, var(--color-green-900) 80%, transparent)",
+	matchingBracketBg: "color-mix(in srgb, var(--color-green-900) 40%, transparent)",
+	matchingBracketOutline: "color-mix(in srgb, var(--color-green-900) 80%, transparent)",
 
 	keyword: "var(--color-blue-500)",
 	string: "var(--color-green-400)",
@@ -91,10 +89,8 @@ const lightColors: ThemeColors = {
 	lineNumber: "var(--color-extended-gray-600)",
 	lineNumberActive: "var(--color-extended-gray-900)",
 	gutterBackground: "var(--editor-surface-0)",
-	matchingBracketBg:
-		"color-mix(in srgb, var(--color-green-400) 30%, transparent)",
-	matchingBracketOutline:
-		"color-mix(in srgb, var(--color-green-400) 70%, transparent)",
+	matchingBracketBg: "color-mix(in srgb, var(--color-green-400) 30%, transparent)",
+	matchingBracketOutline: "color-mix(in srgb, var(--color-green-400) 70%, transparent)",
 
 	keyword: "var(--color-blue-1000)",
 	string: "var(--color-green-900)",
@@ -124,10 +120,7 @@ function createTheme(colors: ThemeColors, isDark: boolean): Extension {
 	return [
 		EditorView.theme(
 			{
-				"&": {
-					backgroundColor: colors.background,
-					color: colors.foreground,
-				},
+				"&": { backgroundColor: colors.background, color: colors.foreground },
 				".cm-content": {
 					caretColor: colors.cursor,
 					fontFamily: "var(--font-mono)",
@@ -138,17 +131,11 @@ function createTheme(colors: ThemeColors, isDark: boolean): Extension {
 					borderLeft: `2px solid ${colors.cursor}`,
 					marginLeft: "-1px",
 				},
-				".cm-scroller": {
-					position: "relative",
+				".cm-scroller": { position: "relative" },
+				".cm-selectionLayer": { zIndex: "10 !important", pointerEvents: "none" },
+				"&.cm-focused .cm-selectionBackground, .cm-selectionBackground": {
+					backgroundColor: `${colors.selection} !important`,
 				},
-				".cm-selectionLayer": {
-					zIndex: "10 !important",
-					pointerEvents: "none",
-				},
-				"&.cm-focused .cm-selectionBackground, .cm-selectionBackground":
-					{
-						backgroundColor: `${colors.selection} !important`,
-					},
 				".cm-gutters": {
 					backgroundColor: colors.gutterBackground,
 					color: colors.lineNumber,
@@ -162,28 +149,16 @@ function createTheme(colors: ThemeColors, isDark: boolean): Extension {
 					backgroundColor: colors.activeLine,
 					color: colors.lineNumberActive,
 				},
-				".cm-activeLine": {
-					backgroundColor: "transparent",
-				},
-				"&.cm-focused .cm-activeLine": {
-					backgroundColor: colors.activeLine,
-				},
-				".cm-line": {
-					padding: "0 16px 0 4px",
-				},
+				".cm-activeLine": { backgroundColor: "transparent" },
+				"&.cm-focused .cm-activeLine": { backgroundColor: colors.activeLine },
+				".cm-line": { padding: "0 16px 0 4px" },
 				".cm-matchingBracket": {
 					backgroundColor: `${colors.matchingBracketBg} !important`,
 					outline: `1px solid ${colors.matchingBracketOutline}`,
 				},
-				".cm-selectionMatch": {
-					backgroundColor: colors.matchingBracketBg,
-				},
-				".cm-searchMatch": {
-					backgroundColor: colors.matchingBracketBg,
-				},
-				".cm-searchMatch-selected": {
-					backgroundColor: colors.matchingBracketOutline,
-				},
+				".cm-selectionMatch": { backgroundColor: colors.matchingBracketBg },
+				".cm-searchMatch": { backgroundColor: colors.matchingBracketBg },
+				".cm-searchMatch-selected": { backgroundColor: colors.matchingBracketOutline },
 
 				// Tooltip styling
 				".cm-tooltip": {
@@ -214,11 +189,7 @@ function createTheme(colors: ThemeColors, isDark: boolean): Extension {
 				},
 
 				// Autocomplete styling
-				".cm-completionDetail": {
-					fontSize: "0.85em",
-					opacity: "0.6",
-					marginLeft: "0.5em",
-				},
+				".cm-completionDetail": { fontSize: "0.85em", opacity: "0.6", marginLeft: "0.5em" },
 
 				// Search panel styling
 				".cm-panels": {
@@ -229,10 +200,7 @@ function createTheme(colors: ThemeColors, isDark: boolean): Extension {
 					borderTop: "1px solid var(--bg-tertiary)",
 					borderBottom: "none",
 				},
-				".cm-panel.cm-search": {
-					padding: "8px 12px",
-					fontFamily: "inherit",
-				},
+				".cm-panel.cm-search": { padding: "8px 12px", fontFamily: "inherit" },
 				// Text input styling - matches buttons
 				".cm-textfield": {
 					backgroundColor: "var(--bg-editor) !important",
@@ -285,9 +253,7 @@ function createTheme(colors: ThemeColors, isDark: boolean): Extension {
 					height: "32px",
 					boxSizing: "border-box",
 				},
-				".cm-search button:hover": {
-					backgroundColor: "var(--bg-primary) !important",
-				},
+				".cm-search button:hover": { backgroundColor: "var(--bg-primary) !important" },
 				".cm-search button[name='close']": {
 					backgroundColor: "transparent !important",
 					color: "var(--text-secondary)",
@@ -298,7 +264,7 @@ function createTheme(colors: ThemeColors, isDark: boolean): Extension {
 					color: "var(--text-primary)",
 				},
 			},
-			{ dark: isDark },
+			{ dark: isDark }
 		),
 
 		syntaxHighlighting(
@@ -308,28 +274,18 @@ function createTheme(colors: ThemeColors, isDark: boolean): Extension {
 				{ tag: tags.number, color: colors.number },
 				{ tag: tags.bool, color: colors.bool },
 				{ tag: tags.null, color: colors.bool },
-				{
-					tag: tags.comment,
-					color: colors.comment,
-					fontStyle: "italic",
-				},
-				{
-					tag: tags.function(tags.variableName),
-					color: colors.function,
-				},
+				{ tag: tags.comment, color: colors.comment, fontStyle: "italic" },
+				{ tag: tags.function(tags.variableName), color: colors.function },
 				{ tag: tags.variableName, color: colors.variable },
 				{
-					tag: [
-						tags.standard(tags.variableName),
-						tags.definition(tags.variableName),
-					],
+					tag: [tags.standard(tags.variableName), tags.definition(tags.variableName)],
 					color: colors.builtin,
 				},
 				{ tag: tags.typeName, color: colors.type },
 				{ tag: tags.operator, color: colors.operator },
 				{ tag: tags.punctuation, color: colors.punctuation },
 				{ tag: tags.bracket, color: colors.punctuation },
-			]),
+			])
 		),
 	];
 }

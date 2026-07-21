@@ -1,14 +1,6 @@
 import { insertNewlineAndIndent } from "@codemirror/commands";
-import {
-	getIndentUnit,
-	indentService,
-	indentString,
-} from "@codemirror/language";
-import {
-	EditorSelection,
-	type Extension,
-	type StateCommand,
-} from "@codemirror/state";
+import { getIndentUnit, indentService, indentString } from "@codemirror/language";
+import { EditorSelection, type Extension, type StateCommand } from "@codemirror/state";
 
 const TRAILING_COMMENT_RE = /\s*(?:--.*)?$/;
 const EXPRESSION_CONTINUATION_RE =
@@ -23,16 +15,8 @@ interface LineAnalysis {
 	previousLine: string | null;
 	delimiterFrames: DelimiterFrame[];
 }
-const PAIR_BY_OPEN: Record<string, string> = {
-	"(": ")",
-	"[": "]",
-	"{": "}",
-};
-const OPEN_BY_CLOSE: Record<string, string> = {
-	")": "(",
-	"]": "[",
-	"}": "{",
-};
+const PAIR_BY_OPEN: Record<string, string> = { "(": ")", "[": "]", "{": "}" };
+const OPEN_BY_CLOSE: Record<string, string> = { ")": "(", "]": "[", "}": "{" };
 
 function normalizeLine(text: string): string {
 	return text.replace(TRAILING_COMMENT_RE, "").trim();
@@ -60,10 +44,7 @@ function isFunctionBlockOpener(line: string): boolean {
 	return /\)\s*(?::\s*.+)?$/.test(line);
 }
 
-function getBlockCloser(
-	line: string,
-	previousLine: string | null,
-): string | null {
+function getBlockCloser(line: string, previousLine: string | null): string | null {
 	if (line === "repeat") return "until ";
 	if (line === "do") return "end";
 	if (isIfBlockOpener(line, previousLine)) return "end";
@@ -79,7 +60,7 @@ function isIfMiddle(line: string): boolean {
 
 function getPreviousSignificantLine(
 	doc: { line: (lineNumber: number) => { text: string } },
-	lineNumber: number,
+	lineNumber: number
 ): string | null {
 	for (let current = lineNumber - 1; current >= 1; current -= 1) {
 		const normalized = normalizeLine(doc.line(current).text);
@@ -102,7 +83,7 @@ function hasMatchingCloserBelow(
 	currentIndent: number,
 	closer: string,
 	previousLine: string | null,
-	tabSize: number,
+	tabSize: number
 ): boolean {
 	let depth = 1;
 	let previousSignificantLine = previousLine;
@@ -126,9 +107,7 @@ function hasMatchingCloserBelow(
 				if (depth === 0) {
 					return true;
 				}
-			} else if (
-				getBlockCloser(normalized, previousSignificantLine) === closer
-			) {
+			} else if (getBlockCloser(normalized, previousSignificantLine) === closer) {
 				depth += 1;
 			}
 		}
@@ -143,7 +122,7 @@ function analyzeLinesBeforeLine(
 	doc: { line: (lineNumber: number) => { text: string } },
 	lineNumber: number,
 	tabSize: number,
-	includedLineText?: string,
+	includedLineText?: string
 ): LineAnalysis {
 	const stack: BlockKind[] = [];
 	const delimiterFrames: DelimiterFrame[] = [];
@@ -192,10 +171,7 @@ function analyzeLinesBeforeLine(
 			}
 
 			if (char === ")" || char === "]" || char === "}") {
-				if (
-					delimiterFrames[delimiterFrames.length - 1]?.open ===
-					OPEN_BY_CLOSE[char]
-				) {
+				if (delimiterFrames[delimiterFrames.length - 1]?.open === OPEN_BY_CLOSE[char]) {
 					delimiterFrames.pop();
 				}
 			}
@@ -224,9 +200,7 @@ function analyzeLinesBeforeLine(
 		} else {
 			const closer = getBlockCloser(normalized, previousLine);
 			if (closer === "end") {
-				stack.push(
-					isIfBlockOpener(normalized, previousLine) ? "if" : "block",
-				);
+				stack.push(isIfBlockOpener(normalized, previousLine) ? "if" : "block");
 			} else if (closer === "until ") {
 				stack.push("block");
 			}
@@ -245,7 +219,7 @@ function analyzeLinesBeforeLine(
 function getDelimiterIndentForCurrentLine(
 	rawLine: string,
 	frames: DelimiterFrame[],
-	unit: number,
+	unit: number
 ): number | null {
 	const top = frames[frames.length - 1];
 	if (!top) return null;
@@ -278,10 +252,7 @@ function countLeadingIndentColumns(text: string, tabSize: number): number {
 	return columns;
 }
 
-function getDelimiterIndentAfterLine(
-	frames: DelimiterFrame[],
-	unit: number,
-): number | null {
+function getDelimiterIndentAfterLine(frames: DelimiterFrame[], unit: number): number | null {
 	const top = frames[frames.length - 1];
 	return top ? top.indent + unit : null;
 }
@@ -299,10 +270,7 @@ function startsWithStructuralCloser(rawLine: string): boolean {
 	);
 }
 
-function getIndentDepthForCurrentLine(
-	currentLine: string,
-	stack: BlockKind[],
-): number {
+function getIndentDepthForCurrentLine(currentLine: string, stack: BlockKind[]): number {
 	if (/^(?:end|until)\b/.test(currentLine)) {
 		return Math.max(0, stack.length - 1);
 	}
@@ -317,7 +285,7 @@ function getIndentDepthForCurrentLine(
 function getIndentDepthAfterLine(
 	currentLine: string,
 	stack: BlockKind[],
-	previousLine: string | null,
+	previousLine: string | null
 ): number {
 	if (/^(?:end|until)\b/.test(currentLine)) {
 		return Math.max(0, stack.length - 1);
@@ -342,34 +310,27 @@ export function luauIndentation(): Extension {
 			const beforeBreak = context.lineAt(pos, -1);
 			const afterBreak = context.lineAt(pos, 1);
 			const lineNumber = context.state.doc.lineAt(pos).number;
-			const { stack, previousLine, delimiterFrames } =
-				analyzeLinesBeforeLine(
-					context.state.doc,
-					lineNumber,
-					context.state.tabSize,
-					beforeBreak.text,
-				);
+			const { stack, previousLine, delimiterFrames } = analyzeLinesBeforeLine(
+				context.state.doc,
+				lineNumber,
+				context.state.tabSize,
+				beforeBreak.text
+			);
 			const currentLine = normalizeLine(beforeBreak.text);
 			if (startsWithStructuralCloser(afterBreak.text)) {
 				const closingLine = normalizeLine(afterBreak.text);
-				const blockIndent =
-					getIndentDepthForCurrentLine(closingLine, stack) *
-					context.unit;
+				const blockIndent = getIndentDepthForCurrentLine(closingLine, stack) * context.unit;
 				const delimiterIndent = getDelimiterIndentForCurrentLine(
 					afterBreak.text,
 					delimiterFrames,
-					context.unit,
+					context.unit
 				);
 				return Math.max(blockIndent, delimiterIndent ?? 0);
 			}
 
 			const blockIndent =
-				getIndentDepthAfterLine(currentLine, stack, previousLine) *
-				context.unit;
-			const delimiterIndent = getDelimiterIndentAfterLine(
-				delimiterFrames,
-				context.unit,
-			);
+				getIndentDepthAfterLine(currentLine, stack, previousLine) * context.unit;
+			const delimiterIndent = getDelimiterIndentAfterLine(delimiterFrames, context.unit);
 			return Math.max(blockIndent, delimiterIndent ?? 0);
 		}
 
@@ -378,15 +339,14 @@ export function luauIndentation(): Extension {
 		const { stack, delimiterFrames } = analyzeLinesBeforeLine(
 			context.state.doc,
 			lineNumber,
-			context.state.tabSize,
+			context.state.tabSize
 		);
 		const currentLine = normalizeLine(line.text);
-		const blockIndent =
-			getIndentDepthForCurrentLine(currentLine, stack) * context.unit;
+		const blockIndent = getIndentDepthForCurrentLine(currentLine, stack) * context.unit;
 		const delimiterIndent = getDelimiterIndentForCurrentLine(
 			line.text,
 			delimiterFrames,
-			context.unit,
+			context.unit
 		);
 		return Math.max(blockIndent, delimiterIndent ?? 0);
 	});
@@ -420,7 +380,7 @@ const insertLuauPair: StateCommand = ({ state, dispatch }) => {
 			selection: EditorSelection.cursor(cursor),
 			scrollIntoView: true,
 			userEvent: "input",
-		}),
+		})
 	);
 
 	return true;
@@ -455,7 +415,7 @@ export const insertLuauBlock: StateCommand = ({ state, dispatch }) => {
 			baseIndent,
 			closer,
 			previousLine,
-			state.tabSize,
+			state.tabSize
 		)
 	) {
 		return false;
@@ -473,7 +433,7 @@ export const insertLuauBlock: StateCommand = ({ state, dispatch }) => {
 			selection: EditorSelection.cursor(cursor),
 			scrollIntoView: true,
 			userEvent: "input",
-		}),
+		})
 	);
 
 	return true;

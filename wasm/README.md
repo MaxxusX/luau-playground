@@ -1,6 +1,7 @@
 # Luau Playground WASM Module
 
-This directory contains the WebAssembly build of Luau for the playground. It includes both **code execution** (VM) and **analysis** (type checking, autocomplete, hover) capabilities.
+This directory contains the WebAssembly build of Luau for the playground. It includes both **code
+execution** (VM) and **analysis** (type checking, autocomplete, hover) capabilities.
 
 ## Prerequisites
 

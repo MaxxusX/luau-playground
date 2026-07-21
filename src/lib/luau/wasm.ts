@@ -32,7 +32,9 @@ const ROBLOX_FAST_FLAG_KINDS = ["FFlag", "FInt", "DFFlag", "DFInt"] as const;
 
 // Convert LuauMode to numeric value for WASM
 const modeToNum = (mode: LuauMode): number =>
-	mode === "strict" ? 1 : mode === "nocheck" ? 2 : 0;
+	mode === "strict" ? 1
+	: mode === "nocheck" ? 2
+	: 0;
 
 let robloxStudioFlagPayloadPromise: Promise<string | null> | null = null;
 
@@ -40,35 +42,22 @@ async function getRobloxStudioFlagPayload(): Promise<string | null> {
 	if (!robloxStudioFlagPayloadPromise) {
 		robloxStudioFlagPayloadPromise = fetch(ROBLOX_PC_STUDIO_FLAGS_URL)
 			.then((response) => response.json())
-			.then(
-				({
-					applicationSettings,
-				}: {
-					applicationSettings?: Record<string, string>;
-				}) => {
-					const lines: string[] = [];
+			.then(({ applicationSettings }: { applicationSettings?: Record<string, string> }) => {
+				const lines: string[] = [];
 
-					for (const [name, value] of Object.entries(
-						applicationSettings ?? {},
-					)) {
-						for (const kind of ROBLOX_FAST_FLAG_KINDS) {
-							if (name.startsWith(`${kind}Luau`)) {
-								lines.push(
-									`${name.slice(kind.length)}=${value}`,
-								);
-								break;
-							}
+				for (const [name, value] of Object.entries(applicationSettings ?? {})) {
+					for (const kind of ROBLOX_FAST_FLAG_KINDS) {
+						if (name.startsWith(`${kind}Luau`)) {
+							lines.push(`${name.slice(kind.length)}=${value}`);
+							break;
 						}
 					}
+				}
 
-					return lines.length > 0 ? lines.join("\n") : null;
-				},
-			)
+				return lines.length > 0 ? lines.join("\n") : null;
+			})
 			.catch((error) => {
-				console.warn(
-					"[Luau] Failed to sync Roblox Studio Luau flags:",
-					error,
-				);
+				console.warn("[Luau] Failed to sync Roblox Studio Luau flags:", error);
 				return null;
 			});
 	}
@@ -94,13 +83,8 @@ async function getCompiledWasmModule(): Promise<WebAssembly.Module> {
 				if (typeof __wasmPromises !== "undefined") {
 					buffer = await __wasmPromises.luau;
 				} else {
-					const baseUrl = new URL(
-						"./",
-						document.baseURI,
-					).href.replace(/\/$/, "");
-					buffer = await fetch(`${baseUrl}/wasm/luau.wasm`).then(
-						(r) => r.arrayBuffer(),
-					);
+					const baseUrl = new URL("./", document.baseURI).href.replace(/\/$/, "");
+					buffer = await fetch(`${baseUrl}/wasm/luau.wasm`).then((r) => r.arrayBuffer());
 				}
 				// Compile once - the compiled module can be shared with workers
 				compiledWasmModule = await WebAssembly.compile(buffer);
@@ -122,10 +106,7 @@ interface WorkerManager {
 	readyPromise: Promise<void> | null;
 	pendingRequests: Map<
 		string,
-		{
-			resolve: (value: WorkerResponse) => void;
-			reject: (error: Error) => void;
-		}
+		{ resolve: (value: WorkerResponse) => void; reject: (error: Error) => void }
 	>;
 	requestIdCounter: number;
 }
@@ -143,9 +124,7 @@ function createWorkerManager(): WorkerManager {
 function setupWorkerHandlers(manager: WorkerManager, name: string): void {
 	if (!manager.worker) return;
 
-	manager.worker.onmessage = (
-		e: MessageEvent<WorkerResponse & { requestId: string }>,
-	) => {
+	manager.worker.onmessage = (e: MessageEvent<WorkerResponse & { requestId: string }>) => {
 		const { requestId, ...response } = e.data;
 
 		const pending = manager.pendingRequests.get(requestId);
@@ -175,7 +154,7 @@ function rejectAllPending(manager: WorkerManager, error: Error): void {
 
 async function initializeWorker(
 	manager: WorkerManager,
-	wasmModule: WebAssembly.Module,
+	wasmModule: WebAssembly.Module
 ): Promise<void> {
 	const requestId = `init_${manager.requestIdCounter++}`;
 
@@ -205,15 +184,12 @@ async function initializeWorker(
 }
 
 // Type mapping from request type to response type
-type ResponseForRequest<T extends WorkerRequest["type"]> = Extract<
-	WorkerResponse,
-	{ type: T }
->;
+type ResponseForRequest<T extends WorkerRequest["type"]> = Extract<WorkerResponse, { type: T }>;
 
 async function sendToWorker<K extends WorkerRequest["type"]>(
 	manager: WorkerManager,
 	type: K,
-	params: Omit<Extract<WorkerRequest, { type: K }>, "type">,
+	params: Omit<Extract<WorkerRequest, { type: K }>, "type">
 ): Promise<ResponseForRequest<K>> {
 	if (!manager.worker || !manager.ready) {
 		throw new Error("Worker not ready");
@@ -231,10 +207,7 @@ async function sendToWorker<K extends WorkerRequest["type"]>(
 	});
 }
 
-function terminateWorker(
-	manager: WorkerManager,
-	errorMessage: string = STOPPED_ERROR,
-): void {
+function terminateWorker(manager: WorkerManager, errorMessage: string = STOPPED_ERROR): void {
 	manager.readyPromise = null;
 	manager.ready = false;
 
@@ -253,10 +226,7 @@ function terminateWorker(
 async function loadWorker(
 	manager: WorkerManager,
 	name: string,
-	options?: {
-		checkTerminated?: boolean;
-		postInit?: () => Promise<void>;
-	},
+	options?: { checkTerminated?: boolean; postInit?: () => Promise<void> }
 ): Promise<void> {
 	if (manager.ready && manager.worker) {
 		return;
@@ -296,9 +266,7 @@ async function loadWorker(
 			if (error instanceof Error && error.message === STOPPED_ERROR) {
 				throw error;
 			}
-			throw new Error(`Failed to load ${name.toLowerCase()} worker`, {
-				cause: error,
-			});
+			throw new Error(`Failed to load ${name.toLowerCase()} worker`, { cause: error });
 		}
 	})();
 
@@ -318,18 +286,12 @@ async function loadAnalysisWorker(): Promise<void> {
 		postInit: async () => {
 			const robloxStudioFlags = await robloxStudioFlagsPromise;
 			if (robloxStudioFlags) {
-				await sendToWorker(analysis, "setFFlags", {
-					serializedFlags: robloxStudioFlags,
-				});
+				await sendToWorker(analysis, "setFFlags", { serializedFlags: robloxStudioFlags });
 			}
 
 			const currentSettings = get(settings);
-			await sendToWorker(analysis, "setMode", {
-				mode: modeToNum(currentSettings.mode),
-			});
-			await sendToWorker(analysis, "setSolver", {
-				isNew: currentSettings.solver === "new",
-			});
+			await sendToWorker(analysis, "setMode", { mode: modeToNum(currentSettings.mode) });
+			await sendToWorker(analysis, "setSolver", { isNew: currentSettings.solver === "new" });
 			initSettingsSync();
 		},
 	});
@@ -337,7 +299,7 @@ async function loadAnalysisWorker(): Promise<void> {
 
 async function sendAnalysisRequest<K extends WorkerRequest["type"]>(
 	type: K,
-	params: Omit<Extract<WorkerRequest, { type: K }>, "type">,
+	params: Omit<Extract<WorkerRequest, { type: K }>, "type">
 ): Promise<ResponseForRequest<K>> {
 	await loadAnalysisWorker();
 	return sendToWorker(analysis, type, params);
@@ -362,22 +324,18 @@ async function loadExecutionWorker(): Promise<void> {
 		postInit: async () => {
 			const robloxStudioFlags = await robloxStudioFlagsPromise;
 			if (robloxStudioFlags) {
-				await sendToWorker(execution, "setFFlags", {
-					serializedFlags: robloxStudioFlags,
-				});
+				await sendToWorker(execution, "setFFlags", { serializedFlags: robloxStudioFlags });
 			}
 
 			const currentSettings = get(settings);
-			await sendToWorker(execution, "setMode", {
-				mode: modeToNum(currentSettings.mode),
-			});
+			await sendToWorker(execution, "setMode", { mode: modeToNum(currentSettings.mode) });
 		},
 	});
 }
 
 async function sendExecutionRequest<K extends WorkerRequest["type"]>(
 	type: K,
-	params: Omit<Extract<WorkerRequest, { type: K }>, "type">,
+	params: Omit<Extract<WorkerRequest, { type: K }>, "type">
 ): Promise<ResponseForRequest<K>> {
 	await loadExecutionWorker();
 
@@ -418,7 +376,7 @@ export function stopExecution(): void {
  * Execute Luau code using the execution worker.
  */
 export async function executeCode(
-	code: string,
+	code: string
 ): Promise<{ result: ExecuteResult; elapsed: number }> {
 	try {
 		const response = await sendExecutionRequest("execute", { code });
@@ -427,20 +385,13 @@ export async function executeCode(
 		// Silently handle stopped/cancelled - no error to report
 		if (
 			error instanceof Error &&
-			(error.message === STOPPED_ERROR ||
-				error.message === CANCELLED_ERROR)
+			(error.message === STOPPED_ERROR || error.message === CANCELLED_ERROR)
 		) {
-			return {
-				result: { success: false, output: "", error: undefined },
-				elapsed: 0,
-			};
+			return { result: { success: false, output: "", error: undefined }, elapsed: 0 };
 		}
 
 		const errorMsg = error instanceof Error ? error.message : String(error);
-		return {
-			result: { success: false, output: "", error: errorMsg },
-			elapsed: 0,
-		};
+		return { result: { success: false, output: "", error: errorMsg }, elapsed: 0 };
 	}
 }
 
@@ -448,14 +399,14 @@ export async function executeCode(
  * Get diagnostics for code using the analysis worker.
  */
 export async function getDiagnostics(
-	code: string,
+	code: string
 ): Promise<{ diagnostics: LuauDiagnostic[]; elapsed: number }> {
 	try {
 		await syncAnalysisSources();
 
 		const response = await sendAnalysisRequest("getDiagnostics", { code });
 		const diagnostics = response.result.diagnostics.filter(
-			(diag) => !diag.moduleName || diag.moduleName === "main",
+			(diag) => !diag.moduleName || diag.moduleName === "main"
 		);
 		return { diagnostics, elapsed: response.elapsed };
 	} catch (error) {
@@ -470,15 +421,11 @@ export async function getDiagnostics(
 export async function getAutocomplete(
 	code: string,
 	line: number,
-	col: number,
+	col: number
 ): Promise<LuauCompletion[]> {
 	try {
 		await syncAnalysisSources();
-		const response = await sendAnalysisRequest("autocomplete", {
-			code,
-			line,
-			col,
-		});
+		const response = await sendAnalysisRequest("autocomplete", { code, line, col });
 		return response.result.items;
 	} catch (error) {
 		console.error("[Luau] Autocomplete error:", error);
@@ -489,18 +436,10 @@ export async function getAutocomplete(
 /**
  * Get hover information using the analysis worker.
  */
-export async function getHover(
-	code: string,
-	line: number,
-	col: number,
-): Promise<string | null> {
+export async function getHover(code: string, line: number, col: number): Promise<string | null> {
 	try {
 		await syncAnalysisSources();
-		const response = await sendAnalysisRequest("hover", {
-			code,
-			line,
-			col,
-		});
+		const response = await sendAnalysisRequest("hover", { code, line, col });
 		return response.result.content;
 	} catch (error) {
 		console.error("[Luau] Hover error:", error);
@@ -545,9 +484,7 @@ export async function setLuauSolver(solver: SolverMode): Promise<void> {
 		await sendAnalysisRequest("setSolver", { isNew: solver === "new" });
 		// Also update execution worker if it's running
 		if (execution.ready) {
-			await sendToWorker(execution, "setSolver", {
-				isNew: solver === "new",
-			});
+			await sendToWorker(execution, "setSolver", { isNew: solver === "new" });
 		}
 	} catch (error) {
 		console.error("[Luau] Failed to set solver:", error);
@@ -627,10 +564,7 @@ export async function runCode(): Promise<void> {
 			error.message !== STOPPED_ERROR &&
 			error.message !== CANCELLED_ERROR
 		) {
-			appendOutput({
-				type: "error",
-				text: `Error: ${error.message}`,
-			});
+			appendOutput({ type: "error", text: `Error: ${error.message}` });
 		}
 	} finally {
 		if (currentRunId === myRunId) {
@@ -670,22 +604,13 @@ export async function checkCode(): Promise<void> {
 		if (diagnostics.length === 0) {
 			appendOutput({ type: "log", text: "✓ No type errors found" });
 		} else {
-			const errorCount = diagnostics.filter(
-				(d) => d.severity === "error",
-			).length;
-			const warningCount = diagnostics.filter(
-				(d) => d.severity === "warning",
-			).length;
+			const errorCount = diagnostics.filter((d) => d.severity === "error").length;
+			const warningCount = diagnostics.filter((d) => d.severity === "warning").length;
 
 			const summary = [];
-			if (errorCount > 0)
-				summary.push(
-					`${errorCount} error${errorCount !== 1 ? "s" : ""}`,
-				);
+			if (errorCount > 0) summary.push(`${errorCount} error${errorCount !== 1 ? "s" : ""}`);
 			if (warningCount > 0)
-				summary.push(
-					`${warningCount} warning${warningCount !== 1 ? "s" : ""}`,
-				);
+				summary.push(`${warningCount} warning${warningCount !== 1 ? "s" : ""}`);
 
 			appendOutput({ type: "log", text: `Found ${summary.join(", ")}:` });
 			appendOutput({ type: "log", text: "" });
@@ -693,11 +618,9 @@ export async function checkCode(): Promise<void> {
 			for (const diag of diagnostics) {
 				const location = `${fileName}:${diag.startLine + 1}:${diag.startCol + 1}`;
 				const type =
-					diag.severity === "error"
-						? "error"
-						: diag.severity === "warning"
-							? "warn"
-							: "log";
+					diag.severity === "error" ? "error"
+					: diag.severity === "warning" ? "warn"
+					: "log";
 				appendOutput({ type, text: `${location}: ${diag.message}` });
 			}
 		}
@@ -708,10 +631,7 @@ export async function checkCode(): Promise<void> {
 			error.message !== STOPPED_ERROR &&
 			error.message !== CANCELLED_ERROR
 		) {
-			appendOutput({
-				type: "error",
-				text: `Error: ${error.message}`,
-			});
+			appendOutput({ type: "error", text: `Error: ${error.message}` });
 		}
 	} finally {
 		if (currentRunId === myRunId) {
@@ -728,7 +648,7 @@ export async function getBytecode(
 	optimizationLevel: number = 2,
 	debugLevel: number = 2,
 	outputFormat: number = 0,
-	showRemarks: boolean = false,
+	showRemarks: boolean = false
 ): Promise<{ success: boolean; bytecode: string; error?: string }> {
 	try {
 		const response = await sendAnalysisRequest("getBytecode", {

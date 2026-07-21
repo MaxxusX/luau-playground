@@ -12,16 +12,11 @@ export function inlineCss(): Plugin {
 			if (!ctx.bundle) return html;
 
 			// Find the CSS asset in the bundle
-			const cssFileName = Object.keys(ctx.bundle).find((name) =>
-				name.endsWith(".css"),
-			);
+			const cssFileName = Object.keys(ctx.bundle).find((name) => name.endsWith(".css"));
 			if (!cssFileName) return html;
 
 			const cssChunk = ctx.bundle[cssFileName] as Rollup.OutputAsset;
-			if (
-				cssChunk.type !== "asset" ||
-				typeof cssChunk.source !== "string"
-			) {
+			if (cssChunk.type !== "asset" || typeof cssChunk.source !== "string") {
 				return html;
 			}
 
@@ -31,7 +26,7 @@ export function inlineCss(): Plugin {
 			// Replace the stylesheet link with an inline style tag
 			return html.replace(
 				/<link rel="stylesheet"[^>]*>/,
-				`<style>${cssChunk.source}</style>`,
+				`<style>${cssChunk.source}</style>`
 			);
 		},
 	};

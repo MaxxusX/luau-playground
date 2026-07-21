@@ -1,231 +1,236 @@
 <script lang="ts">
-  import { 
-    settings, 
-    setMode, 
-    setSolver, 
-    setOptimizationLevel,
-    setDebugLevel,
-    setCompilerRemarks,
-    setOutputFormat,
-    type LuauMode, 
-    type SolverMode,
-    type OptimizationLevel,
-    type DebugLevel,
-    type OutputFormat
-  } from '$lib/stores/settings';
-  import Button from '$lib/components/Button.svelte';
-  import { Icon } from '$lib/icons';
+	import {
+		settings,
+		setMode,
+		setSolver,
+		setOptimizationLevel,
+		setDebugLevel,
+		setCompilerRemarks,
+		setOutputFormat,
+		type LuauMode,
+		type SolverMode,
+		type OptimizationLevel,
+		type DebugLevel,
+		type OutputFormat,
+	} from "$lib/stores/settings";
+	import Button from "$lib/components/Button.svelte";
+	import { Icon } from "$lib/icons";
 
-  const modeOptions: { value: LuauMode; label: string; description: string }[] = [
-    { value: 'strict', label: 'Strict', description: 'Full type checking' },
-    { value: 'nonstrict', label: 'Nonstrict', description: 'Relaxed type checking' },
-    { value: 'nocheck', label: 'No Check', description: 'Disable type checking' },
-  ];
+	const modeOptions: { value: LuauMode; label: string; description: string }[] = [
+		{ value: "strict", label: "Strict", description: "Full type checking" },
+		{ value: "nonstrict", label: "Nonstrict", description: "Relaxed type checking" },
+		{ value: "nocheck", label: "No Check", description: "Disable type checking" },
+	];
 
-  const solverOptions: { value: SolverMode; label: string }[] = [
-    { value: 'new', label: 'New' },
-    { value: 'old', label: 'Old' },
-  ];
+	const solverOptions: { value: SolverMode; label: string }[] = [
+		{ value: "new", label: "New" },
+		{ value: "old", label: "Old" },
+	];
 
-  const optimizationOptions: { value: OptimizationLevel; label: string; description: string }[] = [
-    { value: 0, label: 'O0', description: 'No optimization' },
-    { value: 1, label: 'O1', description: 'Baseline (debuggable)' },
-    { value: 2, label: 'O2', description: 'Full (includes inlining)' },
-  ];
+	const optimizationOptions: { value: OptimizationLevel; label: string; description: string }[] =
+		[
+			{ value: 0, label: "O0", description: "No optimization" },
+			{ value: 1, label: "O1", description: "Baseline (debuggable)" },
+			{ value: 2, label: "O2", description: "Full (includes inlining)" },
+		];
 
-  const debugOptions: { value: DebugLevel; label: string; description: string }[] = [
-    { value: 0, label: 'None', description: 'No debug info' },
-    { value: 1, label: 'Lines', description: 'Line info & names' },
-    { value: 2, label: 'Full', description: 'Full debug info' },
-  ];
+	const debugOptions: { value: DebugLevel; label: string; description: string }[] = [
+		{ value: 0, label: "None", description: "No debug info" },
+		{ value: 1, label: "Lines", description: "Line info & names" },
+		{ value: 2, label: "Full", description: "Full debug info" },
+	];
 
-  const outputFormat: { value: OutputFormat; label: string; description: string }[] = [
-    { value: 0, label: 'VM', description: 'VM bytecode' },
-    { value: 1, label: 'IR', description: 'IR bytecode' },
-    { value: 2, label: 'x64', description: 'x64 native code' },
-    { value: 3, label: 'arm64', description: 'arm64 native code' },
-  ];
+	const outputFormat: { value: OutputFormat; label: string; description: string }[] = [
+		{ value: 0, label: "VM", description: "VM bytecode" },
+		{ value: 1, label: "IR", description: "IR bytecode" },
+		{ value: 2, label: "x64", description: "x64 native code" },
+		{ value: 3, label: "arm64", description: "arm64 native code" },
+	];
 
-  async function handleModeChange(mode: LuauMode) {
-    setMode(mode);
-    const { refreshDiagnostics } = await import('$lib/editor/setup');
-    setTimeout(() => refreshDiagnostics(), 50);
-  }
+	async function handleModeChange(mode: LuauMode) {
+		setMode(mode);
+		const { refreshDiagnostics } = await import("$lib/editor/setup");
+		setTimeout(() => refreshDiagnostics(), 50);
+	}
 
-  async function handleSolverChange(solver: SolverMode) {
-    setSolver(solver);
-    const { refreshDiagnostics } = await import('$lib/editor/setup');
-    setTimeout(() => refreshDiagnostics(), 50);
-  }
+	async function handleSolverChange(solver: SolverMode) {
+		setSolver(solver);
+		const { refreshDiagnostics } = await import("$lib/editor/setup");
+		setTimeout(() => refreshDiagnostics(), 50);
+	}
 
-  let popoverEl: HTMLElement;
+	let popoverEl: HTMLElement;
 </script>
 
-<Button 
-  size="sm" 
-  variant="ghost" 
-  class="config-trigger w-8 sm:w-9 px-0" 
-  title="Settings"
-  popovertarget="config-popover"
+<Button
+	size="sm"
+	variant="ghost"
+	class="config-trigger w-8 sm:w-9 px-0"
+	title="Settings"
+	popovertarget="config-popover"
 >
-  <Icon name="gear" size="16px" />
+	<Icon name="gear" size="16px" />
 </Button>
 
 <div
-  bind:this={popoverEl}
-  popover="auto"
-  id="config-popover"
-  class="config-popover m-0 w-80 max-h-[80vh] overflow-y-auto rounded-lg border border-(--border-color) bg-(--bg-secondary) p-4 shadow-xl"
+	bind:this={popoverEl}
+	popover="auto"
+	id="config-popover"
+	class="config-popover m-0 w-80 max-h-[80vh] overflow-y-auto rounded-lg border border-(--border-color) bg-(--bg-secondary) p-4 shadow-xl"
 >
-  <div class="space-y-4">
-    <div>
-      <h3 class="text-sm font-semibold text-(--text-primary) mb-1">Settings</h3>
-      <p class="text-xs text-(--text-muted)">Configure type checking and compiler</p>
-    </div>
+	<div class="space-y-4">
+		<div>
+			<h3 class="text-sm font-semibold text-(--text-primary) mb-1">Settings</h3>
+			<p class="text-xs text-(--text-muted)">Configure type checking and compiler</p>
+		</div>
 
-    <!-- Type Checking Section -->
-    <div class="space-y-3">
-      <span class="text-xs font-semibold text-(--text-secondary) uppercase tracking-wide">Type Checking</span>
-      
-      <!-- Mode Selection -->
-      <div class="space-y-1.5">
-        <span class="text-xs text-(--text-muted)">Mode</span>
-        <div class="flex gap-1">
-          {#each modeOptions as option}
-            {@const isSelected = $settings.mode === option.value}
-            <button
-              type="button"
-              class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected 
-                  ? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)' 
-                  : 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
-              title={option.description}
-              onclick={() => handleModeChange(option.value)}
-            >
-              {option.label}
-            </button>
-          {/each}
-        </div>
-      </div>
+		<!-- Type Checking Section -->
+		<div class="space-y-3">
+			<span class="text-xs font-semibold text-(--text-secondary) uppercase tracking-wide"
+				>Type Checking</span
+			>
 
-      <!-- Solver Selection -->
-      <div class="space-y-1.5">
-        <span class="text-xs text-(--text-muted)">Solver</span>
-        <div class="flex gap-1">
-          {#each solverOptions as option}
-            {@const isSelected = $settings.solver === option.value}
-            <button
-              type="button"
-              class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected 
-                  ? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)' 
-                  : 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
-              title="{option.label} type solver"
-              onclick={() => handleSolverChange(option.value)}
-            >
-              {option.label}
-            </button>
-          {/each}
-        </div>
-      </div>
-    </div>
+			<!-- Mode Selection -->
+			<div class="space-y-1.5">
+				<span class="text-xs text-(--text-muted)">Mode</span>
+				<div class="flex gap-1">
+					{#each modeOptions as option}
+						{@const isSelected = $settings.mode === option.value}
+						<button
+							type="button"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
+                {isSelected ?
+								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							title={option.description}
+							onclick={() => handleModeChange(option.value)}
+						>
+							{option.label}
+						</button>
+					{/each}
+				</div>
+			</div>
 
-    <div class="border-t border-(--border-color)"></div>
+			<!-- Solver Selection -->
+			<div class="space-y-1.5">
+				<span class="text-xs text-(--text-muted)">Solver</span>
+				<div class="flex gap-1">
+					{#each solverOptions as option}
+						{@const isSelected = $settings.solver === option.value}
+						<button
+							type="button"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
+                {isSelected ?
+								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							title="{option.label} type solver"
+							onclick={() => handleSolverChange(option.value)}
+						>
+							{option.label}
+						</button>
+					{/each}
+				</div>
+			</div>
+		</div>
 
-    <!-- Compiler Section -->
-    <div class="space-y-3">
-      <span class="text-xs font-semibold text-(--text-secondary) uppercase tracking-wide">Compiler</span>
-      
-      <!-- Optimization Level -->
-      <div class="space-y-1.5">
-        <span class="text-xs text-(--text-muted)">Optimization</span>
-        <div class="flex gap-1">
-          {#each optimizationOptions as option}
-            {@const isSelected = $settings.optimizationLevel === option.value}
-            <button
-              type="button"
-              class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected 
-                  ? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)' 
-                  : 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
-              title={option.description}
-              onclick={() => setOptimizationLevel(option.value)}
-            >
-              {option.label}
-            </button>
-          {/each}
-        </div>
-      </div>
+		<div class="border-t border-(--border-color)"></div>
 
-      <!-- Debug Level -->
-      <div class="space-y-1.5">
-        <span class="text-xs text-(--text-muted)">Debug Info</span>
-        <div class="flex gap-1">
-          {#each debugOptions as option}
-            {@const isSelected = $settings.debugLevel === option.value}
-            <button
-              type="button"
-              class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected 
-                  ? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)' 
-                  : 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
-              title={option.description}
-              onclick={() => setDebugLevel(option.value)}
-            >
-              {option.label}
-            </button>
-          {/each}
-        </div>
-      </div>
+		<!-- Compiler Section -->
+		<div class="space-y-3">
+			<span class="text-xs font-semibold text-(--text-secondary) uppercase tracking-wide"
+				>Compiler</span
+			>
 
-      <!-- Output Format -->
-      <div class="space-y-1.5">
-        <span class="text-xs text-(--text-muted)">Output Format</span>
-        <div class="flex gap-1">
-          {#each outputFormat as option}
-            {@const isSelected = $settings.outputFormat === option.value}
-            <button
-              type="button"
-              class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected 
-                  ? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)' 
-                  : 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
-              title={option.description}
-              onclick={() => setOutputFormat(option.value)}
-            >
-              {option.label}
-            </button>
-          {/each}
-        </div>
-      </div>
+			<!-- Optimization Level -->
+			<div class="space-y-1.5">
+				<span class="text-xs text-(--text-muted)">Optimization</span>
+				<div class="flex gap-1">
+					{#each optimizationOptions as option}
+						{@const isSelected = $settings.optimizationLevel === option.value}
+						<button
+							type="button"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
+                {isSelected ?
+								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							title={option.description}
+							onclick={() => setOptimizationLevel(option.value)}
+						>
+							{option.label}
+						</button>
+					{/each}
+				</div>
+			</div>
 
-      <!-- Compiler Remarks -->
-      <label class="flex items-center gap-2 cursor-pointer">
-        <input
-          type="checkbox"
-          checked={$settings.compilerRemarks}
-          onchange={(e) => setCompilerRemarks(e.currentTarget.checked)}
-          class="w-4 h-4 rounded border-(--border-color) bg-(--bg-tertiary) accent-(--accent)"
-        />
-        <span class="text-xs text-(--text-secondary)">Show compiler remarks</span>
-      </label>
-    </div>
-  </div>
+			<!-- Debug Level -->
+			<div class="space-y-1.5">
+				<span class="text-xs text-(--text-muted)">Debug Info</span>
+				<div class="flex gap-1">
+					{#each debugOptions as option}
+						{@const isSelected = $settings.debugLevel === option.value}
+						<button
+							type="button"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
+                {isSelected ?
+								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							title={option.description}
+							onclick={() => setDebugLevel(option.value)}
+						>
+							{option.label}
+						</button>
+					{/each}
+				</div>
+			</div>
+
+			<!-- Output Format -->
+			<div class="space-y-1.5">
+				<span class="text-xs text-(--text-muted)">Output Format</span>
+				<div class="flex gap-1">
+					{#each outputFormat as option}
+						{@const isSelected = $settings.outputFormat === option.value}
+						<button
+							type="button"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
+                {isSelected ?
+								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							title={option.description}
+							onclick={() => setOutputFormat(option.value)}
+						>
+							{option.label}
+						</button>
+					{/each}
+				</div>
+			</div>
+
+			<!-- Compiler Remarks -->
+			<label class="flex items-center gap-2 cursor-pointer">
+				<input
+					type="checkbox"
+					checked={$settings.compilerRemarks}
+					onchange={(e) => setCompilerRemarks(e.currentTarget.checked)}
+					class="w-4 h-4 rounded border-(--border-color) bg-(--bg-tertiary) accent-(--accent)"
+				/>
+				<span class="text-xs text-(--text-secondary)">Show compiler remarks</span>
+			</label>
+		</div>
+	</div>
 </div>
 
 <style>
-  :global(.config-trigger) {
-    anchor-name: --config-trigger;
-  }
+	:global(.config-trigger) {
+		anchor-name: --config-trigger;
+	}
 
-  .config-popover {
-    position-anchor: --config-trigger;
-    position-area: bottom span-left;
-    position-try-fallbacks: flip-block;
-    margin-top: 8px;
-  }
+	.config-popover {
+		position-anchor: --config-trigger;
+		position-area: bottom span-left;
+		position-try-fallbacks: flip-block;
+		margin-top: 8px;
+	}
 
-  .config-popover::backdrop {
-    background: transparent;
-  }
+	.config-popover::backdrop {
+		background: transparent;
+	}
 </style>

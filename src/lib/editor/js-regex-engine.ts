@@ -34,16 +34,10 @@ type PatternMatcher = RegExp | LongBracketEndMatcher | null;
 
 const warnedPatterns = new Set<string>();
 
-function createLongBracketEndMatcher(
-	pattern: string,
-): LongBracketEndMatcher | null {
+function createLongBracketEndMatcher(pattern: string): LongBracketEndMatcher | null {
 	if (pattern.length < 4) return null;
 	if (pattern[0] !== "\\" || pattern[1] !== "]") return null;
-	if (
-		pattern[pattern.length - 2] !== "\\" ||
-		pattern[pattern.length - 1] !== "]"
-	)
-		return null;
+	if (pattern[pattern.length - 2] !== "\\" || pattern[pattern.length - 1] !== "]") return null;
 
 	for (let i = 2; i < pattern.length - 2; i++) {
 		if (pattern[i] !== "=") return null;
@@ -67,7 +61,7 @@ class JavaScriptScanner {
 					return new RegExp(compiled[0], compiled[1]);
 				} catch {
 					console.warn(
-						`[JS Scanner] Failed to construct RegExp: ${pattern.slice(0, 50)}`,
+						`[JS Scanner] Failed to construct RegExp: ${pattern.slice(0, 50)}`
 					);
 					return null;
 				}
@@ -84,28 +78,18 @@ class JavaScriptScanner {
 
 			if (!warnedPatterns.has(pattern)) {
 				warnedPatterns.add(pattern);
-				console.warn(
-					`[JS Scanner] No compiled pattern for: ${pattern.slice(0, 50)}`,
-				);
+				console.warn(`[JS Scanner] No compiled pattern for: ${pattern.slice(0, 50)}`);
 			}
 
 			return null;
 		});
 	}
 
-	findNextMatchSync(
-		string: string | OnigString,
-		startPosition: number,
-	): Match | null {
+	findNextMatchSync(string: string | OnigString, startPosition: number): Match | null {
 		const str = typeof string === "string" ? string : string.content;
 		const pending: Array<
 			| { index: number; match: RegExpExecArray; patternIndex: number }
-			| {
-					index: number;
-					start: number;
-					end: number;
-					patternIndex: number;
-			  }
+			| { index: number; start: number; end: number; patternIndex: number }
 		> = [];
 
 		for (let i = 0; i < this.matchers.length; i++) {
@@ -121,11 +105,7 @@ class JavaScriptScanner {
 					if (match.index === startPosition) {
 						return this.toResult(i, match);
 					}
-					pending.push({
-						index: match.index,
-						match,
-						patternIndex: i,
-					});
+					pending.push({ index: match.index, match, patternIndex: i });
 				} catch {
 					continue;
 				}
@@ -148,11 +128,7 @@ class JavaScriptScanner {
 				if ("match" in entry) {
 					return this.toResult(entry.patternIndex, entry.match);
 				}
-				return this.toResultRange(
-					entry.patternIndex,
-					entry.start,
-					entry.end,
-				);
+				return this.toResultRange(entry.patternIndex, entry.start, entry.end);
 			}
 		}
 
@@ -166,20 +142,13 @@ class JavaScriptScanner {
 				if (indice == null) {
 					return { start: MAX, end: MAX, length: 0 };
 				}
-				return {
-					start: indice[0],
-					end: indice[1],
-					length: indice[1] - indice[0],
-				};
+				return { start: indice[0], end: indice[1], length: indice[1] - indice[0] };
 			}),
 		};
 	}
 
 	private toResultRange(index: number, start: number, end: number): Match {
-		return {
-			index,
-			captureIndices: [{ start, end, length: end - start }],
-		};
+		return { index, captureIndices: [{ start, end, length: end - start }] };
 	}
 }
 
@@ -195,8 +164,7 @@ class OnigStringImpl implements OnigString {
  */
 export function createJsOnigLib() {
 	return Promise.resolve({
-		createOnigScanner: (patterns: string[]) =>
-			new JavaScriptScanner(patterns),
+		createOnigScanner: (patterns: string[]) => new JavaScriptScanner(patterns),
 		createOnigString: (str: string) => new OnigStringImpl(str),
 	});
 }

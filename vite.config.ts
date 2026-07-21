@@ -21,12 +21,6 @@ export default defineConfig({
 		prerenderPlugin(),
 		inlineCss(),
 	],
-	resolve: {
-		alias: {
-			$lib: path.resolve(__dirname, "./src/lib"),
-		},
-	},
-	build: {
-		sourcemap: false,
-	},
+	resolve: { alias: { $lib: path.resolve(__dirname, "./src/lib") } },
+	build: { sourcemap: false },
 });

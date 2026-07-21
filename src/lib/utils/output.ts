@@ -12,11 +12,7 @@ export type LuauValue =
 	| { type: "boolean"; value: boolean }
 	| { type: "number"; value: number | SpecialFloat }
 	| { type: "string"; value: string }
-	| {
-			type: "table";
-			value: Record<string, LuauValue> | LuauValue[];
-			isArray: boolean;
-	  }
+	| { type: "table"; value: Record<string, LuauValue> | LuauValue[]; isArray: boolean }
 	| { type: "function" }
 	| { type: "userdata" }
 	| { type: "thread" }

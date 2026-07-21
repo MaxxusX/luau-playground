@@ -2,14 +2,8 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-		/>
-		<meta
-			name="description"
-			content="Luau Playground - Run Luau code in your browser"
-		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+		<meta name="description" content="Luau Playground - Run Luau code in your browser" />
 		<link rel="icon" href="/favicon.svg" />
 		<title>Luau Playground</title>
 		<link
@@ -32,12 +26,9 @@
 				// Prevent viewport zooming on iOS from focusing the editor
 				if (
 					/iPhone|iPad|iPod/.test(navigator.userAgent) ||
-					(navigator.platform === "MacIntel" &&
-						navigator.maxTouchPoints > 1)
+					(navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
 				) {
-					document.head.querySelector(
-						':scope > meta[name="viewport"]',
-					).content =
+					document.head.querySelector(':scope > meta[name="viewport"]').content =
 						"width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover";
 				}
 
@@ -45,9 +36,7 @@
 				const theme = localStorage.getItem("theme");
 				if (
 					theme === "dark" ||
-					(theme === null &&
-						window.matchMedia("(prefers-color-scheme: dark)")
-							.matches)
+					(theme === null && window.matchMedia("(prefers-color-scheme: dark)").matches)
 				) {
 					document.documentElement.classList.add("dark");
 					document.documentElement.style.background = "#0a0a0f";

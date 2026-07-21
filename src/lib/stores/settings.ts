@@ -34,10 +34,7 @@ function loadSettingsFromUrl(): {
 		return { settings: null, showBytecode: null };
 	}
 
-	return {
-		settings: state.settings ?? null,
-		showBytecode: state.showBytecode ?? null,
-	};
+	return { settings: state.settings ?? null, showBytecode: state.showBytecode ?? null };
 }
 
 function loadSettingsFromStorage(): PlaygroundSettings {
@@ -84,41 +81,29 @@ function saveShowBytecodeToStorage(value: boolean): void {
 	}
 }
 
-function mergeSettings(
-	partial: Partial<PlaygroundSettings>,
-): PlaygroundSettings {
+function mergeSettings(partial: Partial<PlaygroundSettings>): PlaygroundSettings {
 	return {
 		mode: partial.mode ?? defaultSettings.mode,
 		solver: partial.solver ?? defaultSettings.solver,
-		optimizationLevel:
-			partial.optimizationLevel ?? defaultSettings.optimizationLevel,
+		optimizationLevel: partial.optimizationLevel ?? defaultSettings.optimizationLevel,
 		debugLevel: partial.debugLevel ?? defaultSettings.debugLevel,
 		outputFormat: partial.outputFormat ?? defaultSettings.outputFormat,
-		compilerRemarks:
-			partial.compilerRemarks ?? defaultSettings.compilerRemarks,
+		compilerRemarks: partial.compilerRemarks ?? defaultSettings.compilerRemarks,
 	};
 }
 
-function loadSettings(): {
-	settings: PlaygroundSettings;
-	showBytecode: boolean;
-} {
+function loadSettings(): { settings: PlaygroundSettings; showBytecode: boolean } {
 	// First try to load from URL (takes priority for shared links)
 	const urlState = loadSettingsFromUrl();
 
 	const settingsFromUrl = urlState.settings;
 	const showFromUrl = urlState.showBytecode;
 
-	const settings = settingsFromUrl
-		? mergeSettings(settingsFromUrl)
-		: loadSettingsFromStorage();
+	const settings = settingsFromUrl ? mergeSettings(settingsFromUrl) : loadSettingsFromStorage();
 
 	const showBytecode = showFromUrl ?? loadShowBytecodeFromStorage();
 
-	return {
-		settings,
-		showBytecode,
-	};
+	return { settings, showBytecode };
 }
 
 function saveSettings(settings: PlaygroundSettings): void {

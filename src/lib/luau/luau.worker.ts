@@ -53,10 +53,7 @@ export type WorkerResponse =
 	| { type: "setMode"; success: boolean }
 	| { type: "setSolver"; success: boolean }
 	| { type: "setFFlags"; success: boolean }
-	| {
-			type: "getBytecode";
-			result: { success: boolean; bytecode: string; error?: string };
-	  }
+	| { type: "getBytecode"; result: { success: boolean; bytecode: string; error?: string } }
 	| { type: "registerModules"; success: boolean }
 	| { type: "registerSources"; success: boolean }
 	| { type: "error"; error: string };
@@ -74,11 +71,9 @@ async function loadModule(): Promise<LuauWasmModule> {
 		// This avoids recompiling the WASM in each worker
 		const module = await (createLuauModuleFactory as CreateLuauModule)({
 			instantiateWasm: (imports, successCallback) => {
-				WebAssembly.instantiate(compiledWasmModule!, imports).then(
-					(instance) => {
-						successCallback(instance);
-					},
-				);
+				WebAssembly.instantiate(compiledWasmModule!, imports).then((instance) => {
+					successCallback(instance);
+				});
 				// Return empty object - Emscripten expects this for async instantiation
 				return {};
 			},
@@ -98,22 +93,12 @@ function registerFile(
 	module: LuauWasmModule,
 	name: string,
 	content: string,
-	fn: "luau_add_module" | "luau_set_source",
+	fn: "luau_add_module" | "luau_set_source"
 ): void {
 	if (fn === "luau_add_module") {
-		module.ccall(
-			"luau_add_module",
-			null,
-			["string", "string"],
-			[name, content],
-		);
+		module.ccall("luau_add_module", null, ["string", "string"], [name, content]);
 	} else {
-		module.ccall(
-			"luau_set_source",
-			null,
-			["string", "string"],
-			[name, content],
-		);
+		module.ccall("luau_set_source", null, ["string", "string"], [name, content]);
 	}
 }
 
@@ -123,9 +108,7 @@ function respond(requestId: string, response: WorkerResponse): void {
 }
 
 // Handle messages from main thread
-self.onmessage = async (
-	e: MessageEvent<WorkerRequest & { requestId: string }>,
-) => {
+self.onmessage = async (e: MessageEvent<WorkerRequest & { requestId: string }>) => {
 	const { requestId, ...request } = e.data;
 
 	try {
@@ -145,7 +128,7 @@ self.onmessage = async (
 					"luau_execute",
 					"string",
 					["string"],
-					[request.code],
+					[request.code]
 				);
 				const elapsed = performance.now() - startTime;
 				if (!resultJson) {
@@ -160,11 +143,7 @@ self.onmessage = async (
 					});
 				} else {
 					const parsed = JSON.parse(resultJson) as ExecuteResult;
-					respond(requestId, {
-						type: "execute",
-						result: parsed,
-						elapsed,
-					});
+					respond(requestId, { type: "execute", result: parsed, elapsed });
 				}
 				break;
 			}
@@ -176,7 +155,7 @@ self.onmessage = async (
 					"luau_get_diagnostics",
 					"string",
 					["string"],
-					[request.code],
+					[request.code]
 				);
 				const elapsed = performance.now() - startTime;
 				const result = JSON.parse(resultJson) as DiagnosticsResult;
@@ -190,7 +169,7 @@ self.onmessage = async (
 					"luau_autocomplete",
 					"string",
 					["string", "number", "number"],
-					[request.code, request.line, request.col],
+					[request.code, request.line, request.col]
 				);
 				const result = JSON.parse(resultJson) as AutocompleteResult;
 				respond(requestId, { type: "autocomplete", result });
@@ -203,7 +182,7 @@ self.onmessage = async (
 					"luau_hover",
 					"string",
 					["string", "number", "number"],
-					[request.code, request.line, request.col],
+					[request.code, request.line, request.col]
 				);
 				const result = JSON.parse(resultJson) as HoverResult;
 				respond(requestId, { type: "hover", result });
@@ -212,12 +191,7 @@ self.onmessage = async (
 
 			case "getModules": {
 				const module = await loadModule();
-				const resultJson = module.ccall(
-					"luau_get_modules",
-					"string",
-					[],
-					[],
-				);
+				const resultJson = module.ccall("luau_get_modules", "string", [], []);
 				const result = JSON.parse(resultJson) as { modules: string[] };
 				respond(requestId, { type: "getModules", result });
 				break;
@@ -232,24 +206,14 @@ self.onmessage = async (
 
 			case "setSolver": {
 				const module = await loadModule();
-				module.ccall(
-					"luau_set_solver",
-					null,
-					["boolean"],
-					[request.isNew],
-				);
+				module.ccall("luau_set_solver", null, ["boolean"], [request.isNew]);
 				respond(requestId, { type: "setSolver", success: true });
 				break;
 			}
 
 			case "setFFlags": {
 				const module = await loadModule();
-				module.ccall(
-					"luau_set_fflags",
-					null,
-					["string"],
-					[request.serializedFlags],
-				);
+				module.ccall("luau_set_fflags", null, ["string"], [request.serializedFlags]);
 				respond(requestId, { type: "setFFlags", success: true });
 				break;
 			}
@@ -266,7 +230,7 @@ self.onmessage = async (
 						request.debugLevel,
 						request.outputFormat,
 						request.showRemarks ? 1 : 0,
-					],
+					]
 				);
 				const result = JSON.parse(resultJson);
 				respond(requestId, { type: "getBytecode", result });
