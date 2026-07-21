@@ -28,7 +28,6 @@ const STOPPED_ERROR = "Execution stopped";
 const CANCELLED_ERROR = "Cancelled";
 const ROBLOX_PC_STUDIO_FLAGS_URL =
 	"https://clientsettingscdn.roblox.com/v1/settings/application?applicationName=PCStudioApp";
-const ROBLOX_FAST_FLAG_KINDS = ["FFlag", "FInt", "DFFlag", "DFInt"] as const;
 
 // Convert LuauMode to numeric value for WASM
 const modeToNum = (mode: LuauMode): number =>
@@ -39,28 +38,40 @@ const modeToNum = (mode: LuauMode): number =>
 let robloxStudioFlagPayloadPromise: Promise<string | null> | null = null;
 
 async function getRobloxStudioFlagPayload(): Promise<string | null> {
-	if (!robloxStudioFlagPayloadPromise) {
-		robloxStudioFlagPayloadPromise = fetch(ROBLOX_PC_STUDIO_FLAGS_URL)
-			.then((response) => response.json())
-			.then(({ applicationSettings }: { applicationSettings?: Record<string, string> }) => {
-				const lines: string[] = [];
+	if (robloxStudioFlagPayloadPromise) return robloxStudioFlagPayloadPromise;
 
-				for (const [name, value] of Object.entries(applicationSettings ?? {})) {
-					for (const kind of ROBLOX_FAST_FLAG_KINDS) {
-						if (name.startsWith(`${kind}Luau`)) {
-							lines.push(`${name.slice(kind.length)}=${value}`);
-							break;
-						}
+	robloxStudioFlagPayloadPromise = fetch(ROBLOX_PC_STUDIO_FLAGS_URL)
+		.then((response) => response.json())
+		.then(({ applicationSettings }: { applicationSettings?: Record<string, string> }) => {
+			if (!applicationSettings) throw new Error("Roblox CDN returned invalid response");
+
+			const lines: string[] = [];
+
+			const isLuauFlag = /^FFlagLuau|FIntLuau|DFFlagLuau|DFIntLuau/.test;
+			for (const flag of Object.entries(applicationSettings)) {
+				const name = flag[0];
+				if (!isLuauFlag(name)) continue;
+				const value = flag[1];
+				if (name[1] === "F") {
+					if (name[2] !== "F") {
+						/* FFlagLuau or DFIntLuau */
+						lines.push(name.slice(9) + "=" + value);
+					else {
+						/* DFFlagLuau */
+						lines.push(name.slice(10) + "=" + value);
 					}
+				} else if (name[1] === "I") {
+					/* FIntLuau */
+					lines.push(name.slice(8) + "=" + value);
 				}
+			}
 
-				return lines.length > 0 ? lines.join("\n") : null;
-			})
-			.catch((error) => {
-				console.warn("[Luau] Failed to sync Roblox Studio Luau flags:", error);
-				return null;
-			});
-	}
+			return lines.length > 0 ? lines.join("\n") : null;
+		})
+		.catch((err) => {
+			console.warn("[Luau] Failed to sync Roblox Studio Luau flags:", err);
+			return null;
+		});
 
 	return robloxStudioFlagPayloadPromise;
 }
@@ -84,7 +95,7 @@ async function getCompiledWasmModule(): Promise<WebAssembly.Module> {
 					buffer = await __wasmPromises.luau;
 				} else {
 					const baseUrl = new URL("./", document.baseURI).href.replace(/\/$/, "");
-					buffer = await fetch(`${baseUrl}/wasm/luau.wasm`).then((r) => r.arrayBuffer());
+					buffer = await (await fetch(baseUrl+"/wasm/luau.wasm")).arrayBuffer();
 				}
 				// Compile once - the compiled module can be shared with workers
 				compiledWasmModule = await WebAssembly.compile(buffer);
@@ -124,8 +135,9 @@ function createWorkerManager(): WorkerManager {
 function setupWorkerHandlers(manager: WorkerManager, name: string): void {
 	if (!manager.worker) return;
 
-	manager.worker.onmessage = (e: MessageEvent<WorkerResponse & { requestId: string }>) => {
-		const { requestId, ...response } = e.data;
+	manager.worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
+		const response = e.data;
+		const requestId = response.requestId;
 
 		const pending = manager.pendingRequests.get(requestId);
 		if (pending) {
@@ -138,8 +150,8 @@ function setupWorkerHandlers(manager: WorkerManager, name: string): void {
 		}
 	};
 
-	manager.worker.onerror = (e) => {
-		console.error(`[Luau ${name}] Worker error:`, e);
+	manager.worker.onerror = function (err) {
+		console.error(`[Luau ${name}] Worker error:`, err);
 		// Reset state so future requests trigger a new worker
 		terminateWorker(manager, "Worker error");
 	};
@@ -156,7 +168,7 @@ async function initializeWorker(
 	manager: WorkerManager,
 	wasmModule: WebAssembly.Module
 ): Promise<void> {
-	const requestId = `init_${manager.requestIdCounter++}`;
+	const requestId = "init_"+manager.requestIdCounter++;
 
 	return new Promise((resolve, reject) => {
 		const timer = setTimeout(() => {
@@ -179,31 +191,28 @@ async function initializeWorker(
 			type: "init",
 			wasmModule,
 			requestId,
-		} satisfies WorkerRequest & { requestId: string });
+		} satisfies WorkerRequest);
 	});
 }
 
 // Type mapping from request type to response type
 type ResponseForRequest<T extends WorkerRequest["type"]> = Extract<WorkerResponse, { type: T }>;
 
-async function sendToWorker<K extends WorkerRequest["type"]>(
+async function sendToWorker<T extends WorkerRequest["type"]>(
 	manager: WorkerManager,
-	type: K,
-	params: Omit<Extract<WorkerRequest, { type: K }>, "type">
-): Promise<ResponseForRequest<K>> {
-	if (!manager.worker || !manager.ready) {
-		throw new Error("Worker not ready");
-	}
+	params: Extract<WorkerRequest, { type: T }>
+): Promise<ResponseForRequest<T>> {
+	if (!manager.worker || !manager.ready) throw new Error("Worker not ready");
 
-	const requestId = `req_${manager.requestIdCounter++}`;
-	const request = { type, ...params } as WorkerRequest;
+	const requestId = "req_"+manager.requestIdCounter++;
+	params.requestId = requestId;
 
 	return new Promise((resolve, reject) => {
 		manager.pendingRequests.set(requestId, {
-			resolve: resolve as (value: WorkerResponse) => void,
+			resolve: resolve as (value: ResponseForRequest<T>) => void,
 			reject,
 		});
-		manager.worker!.postMessage({ ...request, requestId });
+		manager.worker!.postMessage(params);
 	});
 }
 
@@ -228,13 +237,8 @@ async function loadWorker(
 	name: string,
 	options?: { checkTerminated?: boolean; postInit?: () => Promise<void> }
 ): Promise<void> {
-	if (manager.ready && manager.worker) {
-		return;
-	}
-
-	if (manager.readyPromise) {
-		return manager.readyPromise;
-	}
+	if (manager.ready && manager.worker) return;
+	if (manager.readyPromise) return manager.readyPromise;
 
 	const { checkTerminated = false, postInit } = options ?? {};
 
@@ -246,27 +250,21 @@ async function loadWorker(
 
 			const wasmModule = await modulePromise;
 
-			if (checkTerminated && !manager.worker) {
-				throw new Error(STOPPED_ERROR);
-			}
+			if (checkTerminated && !manager.worker) throw new Error(STOPPED_ERROR);
 
 			await initializeWorker(manager, wasmModule);
 
-			if (checkTerminated && !manager.worker) {
-				throw new Error(STOPPED_ERROR);
-			}
+			if (checkTerminated && !manager.worker) throw new Error(STOPPED_ERROR);
 
 			manager.ready = true;
 
 			await postInit?.();
-		} catch (error) {
+		} catch (err) {
 			manager.readyPromise = null;
 			manager.ready = false;
 
-			if (error instanceof Error && error.message === STOPPED_ERROR) {
-				throw error;
-			}
-			throw new Error(`Failed to load ${name.toLowerCase()} worker`, { cause: error });
+			if (err instanceof Error && err.message === STOPPED_ERROR) throw err;
+			throw new Error(`Failed to load ${name.toLowerCase()} worker`, { cause: err });
 		}
 	})();
 
@@ -286,28 +284,27 @@ async function loadAnalysisWorker(): Promise<void> {
 		postInit: async () => {
 			const robloxStudioFlags = await robloxStudioFlagsPromise;
 			if (robloxStudioFlags) {
-				await sendToWorker(analysis, "setFFlags", { serializedFlags: robloxStudioFlags });
+				await sendToWorker(analysis, { type: "setFFlags", serializedFlags: robloxStudioFlags });
 			}
 
 			const currentSettings = get(settings);
-			await sendToWorker(analysis, "setMode", { mode: modeToNum(currentSettings.mode) });
-			await sendToWorker(analysis, "setSolver", { isNew: currentSettings.solver === "new" });
+			await sendToWorker(analysis, { type: "setMode", mode: modeToNum(currentSettings.mode) });
+			await sendToWorker(analysis, { type: "setSolver", isNew: currentSettings.solver === "new" });
 			initSettingsSync();
 		},
 	});
 }
 
-async function sendAnalysisRequest<K extends WorkerRequest["type"]>(
-	type: K,
-	params: Omit<Extract<WorkerRequest, { type: K }>, "type">
-): Promise<ResponseForRequest<K>> {
+async function sendAnalysisRequest<T extends WorkerRequest["type"]>(
+	params: Extract<WorkerRequest, { type: T }>
+): Promise<ResponseForRequest<T>> {
 	await loadAnalysisWorker();
-	return sendToWorker(analysis, type, params);
+	return sendToWorker(analysis, params);
 }
 
 async function syncAnalysisSources(): Promise<void> {
 	const allFiles = getAllFiles();
-	await sendAnalysisRequest("registerSources", { sources: allFiles });
+	await sendAnalysisRequest({ type: "registerSources", sources: allFiles });
 }
 
 // ============================================================================
@@ -324,26 +321,23 @@ async function loadExecutionWorker(): Promise<void> {
 		postInit: async () => {
 			const robloxStudioFlags = await robloxStudioFlagsPromise;
 			if (robloxStudioFlags) {
-				await sendToWorker(execution, "setFFlags", { serializedFlags: robloxStudioFlags });
+				await sendToWorker(execution, { type: "setFFlags", serializedFlags: robloxStudioFlags });
 			}
 
 			const currentSettings = get(settings);
-			await sendToWorker(execution, "setMode", { mode: modeToNum(currentSettings.mode) });
+			await sendToWorker(execution, { type: "setMode", mode: modeToNum(currentSettings.mode) });
 		},
 	});
 }
 
-async function sendExecutionRequest<K extends WorkerRequest["type"]>(
-	type: K,
-	params: Omit<Extract<WorkerRequest, { type: K }>, "type">
-): Promise<ResponseForRequest<K>> {
+async function sendExecutionRequest<T extends WorkerRequest["type"]>(
+	params: Extract<WorkerRequest, { type: T }>
+): Promise<ResponseForRequest<T>> {
 	await loadExecutionWorker();
 
-	if (!execution.worker) {
-		throw new Error(STOPPED_ERROR);
-	}
+	if (!execution.worker) throw new Error(STOPPED_ERROR);
 
-	return sendToWorker(execution, type, params);
+	return sendToWorker(execution, params);
 }
 
 // ============================================================================
@@ -363,9 +357,7 @@ export async function loadLuauWasm(): Promise<void> {
  * The analysis worker stays alive for LSP/bytecode operations.
  */
 export function stopExecution(): void {
-	if (!execution.worker && !execution.readyPromise) {
-		return; // Nothing to stop
-	}
+	if (!execution.worker && !execution.readyPromise) return; // Nothing to stop
 
 	terminateWorker(execution);
 	setRunning(false);
@@ -379,7 +371,7 @@ export async function executeCode(
 	code: string
 ): Promise<{ result: ExecuteResult; elapsed: number }> {
 	try {
-		const response = await sendExecutionRequest("execute", { code });
+		const response = await sendExecutionRequest({ type: "execute", code });
 		return { result: response.result, elapsed: response.elapsed };
 	} catch (error) {
 		// Silently handle stopped/cancelled - no error to report
@@ -404,7 +396,7 @@ export async function getDiagnostics(
 	try {
 		await syncAnalysisSources();
 
-		const response = await sendAnalysisRequest("getDiagnostics", { code });
+		const response = await sendAnalysisRequest({ type: "getDiagnostics", code });
 		const diagnostics = response.result.diagnostics.filter(
 			(diag) => !diag.moduleName || diag.moduleName === "main"
 		);
@@ -425,7 +417,7 @@ export async function getAutocomplete(
 ): Promise<LuauCompletion[]> {
 	try {
 		await syncAnalysisSources();
-		const response = await sendAnalysisRequest("autocomplete", { code, line, col });
+		const response = await sendAnalysisRequest({ type: "autocomplete", code, line, col });
 		return response.result.items;
 	} catch (error) {
 		console.error("[Luau] Autocomplete error:", error);
@@ -439,7 +431,7 @@ export async function getAutocomplete(
 export async function getHover(code: string, line: number, col: number): Promise<string | null> {
 	try {
 		await syncAnalysisSources();
-		const response = await sendAnalysisRequest("hover", { code, line, col });
+		const response = await sendAnalysisRequest({ type: "hover", code, line, col });
 		return response.result.content;
 	} catch (error) {
 		console.error("[Luau] Hover error:", error);
@@ -453,7 +445,7 @@ export async function getHover(code: string, line: number, col: number): Promise
 export async function getAvailableModules(): Promise<string[]> {
 	try {
 		await syncAnalysisSources();
-		const response = await sendAnalysisRequest("getModules", {});
+		const response = await sendAnalysisRequest({ type: "getModules" });
 		return response.result.modules;
 	} catch (error) {
 		console.error("[Luau] Failed to get modules:", error);
@@ -466,10 +458,10 @@ export async function getAvailableModules(): Promise<string[]> {
  */
 export async function setLuauMode(mode: LuauMode): Promise<void> {
 	try {
-		await sendAnalysisRequest("setMode", { mode: modeToNum(mode) });
+		await sendAnalysisRequest({ type: "setMode", mode: modeToNum(mode) });
 		// Also update execution worker if it's running
 		if (execution.ready) {
-			await sendToWorker(execution, "setMode", { mode: modeToNum(mode) });
+			await sendToWorker(execution, { type: "setMode", mode: modeToNum(mode) });
 		}
 	} catch (error) {
 		console.error("[Luau] Failed to set mode:", error);
@@ -481,10 +473,10 @@ export async function setLuauMode(mode: LuauMode): Promise<void> {
  */
 export async function setLuauSolver(solver: SolverMode): Promise<void> {
 	try {
-		await sendAnalysisRequest("setSolver", { isNew: solver === "new" });
+		await sendAnalysisRequest({ type: "setSolver", isNew: solver === "new" });
 		// Also update execution worker if it's running
 		if (execution.ready) {
-			await sendToWorker(execution, "setSolver", { isNew: solver === "new" });
+			await sendToWorker(execution, { type: "setSolver", isNew: solver === "new" });
 		}
 	} catch (error) {
 		console.error("[Luau] Failed to set solver:", error);
@@ -532,7 +524,7 @@ export async function runCode(): Promise<void> {
 
 		// Register all files as modules for require support
 		const allFiles = getAllFiles();
-		await sendExecutionRequest("registerModules", { modules: allFiles });
+		await sendExecutionRequest({ type: "registerModules", modules: allFiles });
 
 		if (currentRunId !== myRunId) return;
 
@@ -543,19 +535,19 @@ export async function runCode(): Promise<void> {
 		setExecutionTime(elapsed);
 
 		if (result.prints && result.prints.length > 0) {
-			result.prints.forEach((values) => {
+			for (const values of result.prints) {
 				appendOutput({ type: "log", text: "", values });
-			});
+			}
 		} else if (result.output) {
-			result.output.split("\n").forEach((line) => {
+			for (const line of result.output.split("\n")) {
 				appendOutput({ type: "log", text: line });
-			});
+			}
 		}
 
 		if (!result.success && result.error) {
-			result.error.split("\n").forEach((line) => {
+			for (const line of result.error.split("\n")) {
 				appendOutput({ type: "error", text: line });
-			});
+			}
 		}
 	} catch (error) {
 		if (
@@ -564,7 +556,7 @@ export async function runCode(): Promise<void> {
 			error.message !== STOPPED_ERROR &&
 			error.message !== CANCELLED_ERROR
 		) {
-			appendOutput({ type: "error", text: `Error: ${error.message}` });
+			appendOutput({ type: "error", text: "Error: "+error.message });
 		}
 	} finally {
 		if (currentRunId === myRunId) {
@@ -609,8 +601,7 @@ export async function checkCode(): Promise<void> {
 
 			const summary = [];
 			if (errorCount > 0) summary.push(`${errorCount} error${errorCount !== 1 ? "s" : ""}`);
-			if (warningCount > 0)
-				summary.push(`${warningCount} warning${warningCount !== 1 ? "s" : ""}`);
+			if (warningCount > 0) summary.push(`${warningCount} warning${warningCount !== 1 ? "s" : ""}`);
 
 			appendOutput({ type: "log", text: `Found ${summary.join(", ")}:` });
 			appendOutput({ type: "log", text: "" });
@@ -631,7 +622,7 @@ export async function checkCode(): Promise<void> {
 			error.message !== STOPPED_ERROR &&
 			error.message !== CANCELLED_ERROR
 		) {
-			appendOutput({ type: "error", text: `Error: ${error.message}` });
+			appendOutput({ type: "error", text: "Error: "+error.message });
 		}
 	} finally {
 		if (currentRunId === myRunId) {
@@ -651,7 +642,8 @@ export async function getBytecode(
 	showRemarks: boolean = false
 ): Promise<{ success: boolean; bytecode: string; error?: string }> {
 	try {
-		const response = await sendAnalysisRequest("getBytecode", {
+		const response = await sendAnalysisRequest({
+			type: "getBytecode",
 			code,
 			optimizationLevel,
 			debugLevel,
