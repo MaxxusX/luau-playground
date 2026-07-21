@@ -57,7 +57,7 @@
 	<div
 		class="relative flex flex-col border-t border-(--border-color) bg-(--bg-secondary)"
 		class:transitioning={!isResizing}
-		style="height: {isExpanded ? `${outputHeight}px` : '32px'}"
+		style="height: {isExpanded ? outputHeight : 32}px"
 	>
 		{#if isExpanded}
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -136,10 +136,10 @@
 						{:else}
 							<div
 								class="leading-relaxed break-all
-                {isStack ? 'pl-4 opacity-80 text-error-500' : ''}
-                {line.type === 'error' && !isStack ? 'text-error-500' : ''}
-                {line.type === 'warn' ? 'text-warning-500' : ''}
-                {line.type === 'log' ? 'text-(--text-primary)' : ''}"
+									{isStack ? 'pl-4 opacity-80 text-error-500' : ''}
+									{line.type === 'error' && !isStack ? 'text-error-500' : ''}
+									{line.type === 'warn' ? 'text-warning-500' : ''}
+									{line.type === 'log' ? 'text-(--text-primary)' : ''}"
 							>
 								{isStack ? formatStackLine(line.text) : line.text}
 							</div>
