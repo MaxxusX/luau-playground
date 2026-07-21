@@ -1,8 +1,8 @@
-name: "Build"
-description: "Build WASM, install dependencies, run tests, type-check, and build the app"
+name: 'Build'
+description: 'Build WASM, install dependencies, run tests, type-check, and build the app'
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Checkout emsdk
       uses: actions/checkout@v7
@@ -72,10 +72,10 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@v7
       with:
-        node-version-file: "./package.json"
+        node-version-file: './package.json'
         check-latest: true
-        cache: "pnpm"
-        cache-dependency-path: "./pnpm-lock.yaml"
+        cache: 'pnpm'
+        cache-dependency-path: './pnpm-lock.yaml'
 
     - name: Install dependencies
       shell: bash

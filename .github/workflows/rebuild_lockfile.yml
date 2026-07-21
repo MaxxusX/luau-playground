@@ -17,7 +17,7 @@ env:
 defaults:
   run:
     shell: bash
-    working-directory: "."
+    working-directory: '.'
 
 jobs:
   rebuild_lockfile:
@@ -44,16 +44,16 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version-file: "./package.json"
+          node-version-file: './package.json'
           check-latest: true
-          cache: "pnpm"
-          cache-dependency-path: "./pnpm-lock.yaml"
+          cache: 'pnpm'
+          cache-dependency-path: './pnpm-lock.yaml'
 
       - name: Update Dependencies
-        run: "pnpm update"
+        run: 'pnpm update'
 
       - name: Update Vulnerable Packages
-        run: "pnpm audit --fix=update"
+        run: 'pnpm audit --fix=update'
 
       - name: Delete Modules
         run: |
@@ -61,10 +61,10 @@ jobs:
           rm -f ./pnpm-lock.yaml
 
       - name: Install Dependencies
-        run: "pnpm install --no-frozen-lockfile --lockfile-only"
+        run: 'pnpm install --no-frozen-lockfile --lockfile-only'
 
       - name: Dedupe Dependencies
-        run: "pnpm dedupe"
+        run: 'pnpm dedupe'
 
       - name: Create PR
         run: |
