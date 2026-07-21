@@ -298,8 +298,11 @@ export async function highlightLuauHtml(snippet: string): Promise<string> {
 			const text = escapeHtml(line.slice(start, end));
 			const tok = scopeToToken(t.scopes);
 			const style = tokenStyle(tok);
-			if (style) parts.push(`<span style="${style}">${text}</span>`);
-			else parts.push(text);
+			if (style) {
+				parts.push(`<span style="${style}">${text}</span>`);
+			} else {
+				parts.push(text);
+			}
 		}
 
 		if (li < lines.length - 1) parts.push("\n");
