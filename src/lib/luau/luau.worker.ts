@@ -71,9 +71,7 @@ async function loadModule(): Promise<LuauWasmModule> {
 		// This avoids recompiling the WASM in each worker
 		const module = await (createLuauModuleFactory as CreateLuauModule)({
 			instantiateWasm: (imports, successCallback) => {
-				WebAssembly.instantiate(compiledWasmModule!, imports).then((instance) => {
-					successCallback(instance);
-				});
+				WebAssembly.instantiate(compiledWasmModule!, imports).then(successCallback);
 				// Return empty object - Emscripten expects this for async instantiation
 				return {};
 			},
@@ -102,10 +100,8 @@ function registerFile(
 	}
 }
 
-// Helper to send response with requestId
-function respond(requestId: string, response: WorkerResponse): void {
-	self.postMessage({ ...response, requestId });
-}
+// Helper to send response
+const respond = self.postMessage as ((response: WorkerResponse) => void);
 
 // Handle messages from main thread
 self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
@@ -119,7 +115,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				compiledWasmModule = request.wasmModule;
 				await loadModule();
 				// self.postMessage({ type: "ready", requestId });
-				respond(requestId, { type: "ready" });
+				respond({ type: "ready", requestId });
 				break;
 			}
 
@@ -134,7 +130,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				);
 				const elapsed = performance.now() - startTime;
 				if (!resultJson) {
-					respond(requestId, {
+					respond({
 						type: "execute",
 						result: {
 							success: false,
@@ -142,10 +138,11 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 							error: "No result returned from execution",
 						},
 						elapsed,
+						requestId,
 					});
 				} else {
-					const parsed = JSON.parse(resultJson) as ExecuteResult;
-					respond(requestId, { type: "execute", result: parsed, elapsed });
+					const result = JSON.parse(resultJson) as ExecuteResult;
+					respond({ type: "execute", result, elapsed, requestId });
 				}
 				break;
 			}
@@ -161,7 +158,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				);
 				const elapsed = performance.now() - startTime;
 				const result = JSON.parse(resultJson) as DiagnosticsResult;
-				respond(requestId, { type: "getDiagnostics", result, elapsed });
+				respond({ type: "getDiagnostics", result, elapsed, requestId });
 				break;
 			}
 
@@ -174,7 +171,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					[request.code, request.line, request.col]
 				);
 				const result = JSON.parse(resultJson) as AutocompleteResult;
-				respond(requestId, { type: "autocomplete", result });
+				respond({ type: "autocomplete", result, requestId });
 				break;
 			}
 
@@ -187,36 +184,56 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					[request.code, request.line, request.col]
 				);
 				const result = JSON.parse(resultJson) as HoverResult;
-				respond(requestId, { type: "hover", result });
+				respond({ type: "hover", result, requestId });
 				break;
 			}
 
 			case "getModules": {
 				const module = await loadModule();
-				const resultJson = module.ccall("luau_get_modules", "string", [], []);
+				const resultJson = module.ccall(
+					"luau_get_modules",
+					"string",
+					[],
+					[]
+				);
 				const result = JSON.parse(resultJson) as { modules: string[] };
-				respond(requestId, { type: "getModules", result });
+				respond({ type: "getModules", result, requestId });
 				break;
 			}
 
 			case "setMode": {
 				const module = await loadModule();
-				module.ccall("luau_set_mode", null, ["number"], [request.mode]);
-				respond(requestId, { type: "setMode", success: true });
+				module.ccall(
+					"luau_set_mode",
+					null,
+					["number"],
+					[request.mode]
+				);
+				respond({ type: "setMode", success: true, requestId });
 				break;
 			}
 
 			case "setSolver": {
 				const module = await loadModule();
-				module.ccall("luau_set_solver", null, ["boolean"], [request.isNew]);
-				respond(requestId, { type: "setSolver", success: true });
+				module.ccall(
+					"luau_set_solver",
+					null,
+					["boolean"],
+					[request.isNew]
+				);
+				respond({ type: "setSolver", success: true, requestId });
 				break;
 			}
 
 			case "setFFlags": {
 				const module = await loadModule();
-				module.ccall("luau_set_fflags", null, ["string"], [request.serializedFlags]);
-				respond(requestId, { type: "setFFlags", success: true });
+				module.ccall(
+					"luau_set_fflags",
+					null,
+					["string"],
+					[request.serializedFlags]
+				);
+				respond({ type: "setFFlags", success: true, requestId });
 				break;
 			}
 
@@ -235,7 +252,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					]
 				);
 				const result = JSON.parse(resultJson);
-				respond(requestId, { type: "getBytecode", result });
+				respond({ type: "getBytecode", result, requestId });
 				break;
 			}
 
@@ -247,7 +264,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				for (const [name, content] of Object.entries(request.modules)) {
 					registerFile(module, name, content, "luau_add_module");
 				}
-				respond(requestId, { type: "registerModules", success: true });
+				respond({ type: "registerModules", success: true, requestId });
 				break;
 			}
 
@@ -258,28 +275,26 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				for (const [name, content] of Object.entries(request.sources)) {
 					registerFile(module, name, content, "luau_set_source");
 				}
-				respond(requestId, { type: "registerSources", success: true });
+				respond({ type: "registerSources", success: true, requestId });
 				break;
 			}
 
 			default: {
 				const exhaustiveCheck: never = request;
-				respond(requestId, {
+				respond({
 					type: "error",
 					error: "Unknown request type: "+(exhaustiveCheck as WorkerRequest).type,
+					requestId,
 				});
 				break;
 			}
 		}
 	} catch (error) {
-		let errorMsg = "Unknown error";
-		if (error instanceof Error) {
-			errorMsg = error.message;
-		} else if (typeof error === "number") {
-			errorMsg = `Uncaught exception (code: ${error})`;
-		} else {
-			errorMsg = String(error);
-		}
-		respond(requestId, { type: "error", error: errorMsg });
+		const errorMsg =
+			error instanceof Error ? error.message
+			: typeof error === "number" ? `Uncaught exception (code: ${error})`
+			: String(error);
+
+		respond({ type: "error", error: errorMsg, requestId });
 	}
 };
