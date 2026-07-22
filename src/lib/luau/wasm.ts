@@ -89,16 +89,15 @@ let wasmModuleLoading: Promise<WebAssembly.Module> | null = null;
 async function getCompiledWasmModule(): Promise<WebAssembly.Module> {
 	if (!compiledWasmModule) {
 		if (!wasmModuleLoading) {
+			// Compile once - the compiled module can be shared with workers
 			wasmModuleLoading = (async () => {
-				let buffer: ArrayBuffer;
 				if (typeof __wasmPromises !== "undefined") {
-					buffer = await __wasmPromises.luau;
+					compiledWasmModule = await WebAssembly.compile(await __wasmPromises.luau);
 				} else {
-					const baseUrl = new URL("./", document.baseURI).href.replace(/\/$/, "");
-					buffer = await (await fetch(baseUrl+"/wasm/luau.wasm")).arrayBuffer();
+					const wasmUrl = new URL("./wasm/luau.wasm", document.baseURI).href;
+					compiledWasmModule = await WebAssembly.compileStreaming(await fetch(wasmUrl));
 				}
-				// Compile once - the compiled module can be shared with workers
-				compiledWasmModule = await WebAssembly.compile(buffer);
+
 				return compiledWasmModule;
 			})();
 		}
