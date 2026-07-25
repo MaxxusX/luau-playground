@@ -233,8 +233,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@oddbird/css-anchor-positioning':
-        specifier: ^0.9.0
-        version: 0.9.0
+        specifier: ^0.10.1
+        version: 0.10.1
       '@phosphor-icons/core':
         specifier: ^2.1.1
         version: 2.1.1
@@ -357,8 +357,8 @@ packages:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
 
-  '@oddbird/css-anchor-positioning@0.9.0':
-    resolution: {integrity: sha512-G5nfb4sU0auxJH7VHafPwVJjr1GhH5uPSkmytGqhNftCpT3QEh8pFtMd4YHt1dRwb4o9qVZxlGSKUIc4TIrysQ==}
+  '@oddbird/css-anchor-positioning@0.10.1':
+    resolution: {integrity: sha512-/9xobzm1jOihV993zMQW9B/vxUZit/V2Ce/HSUdK+0V4CHD8uFj/FxQlBMrgXRckOoHPB64X9yKlPAz0PIluXA==}
 
   '@oxc-project/types@0.139.0':
     resolution: {integrity: sha512-r9gHphtCs+1M7J0pw6Sn/hh/Wpa/iQrOOkrNAlVLF/gHq+/CJmHIWKKUUhdWjcD6CIa8idarspCsASiXCXvFUw==}
@@ -1040,7 +1040,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@oddbird/css-anchor-positioning@0.9.0':
+  '@oddbird/css-anchor-positioning@0.10.1':
     dependencies:
       '@floating-ui/dom': 1.8.0
       '@types/css-tree': 2.3.11
