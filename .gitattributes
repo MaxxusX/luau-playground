@@ -1,0 +1,26 @@
+# force unix-style line-endings
+* text=auto eol=lf
+
+# text files
+.gitattributes  text
+.gitignore      text
+.editorconfig   text
+.prettierignore text
+LICENSE         text
+index.html      text
+*.txt           text
+*.md            text
+*.sh            text
+*.cpp           text
+*.js            text
+*.ts            text
+*.css           text
+*.svelte        text
+*.json          text
+*.svg           text
+*.yml           text
+*.yaml          text
+
+# binary files
+*.woff2         binary
+*.wasm          binary

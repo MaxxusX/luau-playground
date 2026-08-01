@@ -1,20 +1,18 @@
-# Dependencies
-node_modules/
-
-# Build output
+# build output
 dist/
 
+# dependencies
+node_modules/
+src/lib/editor/Luau.tmLanguage.json
+
+# lockfile
+pnpm-lock.yaml
+
 # WASM build artifacts
+src/lib/luau/luau-module.js
+public/wasm/
 wasm/build/
 wasm/luau/
-public/wasm/
-src/lib/luau/luau-module.js
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
 
 # OS
 .DS_Store

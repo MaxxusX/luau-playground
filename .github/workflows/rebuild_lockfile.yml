@@ -1,0 +1,80 @@
+name: Rebuild Lockfile
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: rebuild-lockfile
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  NODE_ENV: development
+
+defaults:
+  run:
+    shell: bash
+    working-directory: '.'
+
+jobs:
+  rebuild_lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .gitattributes
+            .gitignore
+            package.json
+            pnpm-lock.yaml
+            pnpm-workspace.yaml
+
+      - name: Create branch
+        run: |
+          git switch -c rebuild-lockfile
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v6.0.9
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: './package.json'
+          check-latest: true
+          cache: 'pnpm'
+          cache-dependency-path: './pnpm-lock.yaml'
+
+      - name: Update Dependencies
+        run: 'pnpm update'
+
+      - name: Update Vulnerable Packages
+        run: 'pnpm audit --fix=update'
+
+      - name: Delete Modules
+        run: |
+          rm -rf ./node_modules
+          rm -f ./pnpm-lock.yaml
+
+      - name: Install Dependencies
+        run: 'pnpm install --no-frozen-lockfile --lockfile-only'
+
+      - name: Dedupe Dependencies
+        run: 'pnpm dedupe'
+
+      - name: Create PR
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git add pnpm-lock.yaml
+          git add pnpm-workspace.yaml
+          git commit -m "chore(deps): rebuild lockfile"
+          git push origin rebuild-lockfile --force
+          gh pr create --fill
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -1,0 +1,48 @@
+{
+	"$schema": "https://www.schemastore.org/prettierrc.json",
+	"experimentalTernaries": true,
+	"printWidth": 100,
+	"tabWidth": 4,
+	"useTabs": true,
+	"quoteProps": "as-needed",
+	"trailingComma": "es5",
+	"objectWrap": "preserve",
+	"proseWrap": "always",
+	"plugins": ["prettier-plugin-svelte"],
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		},
+		{
+			"files": "*.json",
+			"options": {
+				"tabWidth": 2,
+				"useTabs": true
+			}
+		},
+		{
+			"files": "*.md",
+			"options": {
+				"tabWidth": 2,
+				"useTabs": false
+			}
+		},
+		{
+			"files": ["*.yml", "*.yaml"],
+			"options": {
+				"tabWidth": 2,
+				"useTabs": false,
+				"singleQuote": true
+			}
+		},
+		{
+			"files": ["tsconfig.json", "tsconfig.app.json", "tsconfig.node.json"],
+			"options": {
+				"parser": "jsonc"
+			}
+		}
+	]
+}

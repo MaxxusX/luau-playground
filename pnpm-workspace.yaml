@@ -1,0 +1,6 @@
+minimumReleaseAgeIgnoreMissingTime: false
+minimumReleaseAgeStrict: true
+minimumReleaseAge: 1440
+blockExoticSubdeps: true
+dedupePeers: true
+strictPeerDependencies: true
