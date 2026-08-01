@@ -56,7 +56,7 @@ async function getRobloxStudioFlagPayload(): Promise<string | null> {
 					if (name[2] !== "F") {
 						/* FFlagLuau or DFIntLuau */
 						lines.push(name.slice(9) + "=" + value);
-					else {
+					} else {
 						/* DFFlagLuau */
 						lines.push(name.slice(10) + "=" + value);
 					}
