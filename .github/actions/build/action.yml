@@ -79,7 +79,7 @@ runs:
 
     - name: Sync TextMate grammar
       shell: bash
-      run: npm run sync:grammar
+      run: pnpm run sync:grammar
 
     - name: Install dependencies
       shell: bash
