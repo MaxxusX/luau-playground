@@ -77,6 +77,10 @@ runs:
         cache: 'pnpm'
         cache-dependency-path: './pnpm-lock.yaml'
 
+    - name: Sync TextMate grammar
+      shell: bash
+      run: pnpm run sync:grammar
+
     - name: Install dependencies
       shell: bash
       run: pnpm ci
