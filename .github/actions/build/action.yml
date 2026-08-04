@@ -1,14 +1,14 @@
-name: 'Build'
-description: 'Build WASM, install dependencies, run tests, type-check, and build the app'
+name: Build
+description: Build WASM, install dependencies, run tests, type-check, and build the app
 
 runs:
-  using: 'composite'
+  using: composite
   steps:
     - name: Checkout emsdk
       uses: actions/checkout@v7
       with:
-        repository: 'emscripten-core/emsdk'
-        path: 'emsdk'
+        repository: emscripten-core/emsdk
+        path: emsdk
 
     - name: Get latest Luau release
       id: luau-release
@@ -33,9 +33,7 @@ runs:
           wasm/luau
           public/wasm/luau.wasm
           src/lib/luau/luau-module.js
-        key:
-          build-${{ runner.os }}-${{ hashFiles('wasm/src/**', 'wasm/CMakeLists.txt',
-          'wasm/build.sh') }}-luau-${{ steps.luau-release.outputs.commit }}
+        key: build-${{ runner.os }}-${{ hashFiles('wasm/src/**', 'wasm/CMakeLists.txt', 'wasm/build.sh') }}-luau-${{ steps.luau-release.outputs.commit }}
         restore-keys: |
           build-${{ runner.os }}-${{ hashFiles('wasm/src/**', 'wasm/CMakeLists.txt', 'wasm/build.sh') }}-luau-
           build-${{ runner.os }}-
@@ -51,7 +49,7 @@ runs:
       shell: bash
       run: |
         TAG=${{ steps.luau-release.outputs.tag }}
-        if [ ! -d "wasm/luau" ]; then
+        if [ ! -d 'wasm/luau' ]; then
           git clone --depth 1 --branch $TAG https://github.com/luau-lang/luau.git wasm/luau
         else
           cd wasm/luau
@@ -69,22 +67,22 @@ runs:
     - name: Setup PNPM
       uses: pnpm/setup@v2
       with:
-        runtime: 'node'
+        runtime: node
         cache: true
         install: false
 
     - name: Sync TextMate grammar
       shell: bash
-      run: 'pnpm run sync:grammar'
+      run: pnpm run sync:grammar
 
     - name: Install dependencies
       shell: bash
-      run: 'pnpm ci'
+      run: pnpm ci
 
     - name: Type check
       shell: bash
-      run: 'pnpm run check'
+      run: pnpm run check
 
     - name: Build
       shell: bash
-      run: 'pnpm exec vite build --base=./'
+      run: pnpm exec vite build --base=./
