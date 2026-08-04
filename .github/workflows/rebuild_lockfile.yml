@@ -65,15 +65,18 @@ jobs:
       - name: Dedupe Dependencies
         run: 'pnpm dedupe'
 
+      - name: Sync TextMate grammar
+        run: 'pnpm run sync:grammar'
+
       - name: Create PR
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add package.json
           git add pnpm-lock.yaml
           git add pnpm-workspace.yaml
           git add src/lib/editor/Luau.tmLanguage.json
-          git commit -m "chore(deps): rebuild lockfile"
+          git commit -m 'chore(deps): rebuild lockfile'
           git push origin rebuild-lockfile --force
           gh pr create --fill
         env:
