@@ -6,7 +6,6 @@
 	"useTabs": true,
 	"quoteProps": "as-needed",
 	"trailingComma": "es5",
-	"objectWrap": "preserve",
 	"proseWrap": "always",
 	"plugins": ["prettier-plugin-svelte"],
 	"overrides": [
@@ -17,17 +16,9 @@
 			}
 		},
 		{
-			"files": "*.json",
+			"files": [".md", "*.json"],
 			"options": {
-				"tabWidth": 2,
-				"useTabs": true
-			}
-		},
-		{
-			"files": "*.md",
-			"options": {
-				"tabWidth": 2,
-				"useTabs": false
+				"tabWidth": 2
 			}
 		},
 		{
