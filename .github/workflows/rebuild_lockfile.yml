@@ -33,6 +33,8 @@ jobs:
             package.json
             pnpm-lock.yaml
             pnpm-workspace.yaml
+            scripts/sync-textmate-grammar.mjs
+            src/lib/editor/Luau.tmLanguage.json
 
       - name: Create branch
         run: |
@@ -48,16 +50,17 @@ jobs:
       - name: Update Dependencies
         run: 'pnpm update'
 
-      - name: Update Vulnerable Packages
-        run: 'pnpm audit --fix=update'
-
       - name: Delete Modules
         run: |
-          rm -rf ./node_modules
-          rm -f ./pnpm-lock.yaml
+          EMPTYDIR=$(mktemp -d)
+          rsync -a --delete $EMPTYDIR/ node_modules/
+          rm -f pnpm-lock.yaml
 
       - name: Install Dependencies
         run: 'pnpm install --no-frozen-lockfile --lockfile-only'
+
+      - name: Update Vulnerable Packages
+        run: 'pnpm audit --fix=update'
 
       - name: Dedupe Dependencies
         run: 'pnpm dedupe'
@@ -69,6 +72,7 @@ jobs:
           git add package.json
           git add pnpm-lock.yaml
           git add pnpm-workspace.yaml
+          git add src/lib/editor/Luau.tmLanguage.json
           git commit -m "chore(deps): rebuild lockfile"
           git push origin rebuild-lockfile --force
           gh pr create --fill
