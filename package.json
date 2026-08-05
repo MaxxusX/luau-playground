@@ -21,7 +21,7 @@
 		"@codemirror/lint": "^6.9.7",
 		"@codemirror/search": "^6.7.1",
 		"@codemirror/state": "^6.7.1",
-		"@codemirror/view": "^6.43.7",
+		"@codemirror/view": "^6.43.8",
 		"@lezer/highlight": "^1.2.3",
 		"@oddbird/css-anchor-positioning": "^0.10.1",
 		"@phosphor-icons/core": "^2.1.1",
