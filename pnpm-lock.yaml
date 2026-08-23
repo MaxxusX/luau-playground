@@ -233,7 +233,7 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@oddbird/css-anchor-positioning':
-        specifier: ^0.10.1
+        specifier: ^0.10.2
         version: 0.10.2
       '@phosphor-icons/core':
         specifier: ^2.1.1
