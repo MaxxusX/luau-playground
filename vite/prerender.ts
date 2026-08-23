@@ -30,9 +30,29 @@ export function prerenderPlugin(): Plugin {
 				plugins: [compileGrammarPlugin(), svelte(), tailwindcss()],
 				resolve: { alias: { $lib: path.resolve(rootDir, "./src/lib") } },
 				build: {
+					target: ["chrome145", "edge145", "firefox148", "safari26.2", "ios26.2"],
+					sourcemap: false,
+					cssMinify: "lightningcss",
+					reportCompressedSize: false,
 					ssr: true,
 					outDir: serverOutDir,
 					rollupOptions: { input: path.resolve(__dirname, "entry-server.ts") },
+				},
+				css: {
+					transformer: "lightningcss",
+					devSourcemap: false,
+					lightningcss: {
+						minify: true,
+						sourceMap: false,
+						errorRecovery: false,
+						targets: {
+							chrome: 145 << 16,
+							edge: 145 << 16,
+							firefox: 148 << 16,
+							safari: (26 << 16) | (2 << 8),
+							ios_saf: (26 << 16) | (2 << 8),
+						},
+					},
 				},
 				logLevel: "warn",
 			});
