@@ -22,5 +22,26 @@ export default defineConfig({
 		inlineCss(),
 	],
 	resolve: { alias: { $lib: path.resolve(__dirname, "./src/lib") } },
-	build: { sourcemap: false },
+	build: {
+		target: ["chrome145", "edge145", "firefox148", "safari26.2", "ios26.2"],
+		sourcemap: false,
+		cssMinify: "lightningcss",
+		reportCompressedSize: false,
+	},
+	css: {
+		transformer: "lightningcss",
+		devSourcemap: false,
+		lightningcss: {
+			minify: true,
+			sourceMap: false,
+			errorRecovery: false,
+			targets: {
+				chrome: 145 << 16,
+				edge: 145 << 16,
+				firefox: 148 << 16,
+				safari: (26 << 16) | (2 << 8),
+				ios_saf: (26 << 16) | (2 << 8),
+			},
+		},
+	},
 });
