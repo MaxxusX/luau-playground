@@ -212,7 +212,7 @@ importers:
         specifier: ^6.20.3
         version: 6.20.3
       '@codemirror/commands':
-        specifier: ^6.10.4
+        specifier: ^6.11.0
         version: 6.11.0
       '@codemirror/language':
         specifier: ^6.12.4
@@ -227,13 +227,13 @@ importers:
         specifier: ^6.7.1
         version: 6.7.1
       '@codemirror/view':
-        specifier: ^6.43.8
+        specifier: ^6.43.9
         version: 6.43.9
       '@lezer/highlight':
         specifier: ^1.2.3
         version: 1.2.3
       '@oddbird/css-anchor-positioning':
-        specifier: ^0.10.1
+        specifier: ^0.10.2
         version: 0.10.2
       '@phosphor-icons/core':
         specifier: ^2.1.1
@@ -246,7 +246,7 @@ importers:
         version: 9.3.2
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
-        specifier: ^7.2.0
+        specifier: ^7.3.0
         version: 7.3.0(svelte@5.56.10)(vite@8.2.2)
       '@tailwindcss/vite':
         specifier: ^4.3.3
@@ -255,7 +255,7 @@ importers:
         specifier: ^5.0.8
         version: 5.0.8
       '@types/node':
-        specifier: ^26.1.2
+        specifier: ^26.2.0
         version: 26.2.0
       node:
         specifier: runtime:^26.7.0
@@ -270,10 +270,10 @@ importers:
         specifier: 4.1.1
         version: 4.1.1(prettier@3.9.6)(svelte@5.56.10)
       svelte:
-        specifier: ^5.56.8
+        specifier: ^5.56.10
         version: 5.56.10
       svelte-check:
-        specifier: ^4.7.5
+        specifier: ^4.7.6
         version: 4.7.6(picomatch@4.0.5)(svelte@5.56.10)(typescript@6.0.3)
       tailwindcss:
         specifier: ^4.3.3
