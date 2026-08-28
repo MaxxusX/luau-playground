@@ -23,17 +23,17 @@ let compiledWasmModule: WebAssembly.Module | null = null;
 
 // Message types for worker communication
 export type WorkerRequest = (
-	| { requestId: string, type: "init"; wasmModule: WebAssembly.Module }
-	| { requestId: string, type: "execute"; code: string }
-	| { requestId: string, type: "getDiagnostics"; code: string }
-	| { requestId: string, type: "autocomplete"; code: string; line: number; col: number }
-	| { requestId: string, type: "hover"; code: string; line: number; col: number }
-	| { requestId: string, type: "getModules" }
-	| { requestId: string, type: "setMode"; mode: number }
-	| { requestId: string, type: "setSolver"; isNew: boolean }
-	| { requestId: string, type: "setFFlags"; serializedFlags: string }
+	| { requestId: string; type: "init"; wasmModule: WebAssembly.Module }
+	| { requestId: string; type: "execute"; code: string }
+	| { requestId: string; type: "getDiagnostics"; code: string }
+	| { requestId: string; type: "autocomplete"; code: string; line: number; col: number }
+	| { requestId: string; type: "hover"; code: string; line: number; col: number }
+	| { requestId: string; type: "getModules" }
+	| { requestId: string; type: "setMode"; mode: number }
+	| { requestId: string; type: "setSolver"; isNew: boolean }
+	| { requestId: string; type: "setFFlags"; serializedFlags: string }
 	| {
-			requestId: string,
+			requestId: string;
 			type: "getBytecode";
 			code: string;
 			optimizationLevel: number;
@@ -41,23 +41,23 @@ export type WorkerRequest = (
 			outputFormat: number;
 			showRemarks: boolean;
 	  }
-	| { requestId: string, type: "registerModules"; modules: Record<string, string> }
-	| { requestId: string, type: "registerSources"; sources: Record<string, string> });
+	| { requestId: string; type: "registerModules"; modules: Record<string, string> }
+	| { requestId: string; type: "registerSources"; sources: Record<string, string> });
 
 export type WorkerResponse = (
-	| { requestId: string, type: "ready" }
-	| { requestId: string, type: "execute"; result: ExecuteResult; elapsed: number }
-	| { requestId: string, type: "getDiagnostics"; result: DiagnosticsResult; elapsed: number }
-	| { requestId: string, type: "autocomplete"; result: AutocompleteResult }
-	| { requestId: string, type: "hover"; result: HoverResult }
-	| { requestId: string, type: "getModules"; result: { modules: string[] } }
-	| { requestId: string, type: "setMode"; success: boolean }
-	| { requestId: string, type: "setSolver"; success: boolean }
-	| { requestId: string, type: "setFFlags"; success: boolean }
-	| { requestId: string, type: "getBytecode"; result: { success: boolean; bytecode: string; error?: string } }
-	| { requestId: string, type: "registerModules"; success: boolean }
-	| { requestId: string, type: "registerSources"; success: boolean }
-	| { requestId: string, type: "error"; error: string });
+	| { requestId: string; type: "ready" }
+	| { requestId: string; type: "execute"; result: ExecuteResult; elapsed: number }
+	| { requestId: string; type: "getDiagnostics"; result: DiagnosticsResult; elapsed: number }
+	| { requestId: string; type: "autocomplete"; result: AutocompleteResult }
+	| { requestId: string; type: "hover"; result: HoverResult }
+	| { requestId: string; type: "getModules"; result: { modules: string[] } }
+	| { requestId: string; type: "setMode"; success: boolean }
+	| { requestId: string; type: "setSolver"; success: boolean }
+	| { requestId: string; type: "setFFlags"; success: boolean }
+	| { requestId: string; type: "getBytecode"; result: { success: boolean; bytecode: string; error?: string } }
+	| { requestId: string; type: "registerModules"; success: boolean }
+	| { requestId: string; type: "registerSources"; success: boolean }
+	| { requestId: string; type: "error"; error: string });
 
 async function loadModule(): Promise<LuauWasmModule> {
 	if (wasmModule) return wasmModule;
