@@ -187,16 +187,15 @@ async function initializeWorker(
 		});
 
 		manager.worker!.postMessage({
+			requestId,
 			type: "init",
 			wasmModule,
-			requestId,
 		} satisfies WorkerRequest);
 	});
 }
 
 // Type mapping from request type to response type
-type ResponseForRequest<T extends WorkerRequest["type"], U extends WorkerRequest["requestId"]> =
-	Extract<WorkerResponse, { type: T, requestId: U }>;
+type ResponseForRequest<T extends WorkerRequest["type"]> = Extract<WorkerResponse, { type: T }>;
 
 // helper (better perf to overwrite preexisting value than set new one)
 const requestId = "req_0";
@@ -287,12 +286,12 @@ async function loadAnalysisWorker(): Promise<void> {
 		postInit: async () => {
 			const robloxStudioFlags = await robloxStudioFlagsPromise;
 			if (robloxStudioFlags) {
-				await sendToWorker(analysis, { type: "setFFlags", serializedFlags: robloxStudioFlags, requestId });
+				await sendToWorker(analysis, { requestId, type: "setFFlags", serializedFlags: robloxStudioFlags });
 			}
 
 			const currentSettings = get(settings);
-			await sendToWorker(analysis, { type: "setMode", mode: modeToNum(currentSettings.mode), requestId });
-			await sendToWorker(analysis, { type: "setSolver", isNew: currentSettings.solver === "new", requestId });
+			await sendToWorker(analysis, { requestId, type: "setMode", mode: modeToNum(currentSettings.mode) });
+			await sendToWorker(analysis, { requestId, type: "setSolver", isNew: currentSettings.solver === "new" });
 			initSettingsSync();
 		},
 	});
@@ -307,7 +306,7 @@ async function sendAnalysisRequest<T extends WorkerRequest["type"]>(
 
 async function syncAnalysisSources(): Promise<void> {
 	const allFiles = getAllFiles();
-	await sendAnalysisRequest({ type: "registerSources", sources: allFiles, requestId });
+	await sendAnalysisRequest({ requestId, type: "registerSources", sources: allFiles });
 }
 
 // ============================================================================
@@ -324,11 +323,11 @@ async function loadExecutionWorker(): Promise<void> {
 		postInit: async () => {
 			const robloxStudioFlags = await robloxStudioFlagsPromise;
 			if (robloxStudioFlags) {
-				await sendToWorker(execution, { type: "setFFlags", serializedFlags: robloxStudioFlags, requestId });
+				await sendToWorker(execution, { requestId, type: "setFFlags", serializedFlags: robloxStudioFlags });
 			}
 
 			const currentSettings = get(settings);
-			await sendToWorker(execution, { type: "setMode", mode: modeToNum(currentSettings.mode), requestId });
+			await sendToWorker(execution, { requestId, type: "setMode", mode: modeToNum(currentSettings.mode) });
 		},
 	});
 }
@@ -374,7 +373,7 @@ export async function executeCode(
 	code: string
 ): Promise<{ result: ExecuteResult; elapsed: number }> {
 	try {
-		const response = await sendExecutionRequest({ type: "execute", code, requestId });
+		const response = await sendExecutionRequest({ requestId, type: "execute", code });
 		return { result: response.result, elapsed: response.elapsed };
 	} catch (error) {
 		// Silently handle stopped/cancelled - no error to report
@@ -399,7 +398,7 @@ export async function getDiagnostics(
 	try {
 		await syncAnalysisSources();
 
-		const response = await sendAnalysisRequest({ type: "getDiagnostics", code, requestId });
+		const response = await sendAnalysisRequest({ requestId, type: "getDiagnostics", code });
 		const diagnostics = response.result.diagnostics.filter(
 			(diag) => !diag.moduleName || diag.moduleName === "main"
 		);
@@ -420,7 +419,7 @@ export async function getAutocomplete(
 ): Promise<LuauCompletion[]> {
 	try {
 		await syncAnalysisSources();
-		const response = await sendAnalysisRequest({ type: "autocomplete", code, line, col, requestId });
+		const response = await sendAnalysisRequest({ requestId, type: "autocomplete", code, line, col });
 		return response.result.items;
 	} catch (error) {
 		console.error("[Luau] Autocomplete error:", error);
@@ -434,7 +433,7 @@ export async function getAutocomplete(
 export async function getHover(code: string, line: number, col: number): Promise<string | null> {
 	try {
 		await syncAnalysisSources();
-		const response = await sendAnalysisRequest({ type: "hover", code, line, col, requestId });
+		const response = await sendAnalysisRequest({ requestId, type: "hover", code, line, col });
 		return response.result.content;
 	} catch (error) {
 		console.error("[Luau] Hover error:", error);
@@ -448,7 +447,7 @@ export async function getHover(code: string, line: number, col: number): Promise
 export async function getAvailableModules(): Promise<string[]> {
 	try {
 		await syncAnalysisSources();
-		const response = await sendAnalysisRequest({ type: "getModules", requestId });
+		const response = await sendAnalysisRequest({ requestId, type: "getModules" });
 		return response.result.modules;
 	} catch (error) {
 		console.error("[Luau] Failed to get modules:", error);
@@ -461,10 +460,10 @@ export async function getAvailableModules(): Promise<string[]> {
  */
 export async function setLuauMode(mode: LuauMode): Promise<void> {
 	try {
-		await sendAnalysisRequest({ type: "setMode", mode: modeToNum(mode), requestId });
+		await sendAnalysisRequest({ requestId, type: "setMode", mode: modeToNum(mode) });
 		// Also update execution worker if it's running
 		if (execution.ready) {
-			await sendToWorker(execution, { type: "setMode", mode: modeToNum(mode), requestId });
+			await sendToWorker(execution, { requestId, type: "setMode", mode: modeToNum(mode) });
 		}
 	} catch (error) {
 		console.error("[Luau] Failed to set mode:", error);
@@ -476,10 +475,10 @@ export async function setLuauMode(mode: LuauMode): Promise<void> {
  */
 export async function setLuauSolver(solver: SolverMode): Promise<void> {
 	try {
-		await sendAnalysisRequest({ type: "setSolver", isNew: solver === "new", requestId });
+		await sendAnalysisRequest({ requestId, type: "setSolver", isNew: solver === "new" });
 		// Also update execution worker if it's running
 		if (execution.ready) {
-			await sendToWorker(execution, { type: "setSolver", isNew: solver === "new", requestId });
+			await sendToWorker(execution, { requestId, type: "setSolver", isNew: solver === "new" });
 		}
 	} catch (error) {
 		console.error("[Luau] Failed to set solver:", error);
@@ -527,7 +526,7 @@ export async function runCode(): Promise<void> {
 
 		// Register all files as modules for require support
 		const allFiles = getAllFiles();
-		await sendExecutionRequest({ type: "registerModules", modules: allFiles, requestId });
+		await sendExecutionRequest({ requestId, type: "registerModules", modules: allFiles });
 
 		if (currentRunId !== myRunId) return;
 
@@ -646,13 +645,13 @@ export async function getBytecode(
 ): Promise<{ success: boolean; bytecode: string; error?: string }> {
 	try {
 		const response = await sendAnalysisRequest({
+			requestId,
 			type: "getBytecode",
 			code,
 			optimizationLevel,
 			debugLevel,
 			outputFormat,
 			showRemarks,
-			requestId,
 		});
 		return response.result;
 	} catch (error) {
