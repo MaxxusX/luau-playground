@@ -23,16 +23,17 @@ let compiledWasmModule: WebAssembly.Module | null = null;
 
 // Message types for worker communication
 export type WorkerRequest = (
-	| { type: "init"; wasmModule: WebAssembly.Module }
-	| { type: "execute"; code: string }
-	| { type: "getDiagnostics"; code: string }
-	| { type: "autocomplete"; code: string; line: number; col: number }
-	| { type: "hover"; code: string; line: number; col: number }
-	| { type: "getModules" }
-	| { type: "setMode"; mode: number }
-	| { type: "setSolver"; isNew: boolean }
-	| { type: "setFFlags"; serializedFlags: string }
+	| { requestId: string, type: "init"; wasmModule: WebAssembly.Module }
+	| { requestId: string, type: "execute"; code: string }
+	| { requestId: string, type: "getDiagnostics"; code: string }
+	| { requestId: string, type: "autocomplete"; code: string; line: number; col: number }
+	| { requestId: string, type: "hover"; code: string; line: number; col: number }
+	| { requestId: string, type: "getModules" }
+	| { requestId: string, type: "setMode"; mode: number }
+	| { requestId: string, type: "setSolver"; isNew: boolean }
+	| { requestId: string, type: "setFFlags"; serializedFlags: string }
 	| {
+			requestId: string,
 			type: "getBytecode";
 			code: string;
 			optimizationLevel: number;
@@ -40,25 +41,23 @@ export type WorkerRequest = (
 			outputFormat: number;
 			showRemarks: boolean;
 	  }
-	| { type: "registerModules"; modules: Record<string, string> }
-	| { type: "registerSources"; sources: Record<string, string> })
-	& { requestId: string };
+	| { requestId: string, type: "registerModules"; modules: Record<string, string> }
+	| { requestId: string, type: "registerSources"; sources: Record<string, string> });
 
 export type WorkerResponse = (
-	| { type: "ready" }
-	| { type: "execute"; result: ExecuteResult; elapsed: number }
-	| { type: "getDiagnostics"; result: DiagnosticsResult; elapsed: number }
-	| { type: "autocomplete"; result: AutocompleteResult }
-	| { type: "hover"; result: HoverResult }
-	| { type: "getModules"; result: { modules: string[] } }
-	| { type: "setMode"; success: boolean }
-	| { type: "setSolver"; success: boolean }
-	| { type: "setFFlags"; success: boolean }
-	| { type: "getBytecode"; result: { success: boolean; bytecode: string; error?: string } }
-	| { type: "registerModules"; success: boolean }
-	| { type: "registerSources"; success: boolean }
-	| { type: "error"; error: string })
-	& { requestId: string };
+	| { requestId: string, type: "ready" }
+	| { requestId: string, type: "execute"; result: ExecuteResult; elapsed: number }
+	| { requestId: string, type: "getDiagnostics"; result: DiagnosticsResult; elapsed: number }
+	| { requestId: string, type: "autocomplete"; result: AutocompleteResult }
+	| { requestId: string, type: "hover"; result: HoverResult }
+	| { requestId: string, type: "getModules"; result: { modules: string[] } }
+	| { requestId: string, type: "setMode"; success: boolean }
+	| { requestId: string, type: "setSolver"; success: boolean }
+	| { requestId: string, type: "setFFlags"; success: boolean }
+	| { requestId: string, type: "getBytecode"; result: { success: boolean; bytecode: string; error?: string } }
+	| { requestId: string, type: "registerModules"; success: boolean }
+	| { requestId: string, type: "registerSources"; success: boolean }
+	| { requestId: string, type: "error"; error: string });
 
 async function loadModule(): Promise<LuauWasmModule> {
 	if (wasmModule) return wasmModule;
@@ -115,7 +114,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				compiledWasmModule = request.wasmModule;
 				await loadModule();
 				// self.postMessage({ type: "ready", requestId });
-				respond({ type: "ready", requestId });
+				respond({ requestId, type: "ready" });
 				break;
 			}
 
@@ -131,6 +130,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				const elapsed = performance.now() - startTime;
 				if (!resultJson) {
 					respond({
+						requestId,
 						type: "execute",
 						result: {
 							success: false,
@@ -138,11 +138,10 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 							error: "No result returned from execution",
 						},
 						elapsed,
-						requestId,
 					});
 				} else {
 					const result = JSON.parse(resultJson) as ExecuteResult;
-					respond({ type: "execute", result, elapsed, requestId });
+					respond({ requestId, type: "execute", result, elapsed });
 				}
 				break;
 			}
@@ -158,7 +157,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				);
 				const elapsed = performance.now() - startTime;
 				const result = JSON.parse(resultJson) as DiagnosticsResult;
-				respond({ type: "getDiagnostics", result, elapsed, requestId });
+				respond({ requestId, type: "getDiagnostics", result, elapsed });
 				break;
 			}
 
@@ -171,7 +170,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					[request.code, request.line, request.col]
 				);
 				const result = JSON.parse(resultJson) as AutocompleteResult;
-				respond({ type: "autocomplete", result, requestId });
+				respond({ requestId, type: "autocomplete", result });
 				break;
 			}
 
@@ -184,7 +183,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					[request.code, request.line, request.col]
 				);
 				const result = JSON.parse(resultJson) as HoverResult;
-				respond({ type: "hover", result, requestId });
+				respond({ requestId, type: "hover", result });
 				break;
 			}
 
@@ -197,7 +196,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					[]
 				);
 				const result = JSON.parse(resultJson) as { modules: string[] };
-				respond({ type: "getModules", result, requestId });
+				respond({ requestId, type: "getModules", result });
 				break;
 			}
 
@@ -209,7 +208,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					["number"],
 					[request.mode]
 				);
-				respond({ type: "setMode", success: true, requestId });
+				respond({ requestId, type: "setMode", success: true });
 				break;
 			}
 
@@ -221,7 +220,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					["boolean"],
 					[request.isNew]
 				);
-				respond({ type: "setSolver", success: true, requestId });
+				respond({ requestId, type: "setSolver", success: true });
 				break;
 			}
 
@@ -233,7 +232,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					["string"],
 					[request.serializedFlags]
 				);
-				respond({ type: "setFFlags", success: true, requestId });
+				respond({ requestId, type: "setFFlags", success: true });
 				break;
 			}
 
@@ -252,7 +251,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 					]
 				);
 				const result = JSON.parse(resultJson);
-				respond({ type: "getBytecode", result, requestId });
+				respond({ requestId, type: "getBytecode", result });
 				break;
 			}
 
@@ -264,7 +263,7 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				for (const [name, content] of Object.entries(request.modules)) {
 					registerFile(module, name, content, "luau_add_module");
 				}
-				respond({ type: "registerModules", success: true, requestId });
+				respond({ requestId, type: "registerModules", success: true });
 				break;
 			}
 
@@ -275,16 +274,16 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 				for (const [name, content] of Object.entries(request.sources)) {
 					registerFile(module, name, content, "luau_set_source");
 				}
-				respond({ type: "registerSources", success: true, requestId });
+				respond({ requestId, type: "registerSources", success: true });
 				break;
 			}
 
 			default: {
 				const exhaustiveCheck: never = request;
 				respond({
+					requestId,
 					type: "error",
 					error: "Unknown request type: "+(exhaustiveCheck as WorkerRequest).type,
-					requestId,
 				});
 				break;
 			}
@@ -295,6 +294,6 @@ self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
 			: typeof error === "number" ? `Uncaught exception (code: ${error})`
 			: String(error);
 
-		respond({ type: "error", error: errorMsg, requestId });
+		respond({ requestId, type: "error", error: errorMsg });
 	}
 };
