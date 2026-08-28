@@ -195,7 +195,8 @@ async function initializeWorker(
 }
 
 // Type mapping from request type to response type
-type ResponseForRequest<T extends WorkerRequest["type"]> = Extract<WorkerResponse, { type: T }>;
+type ResponseForRequest<T extends WorkerRequest["type"], U extends WorkerRequest["requestId"]> =
+	Extract<WorkerResponse, { type: T, requestId: U }>;
 
 // helper (better perf to overwrite preexisting value than set new one)
 const requestId = "req_0";
