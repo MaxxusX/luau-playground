@@ -25,7 +25,8 @@ runs:
         echo "commit=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
 
     - name: Restore build cache
-      uses: actions/cache@v6
+      id: build-cache-restore
+      uses: actions/cache/restore@v6
       with:
         path: |
           emsdk
@@ -63,6 +64,18 @@ runs:
         source emsdk/emsdk_env.sh
         cd wasm
         ./build.sh release
+
+    - name: Save build cache
+      if: steps.build-cache-restore.outcome == 'success' && steps.build-cache-restore.outputs.cache-hit == 'false'
+      uses: actions/cache/save@v6
+      with:
+        path: |
+          emsdk
+          wasm/build
+          wasm/luau
+          public/wasm/luau.wasm
+          src/lib/luau/luau-module.js
+        key: ${{ steps.build-cache-restore.outputs.cache-primary-key }}
 
     - name: Setup PNPM
       uses: pnpm/setup@v2
