@@ -211,7 +211,7 @@ async function sendToWorker<T extends WorkerRequest["type"]>(
 
 	return new Promise((resolve, reject) => {
 		manager.pendingRequests.set(requestId, {
-			resolve: resolve as (value: Extract<WorkerResponse, { type: T }>) => void,
+			resolve: resolve as unknown as (value: ResponseForRequest<T>) => void,
 			reject,
 		});
 		manager.worker!.postMessage(params);
