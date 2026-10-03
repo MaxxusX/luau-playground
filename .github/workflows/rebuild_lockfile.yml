@@ -78,6 +78,5 @@ jobs:
           git add src/lib/editor/Luau.tmLanguage.json
           git commit -m 'chore(deps): rebuild lockfile'
           git push origin rebuild-lockfile --force
-          gh pr create --fill
         env:
           GH_TOKEN: ${{ github.token }}
