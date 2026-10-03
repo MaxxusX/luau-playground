@@ -13,7 +13,7 @@ jobs:
           persist-credentials: false
 
       - name: Build
-        uses: ./.github/actions/build
+        uses: $/.github/actions/build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v7
