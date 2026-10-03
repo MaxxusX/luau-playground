@@ -189,7 +189,7 @@ importers:
         specifier: ^6.43.11
         version: 6.43.13
       '@lezer/highlight':
-        specifier: ^1.2.3
+        specifier: ^1.2.5
         version: 1.2.5
       '@phosphor-icons/core':
         specifier: ^2.1.1
