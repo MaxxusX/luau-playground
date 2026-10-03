@@ -171,7 +171,7 @@ importers:
         specifier: ^6.20.3
         version: 6.20.3
       '@codemirror/commands':
-        specifier: ^6.11.0
+        specifier: ^6.11.1
         version: 6.11.1
       '@codemirror/language':
         specifier: ^6.12.4
@@ -183,13 +183,13 @@ importers:
         specifier: ^6.7.2
         version: 6.7.2
       '@codemirror/state':
-        specifier: ^6.7.4
+        specifier: ^6.7.6
         version: 6.7.6
       '@codemirror/view':
-        specifier: ^6.43.11
+        specifier: ^6.43.13
         version: 6.43.13
       '@lezer/highlight':
-        specifier: ^1.2.3
+        specifier: ^1.2.5
         version: 1.2.5
       '@phosphor-icons/core':
         specifier: ^2.1.1
@@ -202,7 +202,7 @@ importers:
         version: 9.3.2
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
-        specifier: ^7.3.0
+        specifier: ^7.3.1
         version: 7.3.1(svelte@5.57.1)(vite@8.3.2)
       '@tailwindcss/vite':
         specifier: ^4.3.3
@@ -211,10 +211,10 @@ importers:
         specifier: ^5.0.8
         version: 5.0.8
       '@types/node':
-        specifier: ^26.5.1
+        specifier: ^26.6.4
         version: 26.6.4
       node:
-        specifier: runtime:^26.8.2
+        specifier: runtime:^26.10.0
         version: runtime:26.10.0
       oniguruma-to-es:
         specifier: ^4.3.6
@@ -226,7 +226,7 @@ importers:
         specifier: 4.1.1
         version: 4.1.1(prettier@3.9.6)(svelte@5.57.1)
       svelte:
-        specifier: ^5.57.0
+        specifier: ^5.57.1
         version: 5.57.1
       svelte-check:
         specifier: ^4.7.6
@@ -238,7 +238,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       vite:
-        specifier: ^8.3.0
+        specifier: ^8.3.2
         version: 8.3.2(@types/node@26.6.4)(jiti@2.7.0)
 
 packages:
