@@ -78,7 +78,7 @@ runs:
         key: ${{ steps.build-cache-restore.outputs.cache-primary-key }}
 
     - name: Setup PNPM
-      uses: pnpm/setup@v2
+      uses: pnpm/setup@v3
       with:
         runtime: node
         cache: true
