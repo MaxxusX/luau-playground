@@ -210,7 +210,6 @@ if(EMSCRIPTEN)
         # Optimization
         -O3
         -flto
-        --closure 1
         
         # Dead code elimination
         -Wl,--gc-sections
