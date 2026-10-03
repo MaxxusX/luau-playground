@@ -211,7 +211,7 @@ importers:
         specifier: ^5.0.8
         version: 5.0.8
       '@types/node':
-        specifier: ^26.5.1
+        specifier: ^26.6.4
         version: 26.6.4
       node:
         specifier: runtime:^26.8.2
