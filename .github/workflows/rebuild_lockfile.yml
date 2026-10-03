@@ -21,7 +21,7 @@ defaults:
 
 jobs:
   rebuild_lockfile:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -52,8 +52,8 @@ jobs:
 
       - name: Delete Modules
         run: |
-          EMPTYDIR=$(mktemp -d)
-          rsync -a --delete $EMPTYDIR/ node_modules/
+          EMPTYDIR="$(mktemp -d)" || exit 1
+          rsync -a --delete "$EMPTYDIR/" node_modules/
           rm -f pnpm-lock.yaml
 
       - name: Install Dependencies
