@@ -1,13 +1,13 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
-import { fileURLToPath } from "url";
-import path from "path";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 
-import { preloadDynamicChunks } from "./vite/preload-chunks";
-import { prerenderPlugin } from "./vite/prerender";
-import { inlineCss } from "./vite/inline-css";
-import { compileGrammarPlugin } from "./vite/compile-grammar";
+import { preloadDynamicChunks } from "./vite/preload-chunks.ts";
+import { prerenderPlugin } from "./vite/prerender.ts";
+import { inlineCss } from "./vite/inline-css.ts";
+import { compileGrammarPlugin } from "./vite/compile-grammar.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
