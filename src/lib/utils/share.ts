@@ -4,13 +4,14 @@
  * Encodes playground state into URL-safe compressed format using lz-string.
  */
 
-import { files, activeFile } from "$lib/stores/playground";
-import { settings, showBytecode, type PlaygroundSettings } from "$lib/stores/settings";
-import { type ThemeMode } from "$lib/utils/theme";
-import { defaultSettings, CURRENT_VERSION, DEFAULT_FILENAME } from "$lib/constants";
-import { get } from "svelte/store";
 import LZString from "lz-string";
-import { type ShareState, type MinimalShareState } from "$lib/utils/decode";
+import { get } from "svelte/store";
+
+import type { ThemeMode } from "$lib/utils/theme";
+import type { ShareState, MinimalShareState } from "$lib/utils/decode.ts";
+import { files, activeFile } from "$lib/stores/playground.ts";
+import { settings, showBytecode, type PlaygroundSettings } from "$lib/stores/settings.ts";
+import { defaultSettings, CURRENT_VERSION, DEFAULT_FILENAME } from "$lib/constants.ts";
 
 /**
  * Check if settings differ from defaults.
