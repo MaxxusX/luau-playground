@@ -58,7 +58,6 @@ export default defineConfig({
 			pureGetters: true,
 		},
 		typescript: {
-			useDefineForClassFields: true,
 			optimizeConstEnums: true,
 			optimizeEnums: true,
 		},
