@@ -5,12 +5,12 @@ export {
 	getEditorContent,
 	getEditorView,
 	focusEditor,
-} from "./setup";
-export { luauTextMate, initLuauTextMate } from "./textmate";
-export { darkTheme, lightTheme } from "./themes";
+} from "./setup.ts";
+export { luauTextMate, initLuauTextMate } from "./textmate.ts";
+export { darkTheme, lightTheme } from "./themes.ts";
 export {
 	luauLspExtensions,
 	createLuauLinter,
 	createLuauAutocomplete,
 	createLuauHover,
-} from "./lspExtensions";
+} from "./lspExtensions.ts";
