@@ -11,7 +11,7 @@
 		setActiveFile,
 		renameFile,
 	} from "$lib/stores/playground.ts";
-	import { showBytecode, toggleBytecode } from "$lib/stores/settings.ts";
+	import { showBytecode, toggleBytecode } from "$lib/stores/settings.svelte.ts";
 	import { toggleTheme, themeMode } from "$lib/utils/theme.ts";
 	import { runCode, checkCode, stopExecution } from "$lib/luau/wasm.ts";
 	import { isRunning } from "$lib/stores/playground.ts";
