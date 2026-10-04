@@ -2,7 +2,7 @@
  * Luau WASM Module Types
  */
 
-import type { LuauValue } from "$lib/utils/output";
+import type { LuauValue } from "$lib/utils/output.ts";
 
 export interface LuauDiagnostic {
 	severity: "error" | "warning" | "info";
