@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { compileGrammarPlugin } from "./compile-grammar";
+import { compileGrammarPlugin } from "./compile-grammar.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
