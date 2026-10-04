@@ -1,5 +1,5 @@
 // Shared constants used across the playground
-import type { PlaygroundSettings } from "$lib/stores/settings.ts";
+import type { PlaygroundSettings } from "$lib/stores/settings.svelte.ts";
 
 // Default settings used when nothing is provided via URL or storage
 export const defaultSettings: PlaygroundSettings = {
