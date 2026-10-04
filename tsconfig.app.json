@@ -29,7 +29,6 @@
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 		"noPropertyAccessFromIndexSignature": true,
-		"noUncheckedIndexedAccess": true,
 		"isolatedDeclarations": true,
 		"isolatedModules": true,
 	},
