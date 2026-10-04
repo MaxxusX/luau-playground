@@ -10,17 +10,17 @@ import { linter, type Diagnostic } from "@codemirror/lint";
 import { autocompletion, startCompletion } from "@codemirror/autocomplete";
 import type { CompletionContext, CompletionResult, Completion } from "@codemirror/autocomplete";
 import type { Extension } from "@codemirror/state";
+import { get } from "svelte/store";
 import {
 	getDiagnostics,
 	getAutocomplete,
 	getHover,
 	getAvailableModules,
 	type LuauCompletion,
-} from "$lib/luau/wasm";
-import { activeFile } from "$lib/stores/playground";
-import { get } from "svelte/store";
+} from "$lib/luau/wasm.ts";
+import { activeFile } from "$lib/stores/playground.ts";
 
-import { highlightLuauHtml } from "./textmate";
+import { highlightLuauHtml } from "./textmate.ts";
 
 // ============================================================================
 // Diagnostics (Linter)
