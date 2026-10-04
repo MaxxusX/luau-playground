@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
-	import { Icon, type IconName } from "$lib/icons";
+	import { Icon, type IconName } from "$lib/icons.ts";
 	import ConfigPopover from "$lib/components/ConfigPopover.svelte";
 	import EmbedPopover from "$lib/components/EmbedPopover.svelte";
 	import {
@@ -10,13 +10,13 @@
 		removeFile,
 		setActiveFile,
 		renameFile,
-	} from "$lib/stores/playground";
-	import { showBytecode, toggleBytecode } from "$lib/stores/settings";
-	import { toggleTheme, themeMode } from "$lib/utils/theme";
-	import { runCode, checkCode, stopExecution } from "$lib/luau/wasm";
-	import { isRunning } from "$lib/stores/playground";
-	import { sharePlayground, generatePlaygroundUrl } from "$lib/utils/share";
-	import { isEmbed } from "$lib/stores/embed";
+	} from "$lib/stores/playground.ts";
+	import { showBytecode, toggleBytecode } from "$lib/stores/settings.ts";
+	import { toggleTheme, themeMode } from "$lib/utils/theme.ts";
+	import { runCode, checkCode, stopExecution } from "$lib/luau/wasm.ts";
+	import { isRunning } from "$lib/stores/playground.ts";
+	import { sharePlayground, generatePlaygroundUrl } from "$lib/utils/share.ts";
+	import { isEmbed } from "$lib/stores/embed.ts";
 
 	let newFileName = $state("");
 	let isCreatingFile = $state(false);
@@ -82,24 +82,11 @@
 		editValue = "";
 	}
 
-	function handleTabPointerDown(fileName: string, e: PointerEvent) {
-		// Start long press timer for editing
-		longPressTimer = setTimeout(() => {
-			startEditing(fileName);
-			longPressTimer = null;
-		}, 500);
-	}
-
 	function handleTabPointerUp() {
 		if (longPressTimer) {
 			clearTimeout(longPressTimer);
 			longPressTimer = null;
 		}
-	}
-
-	function handleTabDblClick(fileName: string, e: MouseEvent) {
-		e.stopPropagation();
-		startEditing(fileName);
 	}
 
 	function handleRun() {
@@ -141,18 +128,30 @@
 	<div class="flex items-end gap-0.5 flex-1 overflow-x-auto overflow-y-hidden scrollbar-hide">
 		{#each Object.keys($files) as fileName}
 			<div
-				class="group relative flex items-center gap-1 px-2 sm:px-3 py-1.5 text-sm leading-5 rounded-t-md transition-colors cursor-pointer shrink-0 select-none border-t border-x
-          {$activeFile === fileName ?
-					'bg-(--bg-editor) text-(--text-primary) border-(--border-color) z-10 -mb-px'
-				:	'text-(--text-secondary) hover:bg-(--bg-tertiary) border-transparent -mb-px'}"
+				class="group relative flex items-center gap-1 px-2 sm:px-3 py-1.5 text-sm leading-5 rounded-t-md transition-colors cursor-pointer shrink-0 select-none border-t border-x {
+					$activeFile === fileName
+					? 'bg-(--bg-editor) text-(--text-primary) border-(--border-color) z-10 -mb-px'
+					: 'text-(--text-secondary) hover:bg-(--bg-tertiary) border-transparent -mb-px'}"
 				role="button"
 				tabindex="0"
 				aria-label="Switch to {fileName}"
-				onclick={() => editingFileName !== fileName && setActiveFile(fileName)}
-				onkeydown={(e) =>
-					e.key === "Enter" && editingFileName !== fileName && setActiveFile(fileName)}
-				ondblclick={(e) => !$isEmbed && handleTabDblClick(fileName, e)}
-				onpointerdown={(e) => !$isEmbed && handleTabPointerDown(fileName, e)}
+				onclick={() => {
+					if (editingFileName !== fileName) setActiveFile(fileName);
+				}}
+				onkeydown={(e) => {
+					if (e.key === "Enter" && editingFileName !== fileName) setActiveFile(fileName);
+				}
+				ondblclick={$isEmbed ? null : (e) => {
+					e.stopPropagation();
+					startEditing(fileName);
+				}}
+				onpointerdown={$isEmbed ? null : () => {
+					// Start long press timer for editing
+					longPressTimer = setTimeout(() => {
+						startEditing(fileName);
+						longPressTimer = null;
+					}, 500);
+				}}
 				onpointerup={handleTabPointerUp}
 				onpointerleave={handleTabPointerUp}
 			>
@@ -162,7 +161,7 @@
 						class="w-20 sm:w-24 text-sm bg-transparent text-inherit focus:outline-none caret-(--accent)"
 						bind:value={editValue}
 						use:focusInput
-						onblur={() => finishEditing(fileName)}
+						onblur={() => { finishEditing(fileName) }}
 						onkeydown={(e) => {
 							if (e.key === "Enter") {
 								e.preventDefault();
@@ -170,12 +169,12 @@
 								e.currentTarget.blur();
 							}
 						}}
-						onclick={(e) => e.stopPropagation()}
+						onclick={(e) => { e.stopPropagation() }}
 					/>
 				{:else}
 					<span class="truncate max-w-20 sm:max-w-30">{fileName}</span>
 				{/if}
-				{#if Object.keys($files).length > 1 && !$isEmbed && editingFileName !== fileName}
+				{#if !$isEmbed && Object.keys($files).length > 1 && editingFileName !== fileName}
 					<button
 						class="opacity-0 group-hover:opacity-100 focus:opacity-100 hover:text-error-500 ml-1 p-1 -m-1 cursor-pointer"
 						onclick={(e) => {
@@ -193,10 +192,10 @@
 		<!-- Add file tab (hidden in embed mode) -->
 		{#if !$isEmbed}
 			<div
-				class="group relative flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 text-sm leading-5 rounded-t-md transition-colors cursor-pointer shrink-0 border-t border-x
-          {isCreatingFile ?
-					'bg-(--bg-editor) text-(--text-primary) border-(--border-color) z-10 -mb-px'
-				:	'text-(--text-secondary) hover:bg-(--bg-tertiary) border-transparent -mb-px'}"
+				class="group relative flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 text-sm leading-5 rounded-t-md transition-colors cursor-pointer shrink-0 border-t border-x {
+					isCreatingFile
+					? 'bg-(--bg-editor) text-(--text-primary) border-(--border-color) z-10 -mb-px'
+					: 'text-(--text-secondary) hover:bg-(--bg-tertiary) border-transparent -mb-px'}"
 				role="button"
 				tabindex="0"
 				aria-label="Add new file"
@@ -223,7 +222,7 @@
 								e.currentTarget.blur();
 							}
 						}}
-						onclick={(e) => e.stopPropagation()}
+						onclick={(e) => { e.stopPropagation() }}
 					/>
 				{:else}
 					<span class="h-5 flex items-center"><Icon name="plus" size="16px" /></span>
