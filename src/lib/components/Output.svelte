@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { output, isRunning, clearOutput, executionTime } from "$lib/stores/playground";
-	import { isEmbed } from "$lib/stores/embed";
+	import { output, isRunning, clearOutput, executionTime } from "$lib/stores/playground.ts";
+	import { isEmbed } from "$lib/stores/embed.ts";
 	import Button from "$lib/components/Button.svelte";
-	import { Icon } from "$lib/icons";
-	import { formatTime, isStackTraceLine, formatStackLine } from "$lib/utils/output";
+	import { Icon } from "$lib/icons.ts";
+	import { formatTime, isStackTraceLine, formatStackLine } from "$lib/utils/output.ts";
 	import ObjectView from "./ObjectView.svelte";
 
 	// In embed mode: collapsed by default, smaller when expanded
@@ -74,7 +74,7 @@
 		>
 			<button
 				class="flex items-center gap-2 text-sm font-medium text-(--text-secondary) hover:text-(--text-primary) transition-colors"
-				onclick={() => (isExpanded = !isExpanded)}
+				onclick={() => { isExpanded = !isExpanded }}
 				aria-label={isExpanded ? "Collapse output panel" : "Expand output panel"}
 				aria-expanded={isExpanded}
 			>
@@ -124,12 +124,12 @@
 						Run your code to see output here...
 					</span>
 				{:else}
-					{#each $output as line, i}
+					{#each $output as line}
 						{@const isStack = line.type === "error" && isStackTraceLine(line.text)}
 						{#if line.values && line.values.length > 0}
 							<!-- Structured output with interactive object view -->
 							<div class="leading-relaxed flex flex-wrap gap-x-4 gap-y-1">
-								{#each line.values as value, j}
+								{#each line.values as value}
 									<ObjectView {value} isTopLevel={true} />
 								{/each}
 							</div>
