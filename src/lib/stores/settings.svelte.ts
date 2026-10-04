@@ -1,4 +1,4 @@
-import { writable, get } from "svelte/store.ts";
+import { writable, get } from "svelte/store";
 import { parseStateFromHash } from "$lib/utils/decode.ts";
 import { STORAGE_KEY, UI_STORAGE_KEY, defaultSettings } from "$lib/constants.ts";
 import { detectEmbedMode } from "$lib/stores/embed.ts";
