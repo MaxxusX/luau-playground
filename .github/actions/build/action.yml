@@ -67,7 +67,7 @@ runs:
         ./build.sh Release
 
     - name: Save build cache
-      if: ${{ steps.build-cache-restore.outcome == 'success' && steps.build-cache-restore.outputs.cache-hit == 'false' }}
+      if: ${{ steps.build-cache-restore.outputs.cache-hit == 'false' }}
       uses: actions/cache/save@v6
       with:
         path: |
@@ -77,3 +77,26 @@ runs:
           public/wasm/luau.wasm
           src/lib/luau/luau-module.js
         key: ${{ steps.build-cache-restore.outputs.cache-primary-key }}
+
+    - name: Setup PNPM
+      uses: pnpm/setup@v3
+      with:
+        runtime: node
+        cache: true
+        install: false
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm ci
+
+    - name: Sync TextMate grammar
+      shell: bash
+      run: pnpm run sync:grammar
+
+    - name: Type check
+      shell: bash
+      run: pnpm run check
+
+    - name: Build
+      shell: bash
+      run: pnpm exec vite build --base=./
