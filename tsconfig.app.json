@@ -20,19 +20,18 @@
 		"checkJs": true,
 		"moduleDetection": "force",
 
-		/* stricter typechecking */
+		/* Linting */
+		"strict": true,
 		"exactOptionalPropertyTypes": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noPropertyAccessFromIndexSignature": true,
 		"noUncheckedIndexedAccess": true,
 		"isolatedDeclarations": true,
 		"isolatedModules": true,
-
-		/* probable mistakes */
-		"noFallthroughCasesInSwitch": true,
-		"noPropertyAccessFromIndexSignature": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
 	},
 	"include": ["./src/**/*.ts", "./src/**/*.d.ts", "./src/**/*.js", "./src/**/*.svelte"],
 }
