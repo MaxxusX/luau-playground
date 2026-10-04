@@ -6,7 +6,7 @@
 	import Editor from "$lib/components/Editor.svelte";
 	import Output from "$lib/components/Output.svelte";
 	import BytecodeView from "$lib/components/BytecodeView.svelte";
-	import { settings, showBytecode } from "$lib/stores/settings.ts";
+	import { settings, showBytecode } from "$lib/stores/settings.svelte.ts";
 	import { files, activeFile } from "$lib/stores/playground.ts";
 	import { isEmbed, embedTheme } from "$lib/stores/embed.ts";
 	import { initTheme, setTheme } from "$lib/utils/theme.ts";
