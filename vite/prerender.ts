@@ -1,5 +1,4 @@
-import type { Plugin } from "vite";
-import { build } from "vite";
+import { build, type Plugin } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
 import { rmSync } from "node:fs";
