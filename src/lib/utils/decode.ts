@@ -1,6 +1,6 @@
 import LZString from "lz-string";
 
-import type { PlaygroundSettings } from "$lib/stores/settings.ts";
+import type { PlaygroundSettings } from "$lib/stores/settings.svelte.ts";
 import { defaultSettings, DEFAULT_FILENAME } from "$lib/constants.ts";
 
 export interface ShareState {
