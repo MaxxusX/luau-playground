@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { LuauValue } from "$lib/utils/output";
-	import { Icon } from "$lib/icons";
+	import type { LuauValue } from "$lib/utils/output.ts";
+	import { Icon } from "$lib/icons.ts";
 	import ObjectView from "./ObjectView.svelte";
 
 	interface Props {
