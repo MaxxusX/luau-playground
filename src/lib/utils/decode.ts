@@ -1,6 +1,7 @@
-import { defaultSettings, DEFAULT_FILENAME } from "$lib/constants";
-import { type PlaygroundSettings } from "$lib/stores/settings";
 import LZString from "lz-string";
+
+import type { PlaygroundSettings } from "$lib/stores/settings.ts";
+import { defaultSettings, DEFAULT_FILENAME } from "$lib/constants.ts";
 
 export interface ShareState {
 	files: Record<string, string>;
