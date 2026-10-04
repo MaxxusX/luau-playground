@@ -24,7 +24,6 @@
 		"noPropertyAccessFromIndexSignature": true,
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,
-		"exactOptionalPropertyTypes": true,
 		"isolatedDeclarations": true,
 		"isolatedModules": true,
 	},
