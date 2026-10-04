@@ -22,15 +22,15 @@ import { bracketMatching, indentOnInput } from "@codemirror/language";
 import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 
-import { luauTextMate, initLuauTextMate } from "./textmate";
+import { luauTextMate, initLuauTextMate } from "./textmate.ts";
 export { initLuauTextMate };
-import { darkTheme, lightTheme } from "./themes";
-import { luauLspExtensions } from "./lspExtensions";
-import { luauEnterKeymap, luauIndentation } from "./luauBlocks";
+import { darkTheme, lightTheme } from "./themes.ts";
+import { luauLspExtensions } from "./lspExtensions.ts";
+import { luauEnterKeymap, luauIndentation } from "./luauBlocks.ts";
 import { forceLinting, lintGutter } from "@codemirror/lint";
-import { themeMode } from "$lib/utils/theme";
-import { cursorLine, isRunning } from "$lib/stores/playground";
-import { runCode, stopExecution } from "$lib/luau/wasm";
+import { themeMode } from "$lib/utils/theme.ts";
+import { cursorLine, isRunning } from "$lib/stores/playground.ts";
+import { runCode, stopExecution } from "$lib/luau/wasm.ts";
 import { get } from "svelte/store";
 
 let editorView: EditorView | null = null;
