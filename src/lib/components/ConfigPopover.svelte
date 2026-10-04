@@ -58,8 +58,6 @@
 		const { refreshDiagnostics } = await import("$lib/editor/setup");
 		setTimeout(() => refreshDiagnostics(), 50);
 	}
-
-	let popoverEl: HTMLElement;
 </script>
 
 <Button
@@ -73,7 +71,6 @@
 </Button>
 
 <div
-	bind:this={popoverEl}
 	popover="auto"
 	id="config-popover"
 	class="config-popover m-0 w-80 max-h-[80vh] overflow-y-auto rounded-lg border border-(--border-color) bg-(--bg-secondary) p-4 shadow-xl"
@@ -98,10 +95,10 @@
 						{@const isSelected = $settings.mode === option.value}
 						<button
 							type="button"
-							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected ?
-								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
-							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border { 
+								isSelected
+								? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+								: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
 							title={option.description}
 							onclick={() => handleModeChange(option.value)}
 						>
@@ -119,10 +116,10 @@
 						{@const isSelected = $settings.solver === option.value}
 						<button
 							type="button"
-							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected ?
-								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
-							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {
+								isSelected
+								? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+								: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
 							title="{option.label} type solver"
 							onclick={() => handleSolverChange(option.value)}
 						>
@@ -149,10 +146,10 @@
 						{@const isSelected = $settings.optimizationLevel === option.value}
 						<button
 							type="button"
-							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected ?
-								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
-							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {
+								isSelected
+								? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+								: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
 							title={option.description}
 							onclick={() => setOptimizationLevel(option.value)}
 						>
@@ -170,10 +167,10 @@
 						{@const isSelected = $settings.debugLevel === option.value}
 						<button
 							type="button"
-							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected ?
-								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
-							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {
+								isSelected
+								? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+								: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
 							title={option.description}
 							onclick={() => setDebugLevel(option.value)}
 						>
@@ -191,10 +188,10 @@
 						{@const isSelected = $settings.outputFormat === option.value}
 						<button
 							type="button"
-							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-                {isSelected ?
-								'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
-							:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {
+								isSelected
+								? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+								: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
 							title={option.description}
 							onclick={() => setOutputFormat(option.value)}
 						>
