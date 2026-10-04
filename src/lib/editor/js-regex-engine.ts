@@ -61,7 +61,7 @@ class JavaScriptScanner {
 					return new RegExp(compiled[0], compiled[1]);
 				} catch {
 					console.warn(
-						`[JS Scanner] Failed to construct RegExp: ${pattern.slice(0, 50)}`
+						"[JS Scanner] Failed to construct RegExp: " + pattern.slice(0, 50)
 					);
 					return null;
 				}
@@ -78,7 +78,7 @@ class JavaScriptScanner {
 
 			if (!warnedPatterns.has(pattern)) {
 				warnedPatterns.add(pattern);
-				console.warn(`[JS Scanner] No compiled pattern for: ${pattern.slice(0, 50)}`);
+				console.warn("[JS Scanner] No compiled pattern for: " + pattern.slice(0, 50));
 			}
 
 			return null;
@@ -125,10 +125,11 @@ class JavaScriptScanner {
 			const minIndex = Math.min(...pending.map((m) => m.index));
 			for (const entry of pending) {
 				if (entry.index !== minIndex) continue;
-				if ("match" in entry) {
+				if (entry.match !== undefined) {
 					return this.toResult(entry.patternIndex, entry.match);
+				} else {
+					return this.toResultRange(entry.patternIndex, entry.start, entry.end);
 				}
-				return this.toResultRange(entry.patternIndex, entry.start, entry.end);
 			}
 		}
 
