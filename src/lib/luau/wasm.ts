@@ -14,12 +14,12 @@ import {
 	getActiveFileContent,
 	activeFile,
 	getAllFiles,
-} from "$lib/stores/playground";
-import { settings, type LuauMode, type SolverMode } from "$lib/stores/settings";
+} from "$lib/stores/playground.ts";
+import { settings, type LuauMode, type SolverMode } from "$lib/stores/settings.svelte.ts";
 import { get } from "svelte/store";
-import type { ExecuteResult, LuauDiagnostic, LuauCompletion } from "./types";
-import type { WorkerRequest, WorkerResponse } from "./luau.worker";
-import LuauWorker from "./luau.worker?worker";
+import type { ExecuteResult, LuauDiagnostic, LuauCompletion } from "./types.ts";
+import type { WorkerRequest, WorkerResponse } from "./luau.worker.ts";
+import LuauWorker from "./luau.worker.ts?worker";
 
 declare const __wasmPromises: { luau: Promise<ArrayBuffer> } | undefined;
 
