@@ -23,24 +23,57 @@ export default defineConfig({
 	],
 	resolve: { alias: { $lib: path.resolve(__dirname, "./src/lib") } },
 	build: {
-		target: ["chrome145", "edge145", "firefox148", "safari26.2", "ios26.2"],
+		target: ["chrome151", "edge151", "firefox153", "safari26.5", "ios26.5"],
 		sourcemap: false,
+		minify: "oxc",
 		cssMinify: "lightningcss",
 		reportCompressedSize: false,
+		rolldownOptions: {
+			optimization: {
+				inlineConst: { mode: "all", pass: 5 },
+			},
+			output: {
+				minify: {
+					compress: {
+						target: ["chrome151", "edge151", "firefox153", "safari26.5", "ios26.5"],
+						dropConsole: true,
+						unused: true,
+						treeshake: {
+							propertyReadSideEffects: false,
+							propertyWriteSideEffects: false,
+							unknownGlobalSideEffects: false,
+						},
+					},
+					mangle: {
+						toplevel: true,
+					},
+				},
+			},
+		},
+	},
+	oxc: {
+		target: ["chrome151", "edge151", "firefox153", "safari26.5", "ios26.5"],
+		assumptions: {
+			noDocumentAll: true,
+			pureGetters: true,
+		},
+		typescript: {
+			useDefineForClassFields: true,
+			optimizeConstEnums: true,
+			optimizeEnums: true,
+		},
 	},
 	css: {
 		transformer: "lightningcss",
 		devSourcemap: false,
 		lightningcss: {
-			minify: true,
-			sourceMap: false,
 			errorRecovery: false,
 			targets: {
-				chrome: 145 << 16,
-				edge: 145 << 16,
-				firefox: 148 << 16,
-				safari: (26 << 16) | (2 << 8),
-				ios_saf: (26 << 16) | (2 << 8),
+				chrome: 151 << 16,
+				edge: 151 << 16,
+				firefox: 153 << 16,
+				safari: (26 << 16) | (5 << 8),
+				ios_saf: (26 << 16) | (5 << 8),
 			},
 		},
 	},
