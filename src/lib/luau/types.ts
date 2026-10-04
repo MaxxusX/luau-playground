@@ -109,6 +109,7 @@ export interface LuauWasmModule {
 		args: [string, number, number, number, number]
 	): string;
 
+	/*
 	// Memory
 	_malloc(size: number): number;
 	_free(ptr: number): void;
@@ -117,6 +118,7 @@ export interface LuauWasmModule {
 	UTF8ToString(ptr: number): string;
 	stringToUTF8(str: string, outPtr: number, maxBytes: number): void;
 	lengthBytesUTF8(str: string): number;
+	*/
 }
 
 export type CreateLuauModule = (options?: {
