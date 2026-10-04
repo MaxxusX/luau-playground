@@ -6,7 +6,7 @@
  */
 
 import { readable } from "svelte/store";
-import { type ThemeMode } from "$lib/utils/theme";
+import type { ThemeMode } from "$lib/utils/theme.ts";
 
 export function detectEmbedMode(): boolean {
 	if (typeof window === "undefined") return false;
@@ -18,7 +18,7 @@ function detectEmbedTheme(): ThemeMode {
 	if (typeof window === "undefined") return "system";
 	const params = new URLSearchParams(window.location.search);
 	const theme = params.get("theme");
-	if (theme === "light" || theme === "dark") return theme;
+	if (theme === "dark" || theme === "light") return theme;
 	return "system";
 }
 
