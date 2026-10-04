@@ -130,29 +130,8 @@ body {
 	font-variant-ligatures: none;
 }
 
-/* Light theme (default) */
+/* Dark theme (default) */
 :root {
-	color-scheme: light;
-	--bg-primary: var(--color-extended-white-100);
-	--bg-secondary: var(--color-extended-gray-100);
-	--bg-tertiary: var(--color-extended-gray-200);
-	--bg-editor: var(--color-extended-white-100);
-	--text-primary: var(--color-extended-gray-900);
-	--text-secondary: var(--color-extended-gray-700);
-	--text-muted: var(--color-extended-gray-600);
-	--border-color: var(--color-extended-gray-300);
-	--accent: var(--color-accent-500);
-	--accent-hover: var(--color-accent-600);
-
-	/* Light mode surface colors for editor */
-	--editor-surface-0: var(--color-extended-white-100);
-	--editor-surface-100: var(--color-extended-gray-100);
-	--editor-surface-200: var(--color-extended-white-100);
-	--editor-surface-300: var(--color-extended-gray-100);
-}
-
-/* Dark theme */
-.dark {
 	color-scheme: dark;
 	--bg-primary: var(--color-extended-gray-1100);
 	--bg-secondary: var(--color-extended-gray-1000);
@@ -170,6 +149,27 @@ body {
 	--editor-surface-100: var(--color-extended-gray-1100);
 	--editor-surface-200: var(--color-extended-gray-1000);
 	--editor-surface-300: var(--color-extended-gray-900);
+}
+
+/* Light theme */
+.light {
+	color-scheme: light;
+	--bg-primary: var(--color-extended-white-100);
+	--bg-secondary: var(--color-extended-gray-100);
+	--bg-tertiary: var(--color-extended-gray-200);
+	--bg-editor: var(--color-extended-white-100);
+	--text-primary: var(--color-extended-gray-900);
+	--text-secondary: var(--color-extended-gray-700);
+	--text-muted: var(--color-extended-gray-600);
+	--border-color: var(--color-extended-gray-300);
+	--accent: var(--color-accent-500);
+	--accent-hover: var(--color-accent-600);
+
+	/* Light mode surface colors for editor */
+	--editor-surface-0: var(--color-extended-white-100);
+	--editor-surface-100: var(--color-extended-gray-100);
+	--editor-surface-200: var(--color-extended-white-100);
+	--editor-surface-300: var(--color-extended-gray-100);
 }
 
 body {
