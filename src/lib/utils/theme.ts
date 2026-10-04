@@ -6,16 +6,16 @@ export const themeMode = writable<ThemeMode>("system");
 
 function getSystemTheme(): "light" | "dark" {
 	if (typeof window === "undefined") return "dark";
-	return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+	return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 }
 
 function applyTheme(mode: ThemeMode) {
 	const resolvedTheme = mode === "system" ? getSystemTheme() : mode;
 
-	if (resolvedTheme === "dark") {
-		document.documentElement.classList.add("dark");
+	if (resolvedTheme === "light") {
+		document.documentElement.classList.add("light");
 	} else {
-		document.documentElement.classList.remove("dark");
+		document.documentElement.classList.remove("light");
 	}
 }
 
@@ -33,7 +33,7 @@ export function initTheme() {
 	});
 
 	// Listen for system theme changes
-	const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+	const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
 	mediaQuery.addEventListener("change", () => {
 		themeMode.update((mode) => {
 			if (mode === "system") {
@@ -46,8 +46,8 @@ export function initTheme() {
 
 export function toggleTheme() {
 	themeMode.update((current) => {
-		if (current === "system") return "light";
-		if (current === "light") return "dark";
+		if (current === "system") return "dark";
+		if (current === "dark") return "light";
 		return "system";
 	});
 }
