@@ -99,7 +99,7 @@ function compilePatterns(patterns: string[]): Record<string, [string, string] | 
 		} catch {
 			// Store null for patterns that couldn't be compiled
 			compiled[pattern] = null;
-			console.warn("[compile-grammar] Failed to compile pattern: `"+pattern+"`");
+			console.warn("[compile-grammar] Failed to compile pattern: `" + pattern + "`");
 		}
 	}
 
@@ -111,13 +111,13 @@ function compilePatterns(patterns: string[]): Record<string, [string, string] | 
  */
 function generateModule(compiledPatterns: Record<string, [string, string] | null>): string {
 	const total = Object.keys(compiledPatterns).length;
-	const failed = Object.values(compiledPatterns).filter(function(v) { return v === null }).length;
+	const failed = Object.values(compiledPatterns).filter((v) => v === null).length;
 
-	console.log("[compile-grammar] Total Patterns: "+total);
-	console.log("[compile-grammar] Successfully Compiled: "+(total - failed));
-	console.log("[compile-grammar] Failed: "+failed);
+	console.log("[compile-grammar] Total Patterns: " + total);
+	console.log("[compile-grammar] Successfully Compiled: " + (total - failed));
+	console.log("[compile-grammar] Failed: " + failed);
 
-	return "export const compiledPatterns = "+JSON.stringify(compiledPatterns)+";\n";
+	return "export const compiledPatterns = " + JSON.stringify(compiledPatterns) + ";\n";
 }
 
 export function compileGrammarPlugin(): Plugin {
