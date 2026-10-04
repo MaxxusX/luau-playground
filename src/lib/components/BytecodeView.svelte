@@ -201,7 +201,7 @@
 				// ARM immediate values: #32, #1700, #0x10
 				.replace(/#(0x[0-9a-fA-F]+|\d+)/g, '#<span class="hl-constant">$1</span>')
 				// Memory operands with brackets [...]
-				.replace(/\[([^\]]+)\]/g, (match, inner) => {
+				.replace(/\[([^\]]+)\]/g, (_, inner) => {
 					// Highlight registers and numbers inside brackets
 					const highlighted = inner
 						.replace(
@@ -245,7 +245,7 @@
 		if (type === "bytecode") {
 			// Highlight: "N: [L0: ]OPCODE operands [comment]"
 			escaped = escaped.replace(
-				/^(\s*)(\d+)(:\s*)(?:(L\d+)(:\s*))?(\w+)(\s+)([^\[]*?)(\s*\[([^\]]+)\])?$/,
+				/^(\s*)(\d+)(:\s*)(?:(L\d+)(:\s*))?(\w+)(\s+)([^\[]*?)(?:\s*\[([^\]]+)\])?$/,
 				(
 					_,
 					indent,
@@ -256,7 +256,6 @@
 					opcode,
 					space1,
 					operands,
-					bracketPart,
 					comment
 				) => {
 					let result = `${indent}<span class="hl-linenum">${lineNum}</span>${colon1}`;
@@ -337,7 +336,7 @@
 		}
 
 		// Type annotations: "type <- type, type" (the <- is HTML-escaped as &lt;-)
-		escaped = escaped.replace(/^(\w+)(\s*&lt;-\s*)(.+)$/, (_, left, arrow, right) => {
+		escaped = escaped.replace(/^(\w+)\s*&lt;-\s*(.+)$/, (_, left, right) => {
 			// Highlight type names on the right side too
 			const highlightedRight = right.replace(/\b(\w+)\b/g, '<span class="hl-type">$1</span>');
 			return `<span class="hl-type">${left}</span><span class="hl-comment"> ← </span>${highlightedRight}`;
