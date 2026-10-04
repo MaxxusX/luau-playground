@@ -1,16 +1,17 @@
 <script lang="ts">
+	import { derived } from "svelte/store";
+	import { onMount } from "svelte";
+
 	import TabBar from "$lib/components/TabBar.svelte";
 	import Editor from "$lib/components/Editor.svelte";
 	import Output from "$lib/components/Output.svelte";
 	import BytecodeView from "$lib/components/BytecodeView.svelte";
-	import { settings, showBytecode } from "$lib/stores/settings";
-	import { files, activeFile } from "$lib/stores/playground";
-	import { isEmbed, embedTheme } from "$lib/stores/embed";
-	import { initTheme, setTheme } from "$lib/utils/theme";
-	import { loadLuauWasm } from "$lib/luau/wasm";
-	import { parseStateFromHash } from "$lib/utils/decode";
-	import { derived } from "svelte/store";
-	import { onMount } from "svelte";
+	import { settings, showBytecode } from "$lib/stores/settings.ts";
+	import { files, activeFile } from "$lib/stores/playground.ts";
+	import { isEmbed, embedTheme } from "$lib/stores/embed.ts";
+	import { initTheme, setTheme } from "$lib/utils/theme.ts";
+	import { loadLuauWasm } from "$lib/luau/wasm.ts";
+	import { parseStateFromHash } from "$lib/utils/decode.ts";
 
 	let mounted = $state(false);
 
