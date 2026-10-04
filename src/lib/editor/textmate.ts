@@ -10,7 +10,7 @@
 
 import { StreamLanguage, LanguageSupport, type StringStream } from "@codemirror/language";
 import * as vsctm from "vscode-textmate";
-import { createJsOnigLib } from "./js-regex-engine";
+import { createJsOnigLib } from "./js-regex-engine.ts";
 import luauGrammar from "./Luau.tmLanguage.json";
 
 // Singleton state
