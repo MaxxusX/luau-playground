@@ -1,8 +1,8 @@
 import { writable, get } from "svelte/store";
-import { parseStateFromHash } from "$lib/utils/decode";
-import type { OutputLine } from "$lib/utils/output";
-import { DEFAULT_FILENAME, PLAYGROUND_STORAGE_KEY } from "$lib/constants";
-import { detectEmbedMode } from "$lib/stores/embed";
+import type { OutputLine } from "$lib/utils/output.ts";
+import { parseStateFromHash } from "$lib/utils/decode.ts";
+import { DEFAULT_FILENAME, PLAYGROUND_STORAGE_KEY } from "$lib/constants.ts";
+import { detectEmbedMode } from "$lib/stores/embed.ts";
 
 // Re-export for backwards compatibility
 export type { OutputLine };
@@ -20,7 +20,8 @@ interface PersistedPlaygroundState {
 }
 
 // Default initial code
-const defaultCode = `-- Welcome to the Luau Playground!
+const defaultCode = `\
+-- Welcome to the Luau Playground!
 -- Write your code here and click Run
 
 local function greet(name: string): string
