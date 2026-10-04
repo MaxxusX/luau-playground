@@ -67,7 +67,6 @@ runs:
         ./build.sh Release
 
     - name: Save build cache
-      if: ${{ steps.build-cache-restore.outputs.cache-hit == 'false' }}
       uses: actions/cache/save@v6
       with:
         path: |
