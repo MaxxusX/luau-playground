@@ -34,14 +34,11 @@
 
 				// Prevent theme flash - must run synchronously before CSS
 				const theme = localStorage.getItem("theme");
-				if (
-					theme === "dark" ||
-					(theme === null && window.matchMedia("(prefers-color-scheme: dark)").matches)
-				) {
-					document.documentElement.classList.add("dark");
-					document.documentElement.style.background = "#0a0a0f";
-				} else {
+				if (theme === "light") {
+					document.documentElement.classList.add("light");
 					document.documentElement.style.background = "#fafafa";
+				} else {
+					document.documentElement.style.background = "#0a0a0f";
 				}
 
 				// Start WASM fetch immediately (before module scripts load)
