@@ -82,6 +82,8 @@ function compilePatterns(patterns: string[]): Record<string, [string, string] | 
 				pattern.includes("\\\uFFFF") ? pattern.replace(/\\\uFFFF/g, "\\A") : pattern;
 
 			const regex = toRegExp(patternToCompile, {
+				accuracy: "strict",
+				avoidSubclass: true,
 				global: true,
 				hasIndices: true,
 				rules: {
@@ -91,7 +93,7 @@ function compilePatterns(patterns: string[]): Record<string, [string, string] | 
 					recursionLimit: 5,
 					singleline: true,
 				},
-				target: "ES2024",
+				target: "ES2025",
 			});
 
 			// Store as [source, flags] tuple
