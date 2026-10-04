@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
-	import { files, activeFile, updateFile } from "$lib/stores/playground";
 	import { get } from "svelte/store";
+	import { files, activeFile, updateFile } from "$lib/stores/playground.ts";
 
 	let editorContainer: HTMLDivElement;
 	let currentFile = $state("");
