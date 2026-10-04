@@ -12,9 +12,9 @@
 		type OptimizationLevel,
 		type DebugLevel,
 		type OutputFormat,
-	} from "$lib/stores/settings";
+	} from "$lib/stores/settings.svelte.ts";
 	import Button from "$lib/components/Button.svelte";
-	import { Icon } from "$lib/icons";
+	import { Icon } from "$lib/icons.ts";
 
 	const modeOptions: { value: LuauMode; label: string; description: string }[] = [
 		{ value: "strict", label: "Strict", description: "Full type checking" },
