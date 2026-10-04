@@ -29,7 +29,6 @@
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 		"noPropertyAccessFromIndexSignature": true,
-		"isolatedDeclarations": true,
 		"isolatedModules": true,
 	},
 	"include": ["./src/**/*.ts", "./src/**/*.d.ts", "./src/**/*.js", "./src/**/*.svelte"],
