@@ -10,7 +10,7 @@ import { get } from "svelte/store";
 import type { ThemeMode } from "$lib/utils/theme";
 import type { ShareState, MinimalShareState } from "$lib/utils/decode.ts";
 import { files, activeFile } from "$lib/stores/playground.ts";
-import { settings, showBytecode, type PlaygroundSettings } from "$lib/stores/settings.ts";
+import { settings, showBytecode, type PlaygroundSettings } from "$lib/stores/settings.svelte.ts";
 import { defaultSettings, CURRENT_VERSION, DEFAULT_FILENAME } from "$lib/constants.ts";
 
 /**
