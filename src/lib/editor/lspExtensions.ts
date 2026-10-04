@@ -5,12 +5,10 @@
  * by integrating with the Luau WASM module.
  */
 
-import { EditorView, hoverTooltip, ViewPlugin } from "@codemirror/view";
-import type { Tooltip } from "@codemirror/view";
-import { linter } from "@codemirror/lint";
-import type { Diagnostic } from "@codemirror/lint";
-import { autocompletion, startCompletion, type CompletionContext } from "@codemirror/autocomplete";
-import type { CompletionResult, Completion } from "@codemirror/autocomplete";
+import { EditorView, hoverTooltip, ViewPlugin, type Tooltip } from "@codemirror/view";
+import { linter, type Diagnostic } from "@codemirror/lint";
+import { autocompletion, startCompletion } from "@codemirror/autocomplete";
+import type { CompletionContext, CompletionResult, Completion } from "@codemirror/autocomplete";
 import type { Extension } from "@codemirror/state";
 import {
 	getDiagnostics,
@@ -19,9 +17,10 @@ import {
 	getAvailableModules,
 	type LuauCompletion,
 } from "$lib/luau/wasm";
-import { highlightLuauHtml } from "./textmate";
 import { activeFile } from "$lib/stores/playground";
 import { get } from "svelte/store";
+
+import { highlightLuauHtml } from "./textmate";
 
 // ============================================================================
 // Diagnostics (Linter)
@@ -327,7 +326,7 @@ function createLuauAutocomplete(): Extension[] {
  */
 function createLuauHover() {
 	return hoverTooltip(
-		async (view, pos, side): Promise<Tooltip | null> => {
+		async (view, pos, _side): Promise<Tooltip | null> => {
 			const code = view.state.doc.toString();
 
 			// Convert position to line/column
@@ -356,42 +355,42 @@ function createLuauHover() {
 						const dom = document.createElement("div");
 						dom.className = "cm-luau-hover";
 						dom.style.cssText = `
-            background: transparent;
-            border: none;
-            padding: 0;
-            max-width: 450px;
-            font-size: 13px;
-            font-family: var(--font-mono);
-            line-height: 1.5;
-            overflow: hidden;
-          `;
+							background: transparent;
+							border: none;
+							padding: 0;
+							max-width: 450px;
+							font-size: 13px;
+							font-family: var(--font-mono);
+							line-height: 1.5;
+							overflow: hidden;
+						`;
 
 						// Render code block with syntax highlighting
 						if (highlighted) {
 							// Type info section
 							const codeWrapper = document.createElement("div");
 							codeWrapper.style.cssText = `
-              padding: 10px 14px;
-              background: var(--bg-secondary);
-              // border-left: 3px solid var(--accent);
-            `;
+								padding: 10px 14px;
+								background: var(--bg-secondary);
+								// border-left: 3px solid var(--accent);
+							`;
 							const code = document.createElement("code");
 							code.innerHTML = highlighted;
 							code.style.cssText = `
-              color: var(--text-primary);
-              white-space: pre-wrap;
-            `;
+								color: var(--text-primary);
+								white-space: pre-wrap;
+							`;
 							codeWrapper.appendChild(code);
 							dom.appendChild(codeWrapper);
 						} else {
 							const textWrapper = document.createElement("div");
 							textWrapper.style.cssText = `
-              padding: 10px 14px;
-              background: var(--bg-secondary);
-              // border-left: 3px solid var(--accent);
-              color: var(--text-primary);
-              white-space: pre-wrap;
-            `;
+								padding: 10px 14px;
+								background: var(--bg-secondary);
+								// border-left: 3px solid var(--accent);
+								color: var(--text-primary);
+								white-space: pre-wrap;
+							`;
 							textWrapper.textContent = content;
 							dom.appendChild(textWrapper);
 						}
