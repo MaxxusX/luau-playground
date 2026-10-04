@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { files, activeFile, cursorLine } from "$lib/stores/playground";
-	import { settings, showBytecode, toggleBytecode } from "$lib/stores/settings";
-	import { getBytecode } from "$lib/luau/wasm";
+	import { files, activeFile, cursorLine } from "$lib/stores/playground.ts";
+	import { settings, showBytecode, toggleBytecode } from "$lib/stores/settings.svelte.ts";
+	import { getBytecode } from "$lib/luau/wasm.ts";
 	import Button from "$lib/components/Button.svelte";
-	import { Icon } from "$lib/icons";
+	import { Icon } from "$lib/icons.ts";
 
 	interface ParsedLine {
 		raw: string;
