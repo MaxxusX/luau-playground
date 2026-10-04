@@ -12,7 +12,7 @@ import type {
 	AutocompleteResult,
 	HoverResult,
 	CreateLuauModule,
-} from "./types";
+} from "./types.ts";
 import createLuauModuleFactory from "./luau-module.js";
 
 // The WASM module singleton within this worker
