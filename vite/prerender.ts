@@ -1,4 +1,5 @@
-import { build, type Plugin } from "vite";
+import type { Plugin } from "vite";
+import { build } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
 import { rmSync } from "node:fs";
@@ -37,8 +38,8 @@ export function prerenderPlugin(): Plugin {
 					reportCompressedSize: false,
 					ssr: true,
 					outDir: serverOutDir,
-					rollupOptions: { input: path.resolve(__dirname, "entry-server.ts") },
 					rolldownOptions: {
+						input: path.resolve(__dirname, "entry-server.ts"),
 						optimization: {
 							inlineConst: { mode: "all", pass: 5 },
 						},
