@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
-	import { Icon, type IconName } from "$lib/icons.ts";
+	import Icon from "$lib/icons/Icon.svelte";
+	import type { IconName } from "$lib/icons/icons.ts";
 	import ConfigPopover from "$lib/components/ConfigPopover.svelte";
 	import EmbedPopover from "$lib/components/EmbedPopover.svelte";
 	import {
