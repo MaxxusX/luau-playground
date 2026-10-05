@@ -9,7 +9,7 @@ export const defaultSettings: PlaygroundSettings = {
 	debugLevel: 2,
 	outputFormat: 0,
 	compilerRemarks: true,
-};
+} as const;
 
 // Key for localStorage persistence of settings
 export const STORAGE_KEY = "luau-playground-settings";
