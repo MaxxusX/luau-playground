@@ -125,7 +125,7 @@ class JavaScriptScanner {
 			const minIndex = Math.min(...pending.map((m) => m.index));
 			for (const entry of pending) {
 				if (entry.index !== minIndex) continue;
-				if (entry.match !== undefined) {
+				if (entry.match) {
 					return this.toResult(entry.patternIndex, entry.match);
 				} else {
 					return this.toResultRange(entry.patternIndex, entry.start, entry.end);
