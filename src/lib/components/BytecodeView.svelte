@@ -3,7 +3,7 @@
 	import { settings, showBytecode, toggleBytecode } from "$lib/stores/settings.svelte.ts";
 	import { getBytecode } from "$lib/luau/wasm.ts";
 	import Button from "$lib/components/Button.svelte";
-	import { Icon } from "$lib/icons/Icon.svelte";
+	import Icon from "$lib/icons/Icon.svelte";
 
 	interface ParsedLine {
 		raw: string;
