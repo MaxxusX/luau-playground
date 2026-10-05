@@ -2,7 +2,7 @@
 	import { output, isRunning, clearOutput, executionTime } from "$lib/stores/playground.ts";
 	import { isEmbed } from "$lib/stores/embed.ts";
 	import Button from "$lib/components/Button.svelte";
-	import { Icon } from "$lib/icons.ts";
+	import Icon from "$lib/icons/Icon.svelte";
 	import { formatTime, isStackTraceLine, formatStackLine } from "$lib/utils/output.ts";
 	import ObjectView from "./ObjectView.svelte";
 
