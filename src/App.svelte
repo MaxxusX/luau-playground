@@ -13,8 +13,6 @@
 	import { loadLuauWasm } from "$lib/luau/wasm.ts";
 	import { parseStateFromHash } from "$lib/utils/decode.ts";
 
-	let mounted = $state(false);
-
 	function clearUrlHash(): void {
 		if (!window.location.hash) return;
 		const url = new URL(window.location.href);
@@ -26,27 +24,48 @@
 		if ($isEmbed) return;
 		if (parseStateFromHash(window.location.hash) === null) return;
 
-		const stateChanges = derived(
-			[files, activeFile, settings, showBytecode],
-			(values) => values
-		);
-		let isFirstEmission = true;
-		let unsubscribe: () => void = () => {};
+		let storeUnsubscribe: () => void = () => {};
+		let effectUnsubscribe: () => void = () => {};
 
-		unsubscribe = stateChanges.subscribe(() => {
-			if (isFirstEmission) {
-				isFirstEmission = false;
+		let isFirstStoreEmission = true;
+		storeUnsubscribe = derived(
+			[files, activeFile, showBytecode],
+			(values) => values
+		).subscribe(() => {
+			if (isFirstStoreEmission) {
+				isFirstStoreEmission = false;
 				return;
 			}
 
 			clearUrlHash();
-			unsubscribe();
+			storeUnsubscribe();
+			effectUnsubscribe();
 		});
 
-		return unsubscribe;
+		let isFirstEffectEmission = true;
+		effectUnsubscribe = $effect.root(() => {
+			$effect(() => {
+				$effect.snapshot(settings); // so this'll run if it changes
+
+				if (isFirstEffectEmission) {
+					isFirstEffectEmission = false;
+					return;
+				}
+
+				clearUrlHash();
+				storeUnsubscribe();
+				effectUnsubscribe();
+			}
+		});
+
+		return (function () {
+			storeUnsubscribe();
+			effectUnsubscribe();
+		});
 	});
 
 	// Initialize on mount
+	let mounted = $state(false);
 	$effect(() => {
 		if (!mounted) {
 			mounted = true;
