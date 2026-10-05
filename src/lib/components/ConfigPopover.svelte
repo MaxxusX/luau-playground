@@ -8,7 +8,7 @@
 		type OutputFormat,
 	} from "$lib/stores/settings.svelte.ts";
 	import Button from "$lib/components/Button.svelte";
-	import { Icon } from "$lib/icons/Icon.svelte";
+	import Icon from "$lib/icons/Icon.svelte";
 	import { refreshDiagnostics } from "$lib/editor/setup.ts";
 
 	const modeOptions: { value: LuauMode; label: string; description: string }[] = [
