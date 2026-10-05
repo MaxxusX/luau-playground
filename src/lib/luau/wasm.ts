@@ -289,9 +289,8 @@ async function loadAnalysisWorker(): Promise<void> {
 				await sendToWorker(analysis, { requestId, type: "setFFlags", serializedFlags: robloxStudioFlags });
 			}
 
-			const currentSettings = get(settings);
-			await sendToWorker(analysis, { requestId, type: "setMode", mode: modeToNum(currentSettings.mode) });
-			await sendToWorker(analysis, { requestId, type: "setSolver", isNew: currentSettings.solver === "new" });
+			await sendToWorker(analysis, { requestId, type: "setMode", mode: modeToNum(settings.mode) });
+			await sendToWorker(analysis, { requestId, type: "setSolver", isNew: settings.solver === "new" });
 			initSettingsSync();
 		},
 	});
@@ -326,8 +325,7 @@ async function loadExecutionWorker(): Promise<void> {
 				await sendToWorker(execution, { requestId, type: "setFFlags", serializedFlags: robloxStudioFlags });
 			}
 
-			const currentSettings = get(settings);
-			await sendToWorker(execution, { requestId, type: "setMode", mode: modeToNum(currentSettings.mode) });
+			await sendToWorker(execution, { requestId, type: "setMode", mode: modeToNum(settings.mode) });
 		},
 	});
 }
@@ -486,15 +484,16 @@ export async function setLuauSolver(solver: SolverMode): Promise<void> {
 }
 
 // Subscribe to settings changes and sync to WASM
-let settingsUnsubscribe: (() => void) | null = null;
+let settingsEffectSet = false;
 
 export function initSettingsSync(): void {
-	if (settingsUnsubscribe) return;
+	if (settingsEffectSet) return;
+	settingsEffectSet = true;
 
-	settingsUnsubscribe = settings.subscribe(async (newSettings) => {
+	$effect(() => {
 		if (analysis.ready) {
-			await setLuauMode(newSettings.mode);
-			await setLuauSolver(newSettings.solver);
+			setLuauMode(settings.mode);
+			setLuauSolver(settings.solver);
 		}
 	});
 }
