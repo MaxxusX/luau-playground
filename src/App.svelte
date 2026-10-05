@@ -55,7 +55,7 @@
 				clearUrlHash();
 				storeUnsubscribe();
 				effectUnsubscribe();
-			}
+			})
 		});
 
 		return (function () {
