@@ -78,7 +78,7 @@ export function generatePlaygroundUrl(): URL {
 		files: get(files),
 		active: get(activeFile),
 		v: CURRENT_VERSION,
-		settings: get(settings),
+		settings: settings,
 		showBytecode: get(showBytecode),
 	});
 	return url;
@@ -97,7 +97,7 @@ function generateEmbedUrl(theme: ThemeMode = "system"): URL {
 		files: get(files),
 		active: get(activeFile),
 		v: CURRENT_VERSION,
-		settings: get(settings),
+		settings: settings,
 		showBytecode: get(showBytecode),
 	});
 	return url;
