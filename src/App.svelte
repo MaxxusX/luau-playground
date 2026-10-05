@@ -45,7 +45,7 @@
 		let isFirstEffectEmission = true;
 		effectUnsubscribe = $effect.root(() => {
 			$effect(() => {
-				$effect.snapshot(settings); // so this'll run if it changes
+				$state.snapshot(settings); // so this'll run if it changes
 
 				if (isFirstEffectEmission) {
 					isFirstEffectEmission = false;
