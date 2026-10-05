@@ -38,10 +38,7 @@ function loadSettingsFromUrl(): {
 }
 
 function loadSettingsFromStorage(): PlaygroundSettings {
-	if (typeof window === "undefined") {
-		return { ...defaultSettings };
-	}
-	if (detectEmbedMode()) {
+	if (typeof window === "undefined" || detectEmbedMode()) {
 		return { ...defaultSettings };
 	}
 
@@ -56,10 +53,7 @@ function loadSettingsFromStorage(): PlaygroundSettings {
 }
 
 function loadShowBytecodeFromStorage(): boolean {
-	if (typeof window === "undefined") {
-		return false;
-	}
-	if (detectEmbedMode()) {
+	if (typeof window === "undefined" || detectEmbedMode()) {
 		return false;
 	}
 
@@ -106,7 +100,7 @@ if (typeof window !== "undefined" && !detectEmbedMode()) {
 	// Auto-save settings when they change
 	$effect(() => {
 		try {
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+			localStorage.setItem(STORAGE_KEY, JSON.stringify($state.snapshot(settings)));
 		} catch {
 			// Ignore storage errors
 		}
@@ -122,36 +116,6 @@ if (typeof window !== "undefined" && !detectEmbedMode()) {
 	});
 }
 
-/*
-export function setMode(mode: LuauMode): void {
-	settings.update((s) => ({ ...s, mode }));
-}
-
-export function setSolver(solver: SolverMode): void {
-	settings.update((s) => ({ ...s, solver }));
-}
-
-export function setOptimizationLevel(level: OptimizationLevel): void {
-	settings.update((s) => ({ ...s, optimizationLevel: level }));
-}
-
-export function setDebugLevel(level: DebugLevel): void {
-	settings.update((s) => ({ ...s, debugLevel: level }));
-}
-
-export function setOutputFormat(level: OutputFormat): void {
-	settings.update((s) => ({ ...s, outputFormat: level }));
-}
-
-export function setCompilerRemarks(enabled: boolean): void {
-	settings.update((s) => ({ ...s, compilerRemarks: enabled }));
-}
-*/
-
 export function toggleBytecode(): void {
 	showBytecode.update((v) => !v);
-}
-
-export function getSettings(): PlaygroundSettings {
-	return $state.snapshot(settings);
 }
