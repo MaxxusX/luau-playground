@@ -1,4 +1,4 @@
-import { writable, get } from "svelte/store";
+import { writable } from "svelte/store";
 import { parseStateFromHash } from "$lib/utils/decode.ts";
 import { STORAGE_KEY, UI_STORAGE_KEY, defaultSettings } from "$lib/constants.ts";
 import { detectEmbedMode } from "$lib/stores/embed.ts";
@@ -70,17 +70,6 @@ function loadShowBytecodeFromStorage(): boolean {
 	}
 }
 
-function saveShowBytecodeToStorage(value: boolean): void {
-	if (typeof window === "undefined") return;
-	if (detectEmbedMode()) return;
-
-	try {
-		localStorage.setItem(UI_STORAGE_KEY, value ? "1" : "0");
-	} catch {
-		// Ignore storage errors
-	}
-}
-
 function mergeSettings(partial: Partial<PlaygroundSettings>): PlaygroundSettings {
 	return {
 		mode: partial.mode ?? defaultSettings.mode,
@@ -106,36 +95,34 @@ function loadSettings(): { settings: PlaygroundSettings; showBytecode: boolean }
 	return { settings, showBytecode };
 }
 
-function saveSettings(settings: PlaygroundSettings): void {
-	if (typeof window === "undefined") return;
-	if (detectEmbedMode()) return;
-
-	try {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-	} catch {
-		// Ignore storage errors
-	}
-}
-
 const initialState = loadSettings();
 
-export const settings = writable<PlaygroundSettings>(initialState.settings);
+export const settings = $state<PlaygroundSettings>(initialState.settings);
 
 // Separate store for bytecode panel visibility
 export const showBytecode = writable<boolean>(initialState.showBytecode);
 
 if (typeof window !== "undefined" && !detectEmbedMode()) {
 	// Auto-save settings when they change
-	settings.subscribe((value) => {
-		saveSettings(value);
+	$effect(() => {
+		try {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+		} catch {
+			// Ignore storage errors
+		}
 	});
 
 	// Auto-save UI state when it changes
 	showBytecode.subscribe((value) => {
-		saveShowBytecodeToStorage(value);
+		try {
+			localStorage.setItem(UI_STORAGE_KEY, value ? "1" : "0");
+		} catch {
+			// Ignore storage errors
+		}
 	});
 }
 
+/*
 export function setMode(mode: LuauMode): void {
 	settings.update((s) => ({ ...s, mode }));
 }
@@ -159,11 +146,12 @@ export function setOutputFormat(level: OutputFormat): void {
 export function setCompilerRemarks(enabled: boolean): void {
 	settings.update((s) => ({ ...s, compilerRemarks: enabled }));
 }
+*/
 
 export function toggleBytecode(): void {
 	showBytecode.update((v) => !v);
 }
 
 export function getSettings(): PlaygroundSettings {
-	return get(settings);
+	return $state.snapshot(settings);
 }
