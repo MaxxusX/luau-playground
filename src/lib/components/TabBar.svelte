@@ -140,7 +140,7 @@
 				}}
 				onkeydown={(e) => {
 					if (e.key === "Enter" && editingFileName !== fileName) setActiveFile(fileName);
-				}
+				}}
 				ondblclick={$isEmbed ? null : (e) => {
 					e.stopPropagation();
 					startEditing(fileName);
