@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
-	import { Icon } from "$lib/icons.ts";
+	import Icon from "$lib/icons/Icon.svelte";
 	import { generateEmbedCode } from "$lib/utils/share.ts";
-	import { type ThemeMode } from "$lib/utils/theme.ts";
+	import type { ThemeMode } from "$lib/utils/theme.ts";
 
 	const themeOptions: { value: ThemeMode; label: string }[] = [
 		{ value: "system", label: "Auto" },
