@@ -1,12 +1,6 @@
 <script lang="ts">
 	import {
 		settings,
-		setMode,
-		setSolver,
-		setOptimizationLevel,
-		setDebugLevel,
-		setCompilerRemarks,
-		setOutputFormat,
 		type LuauMode,
 		type SolverMode,
 		type OptimizationLevel,
@@ -15,6 +9,7 @@
 	} from "$lib/stores/settings.svelte.ts";
 	import Button from "$lib/components/Button.svelte";
 	import { Icon } from "$lib/icons.ts";
+	import { refreshDiagnostics } from "$lib/editor/setup.ts";
 
 	const modeOptions: { value: LuauMode; label: string; description: string }[] = [
 		{ value: "strict", label: "Strict", description: "Full type checking" },
@@ -47,15 +42,13 @@
 		{ value: 3, label: "arm64", description: "arm64 native code" },
 	];
 
-	async function handleModeChange(mode: LuauMode) {
-		setMode(mode);
-		const { refreshDiagnostics } = await import("$lib/editor/setup");
+	function handleModeChange(mode: LuauMode) {
+		settings.mode = mode;
 		setTimeout(() => refreshDiagnostics(), 50);
 	}
 
-	async function handleSolverChange(solver: SolverMode) {
-		setSolver(solver);
-		const { refreshDiagnostics } = await import("$lib/editor/setup");
+	function handleSolverChange(solver: SolverMode) {
+		settings.solver = solver;
 		setTimeout(() => refreshDiagnostics(), 50);
 	}
 </script>
@@ -91,8 +84,8 @@
 			<div class="space-y-1.5">
 				<span class="text-xs text-(--text-muted)">Mode</span>
 				<div class="flex gap-1">
-					{#each modeOptions as option}
-						{@const isSelected = $settings.mode === option.value}
+					{#each modeOptions as option (option.value)}
+						{const isSelected = $derived(settings.mode === option.value)}
 						<button
 							type="button"
 							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border { 
@@ -112,8 +105,8 @@
 			<div class="space-y-1.5">
 				<span class="text-xs text-(--text-muted)">Solver</span>
 				<div class="flex gap-1">
-					{#each solverOptions as option}
-						{@const isSelected = $settings.solver === option.value}
+					{#each solverOptions as option (option.value)}
+						{const isSelected = $derived(settings.solver === option.value)}
 						<button
 							type="button"
 							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {
@@ -142,8 +135,8 @@
 			<div class="space-y-1.5">
 				<span class="text-xs text-(--text-muted)">Optimization</span>
 				<div class="flex gap-1">
-					{#each optimizationOptions as option}
-						{@const isSelected = $settings.optimizationLevel === option.value}
+					{#each optimizationOptions as option (option.value)}
+						{const isSelected = $derived(settings.optimizationLevel === option.value)}
 						<button
 							type="button"
 							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {
@@ -151,7 +144,7 @@
 								? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
 								: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
 							title={option.description}
-							onclick={() => setOptimizationLevel(option.value)}
+							onclick={() => { settings.optimizationLevel = option.value }}
 						>
 							{option.label}
 						</button>
@@ -163,8 +156,8 @@
 			<div class="space-y-1.5">
 				<span class="text-xs text-(--text-muted)">Debug Info</span>
 				<div class="flex gap-1">
-					{#each debugOptions as option}
-						{@const isSelected = $settings.debugLevel === option.value}
+					{#each debugOptions as option (option.value)}
+						{const isSelected = $derived(settings.debugLevel === option.value)}
 						<button
 							type="button"
 							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {
@@ -172,7 +165,7 @@
 								? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
 								: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
 							title={option.description}
-							onclick={() => setDebugLevel(option.value)}
+							onclick={() => { settings.debugLevel = option.value }}
 						>
 							{option.label}
 						</button>
@@ -184,8 +177,8 @@
 			<div class="space-y-1.5">
 				<span class="text-xs text-(--text-muted)">Output Format</span>
 				<div class="flex gap-1">
-					{#each outputFormat as option}
-						{@const isSelected = $settings.outputFormat === option.value}
+					{#each outputFormat as option (option.value)}
+						{const isSelected = $derived(settings.outputFormat === option.value)}
 						<button
 							type="button"
 							class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {
@@ -193,7 +186,7 @@
 								? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
 								: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
 							title={option.description}
-							onclick={() => setOutputFormat(option.value)}
+							onclick={() => { settings.outputFormat = option.value }}
 						>
 							{option.label}
 						</button>
@@ -205,8 +198,8 @@
 			<label class="flex items-center gap-2 cursor-pointer">
 				<input
 					type="checkbox"
-					checked={$settings.compilerRemarks}
-					onchange={(e) => setCompilerRemarks(e.currentTarget.checked)}
+					checked={settings.compilerRemarks}
+					onchange={(e) => { settings.compilerRemarks = e.currentTarget.checked }}
 					class="w-4 h-4 rounded border-(--border-color) bg-(--bg-tertiary) accent-(--accent)"
 				/>
 				<span class="text-xs text-(--text-secondary)">Show compiler remarks</span>
