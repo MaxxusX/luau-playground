@@ -9,7 +9,6 @@
 		"noEmit": true,
 		"rootDir": "./src",
 		"paths": { "$lib/*": ["./src/lib/*"] },
-		"allowImportingTsExtensions": true,
 
 		/**
 		 * Typecheck JS in `.svelte` and `.js` files by default.
