@@ -48,14 +48,13 @@
 	$effect(() => {
 		if ($showBytecode) {
 			const code = $files[$activeFile] || "";
-			const opts = $settings;
-			outputFormat = opts.outputFormat;
+			outputFormat = settings.outputFormat;
 			refreshBytecode(
 				code,
-				opts.optimizationLevel,
-				opts.debugLevel,
-				opts.compilerRemarks,
-				opts.outputFormat
+				settings.optimizationLevel,
+				settings.debugLevel,
+				settings.compilerRemarks,
+				settings.outputFormat
 			);
 		}
 	});
