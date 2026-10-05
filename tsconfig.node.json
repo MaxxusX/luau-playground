@@ -24,7 +24,6 @@
 		"noPropertyAccessFromIndexSignature": true,
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,
-		"isolatedDeclarations": true,
 		"isolatedModules": true,
 	},
 	"include": ["./vite.config.ts"],
