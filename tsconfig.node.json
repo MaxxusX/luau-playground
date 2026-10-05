@@ -23,7 +23,6 @@
 		"noUncheckedSideEffectImports": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"noImplicitOverride": true,
-		"noImplicitReturns": true,
 		"isolatedModules": true,
 	},
 	"include": ["./vite.config.ts"],
