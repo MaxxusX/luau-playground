@@ -15,7 +15,7 @@
 			"versioningTemplate": "semver"
 		}
 	],
-	"constraints": { "node": ">=26.10.0" },
+	"constraints": { "node": ">=26.11.1" },
 	"configMigration": true,
 	"assignees": ["MaxxusX"],
 	"reviewers": ["MaxxusX"],

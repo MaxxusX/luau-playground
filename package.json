@@ -31,7 +31,7 @@
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@tailwindcss/vite": "^4.3.3",
 		"@tsconfig/svelte": "^5.0.8",
-		"@types/node": "^26.6.4",
+		"@types/node": "^26.6.5",
 		"oniguruma-to-es": "^4.3.6",
 		"prettier": "3.9.9",
 		"prettier-plugin-svelte": "4.1.1",
@@ -50,7 +50,7 @@
 		},
 		"runtime": {
 			"name": "node",
-			"version": "^26.10.0",
+			"version": "^26.11.1",
 			"onFail": "download"
 		}
 	}
