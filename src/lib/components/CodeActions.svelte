@@ -1,11 +1,12 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
-	import { Icon, type IconName } from "$lib/icons";
-	import { isRunning, getActiveFileContent } from "$lib/stores/playground";
-	import { runCode, checkCode, stopExecution } from "$lib/luau/wasm";
-	import { generatePlaygroundUrl } from "$lib/utils/share";
-	import { copyText } from "$lib/utils/clipboard";
-	import type { EmbedControls } from "$lib/stores/embed";
+	import type { IconName } from "$lib/icons/icon.ts";
+	import Icon from "$lib/icons/Icon.svelte";
+	import { isRunning, getActiveFileContent } from "$lib/stores/playground.ts";
+	import { runCode, checkCode, stopExecution } from "$lib/luau/wasm.ts";
+	import { generatePlaygroundUrl } from "$lib/utils/share.ts";
+	import { copyText } from "$lib/utils/clipboard.ts";
+	import type { EmbedControls } from "$lib/stores/embed.ts";
 
 	interface Props {
 		/** Show a button that copies the active file to the clipboard. */
