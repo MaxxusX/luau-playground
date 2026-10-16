@@ -15,12 +15,20 @@ runs:
       shell: bash
       run: |
         # Fetch the latest release tag from luau-lang/luau
-        LATEST_TAG="$(curl -s https://api.github.com/repos/luau-lang/luau/releases/latest | jq -r '.tag_name')"
+        LATEST_TAG="$(curl -fsSL --compressed \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'X-GitHub-Api-Version: 2026-03-10' \
+          https://api.github.com/repos/luau-lang/luau/releases/latest \
+          | jq -r '.tag_name')"
         echo "Latest Luau release: $LATEST_TAG"
         echo "tag=$LATEST_TAG" >> "$GITHUB_OUTPUT"
 
         # Fetch the commit hash for this tag
-        COMMIT_HASH="$(curl -s https://api.github.com/repos/luau-lang/luau/git/ref/tags/$LATEST_TAG | jq -r '.object.sha')"
+        COMMIT_HASH="$(curl -fsSL \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'X-GitHub-Api-Version: 2026-03-10' \
+          "https://api.github.com/repos/luau-lang/luau/git/ref/tags/$LATEST_TAG" \
+          | jq -r '.object.sha')"
         echo "Commit hash: $COMMIT_HASH"
         echo "commit=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
 
