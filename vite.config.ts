@@ -1,15 +1,12 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 import { preloadDynamicChunks } from "./vite/preload-chunks.ts";
 import { prerenderPlugin } from "./vite/prerender.ts";
 import { inlineCss } from "./vite/inline-css.ts";
 import { compileGrammarPlugin } from "./vite/compile-grammar.ts";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -21,7 +18,7 @@ export default defineConfig({
 		prerenderPlugin(),
 		inlineCss(),
 	],
-	resolve: { alias: { $lib: path.resolve(__dirname, "./src/lib") } },
+	resolve: { alias: { $lib: path.resolve(import.meta.dirname, "./src/lib") } },
 	build: {
 		target: ["chrome151", "edge151", "firefox153", "safari26.5", "ios26.5"],
 		sourcemap: false,
