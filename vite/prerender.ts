@@ -2,13 +2,12 @@ import { build, type Plugin } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
 import { rmSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 import { compileGrammarPlugin } from "./compile-grammar.ts";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.resolve(__dirname, "..");
+const rootDir = path.resolve(import.meta.dirname, "..");
+const serverOutDir = path.resolve(rootDir, "./dist/.ssr");
 
 /**
  * Prerenders the Svelte app at build time using SSR.
@@ -16,7 +15,6 @@ const rootDir = path.resolve(__dirname, "..");
  */
 export function prerenderPlugin(): Plugin {
 	let renderedHtml: { body: string; head: string } | null = null;
-	const serverOutDir = path.resolve(rootDir, "dist/.ssr");
 
 	return {
 		name: "svelte-prerender",
@@ -39,7 +37,7 @@ export function prerenderPlugin(): Plugin {
 					ssr: true,
 					outDir: serverOutDir,
 					rolldownOptions: {
-						input: path.resolve(__dirname, "entry-server.ts"),
+						input: path.resolve(import.meta.dirname, "entry-server.ts"),
 						optimization: {
 							inlineConst: { mode: "all", pass: 5 },
 						},
