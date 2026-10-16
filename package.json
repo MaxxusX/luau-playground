@@ -12,7 +12,8 @@
 		"prebuild": "pnpm run build:wasm",
 		"build": "vite build",
 		"preview": "vite preview",
-		"check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
+		"check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+		"test": "node --experimental-strip-types --test src/**/*.test.ts"
 	},
 	"dependencies": {
 		"@codemirror/autocomplete": "^6.20.3",
