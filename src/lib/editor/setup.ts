@@ -21,13 +21,14 @@ import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirro
 import { bracketMatching, indentOnInput, indentUnit } from "@codemirror/language";
 import { acceptCompletion, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
+import { forceLinting, lintGutter } from "@codemirror/lint";
 
 import { luauTextMate, initLuauTextMate } from "./textmate.ts";
 export { initLuauTextMate };
 import { darkTheme, lightTheme } from "./themes.ts";
 import { luauLspExtensions } from "./lspExtensions.ts";
 import { luauEnterKeymap, luauIndentation } from "./luauBlocks.ts";
-import { forceLinting, lintGutter } from "@codemirror/lint";
+import { EDITOR_FONT_SIZE, EDITOR_LINE_HEIGHT, EDITOR_PADDING_Y } from "./metrics.ts";
 import { themeMode } from "$lib/utils/theme.ts";
 import { cursorLine, isRunning } from "$lib/stores/playground.ts";
 import { runCode, stopExecution } from "$lib/luau/wasm.ts";
@@ -107,9 +108,18 @@ function createExtensions(onChange: (content: string) => void): Extension[] {
 
 		// Base styling
 		EditorView.theme({
-			"&": { height: "100%", fontSize: "14px" },
-			".cm-scroller": { fontFamily: "var(--font-mono)", overflow: "auto" },
-			".cm-content": { padding: "12px 0" },
+			"&": {
+				height: "100%",
+				fontSize: `${EDITOR_FONT_SIZE}px`,
+			},
+			".cm-scroller": {
+				fontFamily: "var(--font-mono)",
+				lineHeight: String(EDITOR_LINE_HEIGHT),
+				overflow: "auto",
+			},
+			".cm-content": {
+				padding: `${EDITOR_PADDING_Y}px 0`,
+			},
 		}),
 
 		// Update listener
