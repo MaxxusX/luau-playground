@@ -2,7 +2,13 @@
 	import Button from "$lib/components/Button.svelte";
 	import Icon from "$lib/icons/Icon.svelte";
 	import { generateEmbedCode } from "$lib/utils/share.ts";
+	import { DEFAULT_EMBED_HEIGHT } from "$lib/editor/metrics.ts";
+	import { copyText } from "$lib/utils/clipboard.ts";
+	import { files, activeFile } from "$lib/stores/playground.ts";
+	import { settings, showBytecode } from "$lib/stores/settings.ts";
+	import { CURRENT_VERSION } from "$lib/constants.ts";
 	import type { ThemeMode } from "$lib/utils/theme.ts";
+	import type { EmbedControls } from "$lib/stores/embed.ts";
 
 	const themeOptions: { value: ThemeMode; label: string }[] = [
 		{ value: "system", label: "Auto" },
@@ -10,21 +16,27 @@
 		{ value: "dark", label: "Dark" },
 	];
 
+	const controlOptions: { value: EmbedControls; label: string }[] = [
+		{ value: "text", label: "Text" },
+		{ value: "icons", label: "Icons" },
+	];
+
 	let selectedTheme = $state<ThemeMode>("system");
+	let selectedControls = $state<EmbedControls>("text");
 	let copySuccess = $state(false);
 
-	let embedCode = $derived(generateEmbedCode(selectedTheme));
+	let embedCode = $derived(generateEmbedCode(selectedTheme, selectedControls, DEFAULT_EMBED_HEIGHT, {
+		files: $files,
+		active: $activeFile,
+		v: CURRENT_VERSION,
+		settings: $settings,
+		showBytecode: $showBytecode,
+	}));
 
 	async function handleCopy() {
-		try {
-			await navigator.clipboard.writeText(embedCode);
-			copySuccess = true;
-			setTimeout(() => {
-				copySuccess = false;
-			}, 2000);
-		} catch {
-			// fallback — select the textarea
-		}
+		copySuccess = await copyText(embedCode);
+		if (!copySuccess) return;
+		setTimeout(() => { copySuccess = false; }, 2000);
 	}
 </script>
 
@@ -42,7 +54,7 @@
 <div
 	popover="auto"
 	id="embed-popover"
-	class="embed-popover m-0 w-96 rounded-lg border border-(--border-color) bg-(--bg-secondary) p-4 shadow-xl"
+	class="embed-popover m-0 w-96 max-w-[calc(100vw-1.5rem)] max-h-[80vh] overflow-y-auto rounded-lg border border-(--border-color) bg-(--bg-secondary) p-4 shadow-xl"
 >
 	<div class="space-y-4">
 		<div>
@@ -56,17 +68,33 @@
 		<div class="space-y-1.5">
 			<span class="text-xs text-(--text-muted)">Theme</span>
 			<div class="flex gap-1">
-				{#each themeOptions as option}
-					{@const isSelected = selectedTheme === option.value}
+				{#each themeOptions as option (option.value)}
+					{const isSelected = $derived(selectedTheme === option.value)}
 					<button
 						type="button"
-						class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border
-              {isSelected ?
-							'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
-						:	'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
-						onclick={() => {
-							selectedTheme = option.value;
-						}}
+						class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {isSelected
+							? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+							: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+						onclick={() => { selectedTheme = option.value; }}
+					>
+						{option.label}
+					</button>
+				{/each}
+			</div>
+		</div>
+
+		<!-- Control style -->
+		<div class="space-y-1.5">
+			<span class="text-xs text-(--text-muted)">Controls</span>
+			<div class="flex gap-1">
+				{#each controlOptions as option (option.value)}
+					{const isSelected = $derived(selectedControls === option.value)}
+					<button
+						type="button"
+						class="flex-1 px-2 py-1.5 text-xs rounded-md transition-colors border {isSelected
+							? 'bg-(--bg-tertiary) border-(--accent) text-(--text-primary)'
+							: 'hover:bg-(--bg-tertiary) border-transparent text-(--text-secondary)'}"
+						onclick={() => { selectedControls = option.value; }}
 					>
 						{option.label}
 					</button>
@@ -80,7 +108,8 @@
 		<div class="space-y-2">
 			<span class="text-xs text-(--text-muted)">HTML</span>
 			<pre
-				class="w-full rounded-md border border-(--border-color) bg-(--bg-editor) p-3 text-xs text-(--text-secondary) font-mono whitespace-pre-wrap break-all leading-relaxed">{embedCode}</pre>
+				class="max-h-64 w-full overflow-auto rounded-md border border-(--border-color) bg-(--bg-editor) p-3 text-xs text-(--text-secondary) font-mono whitespace-pre leading-relaxed"
+			>{embedCode}</pre>
 			<Button
 				size="sm"
 				variant={copySuccess ? "default" : "secondary"}
