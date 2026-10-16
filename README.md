@@ -119,3 +119,29 @@ Query parameters:
 
 - `embed=true`: Enables embed mode (hides settings, bytecode toggle, share button)
 - `theme=light|dark`: Force a specific theme (defaults to `auto` which follows system preference)
+- `controls=icons`: Use icon labels instead of text (defaults to text)
+- `expandId`: Id of the host checkbox that grows the frame. Present only when the code is taller than the collapsed height (set by generated snippets)
+
+Embeds always include a copy button for the active file. When the embed contains a single
+file there is no tab bar — the controls float over the editor instead.
+
+#### Expandable embeds
+
+An iframe cannot resize itself, so the frame's height belongs to the host page. When the
+code does not fit the requested height, the generated snippet brings a checkbox and a
+stylesheet that grow the frame. The expand button is inside the frame, first in the
+action row (expand, copy, open, check, then play), and posts a message that checks the
+box:
+
+```html
+<div class="luau-embed" style="--luau-collapsed: 400px; --luau-expanded: 828px;">
+  <input class="luau-embed-toggle" id="luau-embed-k3f9qa" type="checkbox">
+  <iframe src="https://play.luau.org/?embed=true&expandId=luau-embed-k3f9qa#<state>"></iframe>
+  <script>/* sets the checkbox when the frame posts luau-embed-expand */</script>
+</div>
+```
+
+The expanded height is measured from the code when the snippet is generated — line count
+against the editor's line height, plus the tab bar for multi-file embeds — and capped at
+`80vh`. Code that already fits gets a plain iframe with no toggle. Editing the code inside
+an embed does not change these heights; regenerate the snippet to update them.
