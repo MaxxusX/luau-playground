@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
-	import type { IconName } from "$lib/icons/icon.ts";
 	import Icon from "$lib/icons/Icon.svelte";
+	import type { IconName } from "$lib/icons/icon.ts";
 	import { isRunning, getActiveFileContent } from "$lib/stores/playground.ts";
 	import { runCode, checkCode, stopExecution } from "$lib/luau/wasm.ts";
 	import { generatePlaygroundUrl } from "$lib/utils/share.ts";
@@ -102,10 +102,10 @@
 
 {#snippet label(icon: IconName, text: string)}
 	{#if compact}
-		<Icon name={icon} size="16" />
+		<Icon name={icon} size="16px" />
 	{:else}
 		<span class="hidden sm:inline">{text}</span>
-		<span class="sm:hidden"><Icon name={icon} size="16" /></span>
+		<span class="sm:hidden"><Icon name={icon} size="16px" /></span>
 	{/if}
 {/snippet}
 
@@ -169,9 +169,9 @@
 		aria-label={showStopButton ? "Stop execution" : "Run code"}
 	>
 		{#if compact}
-			<Icon name={showStopButton ? "stop" : "play"} size="16" />
+			<Icon name={showStopButton ? "stop" : "play"} size="16px" />
 		{:else}
-			<span class="sm:mr-1"><Icon name={showStopButton ? "stop" : "play"} size="16" /></span>
+			<span class="sm:mr-1"><Icon name={showStopButton ? "stop" : "play"} size="16px" /></span>
 			<span class="hidden sm:inline">{showStopButton ? "Stop" : "Run"}</span>
 		{/if}
 	</Button>
