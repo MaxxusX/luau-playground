@@ -4,6 +4,7 @@
 	import type { IconName } from "$lib/icons/icons.ts";
 	import ConfigPopover from "$lib/components/ConfigPopover.svelte";
 	import EmbedPopover from "$lib/components/EmbedPopover.svelte";
+	import CodeActions from "$lib/components/CodeActions.svelte";
 	import {
 		files,
 		activeFile,
@@ -14,10 +15,8 @@
 	} from "$lib/stores/playground.ts";
 	import { showBytecode, toggleBytecode } from "$lib/stores/settings.svelte.ts";
 	import { toggleTheme, themeMode } from "$lib/utils/theme.ts";
-	import { runCode, checkCode, stopExecution } from "$lib/luau/wasm.ts";
-	import { isRunning } from "$lib/stores/playground.ts";
-	import { sharePlayground, generatePlaygroundUrl } from "$lib/utils/share.ts";
-	import { isEmbed } from "$lib/stores/embed.ts";
+	import { sharePlayground } from "$lib/utils/share.ts";
+	import { isEmbed, embedExpandId, embedHostReady, embedControls } from "$lib/stores/embed.ts";
 
 	let newFileName = $state("");
 	let isCreatingFile = $state(false);
@@ -25,21 +24,6 @@
 	let editValue = $state("");
 	let shareSuccess = $state<boolean | null>(null);
 	let longPressTimer: ReturnType<typeof setTimeout> | null = null;
-
-	// Delay before showing stop button to avoid flash on fast scripts
-	let showStopButton = $state(false);
-
-	const isMac = /Mac/i.test(navigator.platform);
-	const runShortcut = isMac ? "⌘↵" : "Ctrl+↵";
-
-	$effect(() => {
-		if (!$isRunning) {
-			showStopButton = false;
-			return;
-		}
-		const timer = setTimeout(() => (showStopButton = true), 150);
-		return () => clearTimeout(timer);
-	});
 
 	function focusInput(node: HTMLInputElement) {
 		node.focus();
@@ -90,18 +74,6 @@
 		}
 	}
 
-	function handleRun() {
-		if ($isRunning) {
-			stopExecution();
-		} else {
-			runCode();
-		}
-	}
-
-	function handleCheck() {
-		checkCode();
-	}
-
 	async function handleShare() {
 		const success = await sharePlayground();
 		shareSuccess = success;
@@ -114,10 +86,6 @@
 		if (mode === "system") return "auto";
 		if (mode === "light") return "sun";
 		return "moon";
-	}
-
-	function handleOpenInPlayground() {
-		window.open(generatePlaygroundUrl(), "_blank", "noopener,noreferrer");
 	}
 </script>
 
@@ -275,39 +243,13 @@
 			</Button>
 			<EmbedPopover />
 		{/if}
-		<Button
-			size="sm"
-			variant="secondary"
-			onclick={handleCheck}
-			class="px-2 sm:px-3"
-			title="Check code for errors"
-		>
-			<span class="hidden sm:inline">Check</span>
-			<span class="sm:hidden"><Icon name="check" size="16px" /></span>
-		</Button>
-		<Button
-			size="sm"
-			variant={showStopButton ? "secondary" : "default"}
-			onclick={handleRun}
-			class="px-2 sm:px-3"
-			title={showStopButton ? "Stop execution" : `Run code (${runShortcut})`}
-		>
-			<span class="sm:mr-1"><Icon name={showStopButton ? "stop" : "play"} size="16px" /></span
-			>
-			<span class="hidden sm:inline">{showStopButton ? "Stop" : "Run"}</span>
-		</Button>
-		{#if $isEmbed}
-			<Button
-				size="sm"
-				variant="secondary"
-				onclick={handleOpenInPlayground}
-				class="px-2 sm:px-3"
-				title="Open in playground"
-			>
-				<span class="hidden sm:inline items-center gap-1">Open</span>
-				<span class="sm:hidden"><Icon name="external" size="16px" /></span>
-			</Button>
-		{/if}
+		<CodeActions
+			showCopy={$isEmbed}
+			showOpen={$isEmbed}
+			controls={$embedControls}
+			showExpand={$isEmbed && !!$embedExpandId && $embedHostReady}
+			expandId={$embedExpandId}
+		/>
 	</div>
 </header>
 
