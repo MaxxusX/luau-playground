@@ -27,7 +27,7 @@ runs:
         COMMIT_HASH="$(curl -fsSL \
           -H 'Accept: application/vnd.github+json' \
           -H 'X-GitHub-Api-Version: 2026-03-10' \
-          "https://api.github.com/repos/luau-lang/luau/git/ref/tags/$LATEST_TAG" \
+          https://api.github.com/repos/luau-lang/luau/git/ref/tags/$LATEST_TAG \
           | jq -r '.object.sha')"
         echo "Commit hash: $COMMIT_HASH"
         echo "commit=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
