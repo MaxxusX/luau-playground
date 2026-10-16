@@ -19,7 +19,7 @@ runs:
           -H 'Accept: application/vnd.github+json' \
           -H 'X-GitHub-Api-Version: 2026-03-10' \
           https://api.github.com/repos/luau-lang/luau/releases/latest \
-          | jq -r '.tag_name')"
+          | jq -re '.tag_name')"
         echo "Latest Luau release: $LATEST_TAG"
         echo "tag=$LATEST_TAG" >> "$GITHUB_OUTPUT"
 
@@ -28,7 +28,7 @@ runs:
           -H 'Accept: application/vnd.github+json' \
           -H 'X-GitHub-Api-Version: 2026-03-10' \
           https://api.github.com/repos/luau-lang/luau/git/ref/tags/$LATEST_TAG \
-          | jq -r '.object.sha')"
+          | jq -re '.object.sha')"
         echo "Commit hash: $COMMIT_HASH"
         echo "commit=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
 
