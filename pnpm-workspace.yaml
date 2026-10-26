@@ -1,3 +1,12 @@
+overrides:
+  'jiti': '-'
+  'fsevents': '-'
+  'esbuild': '-'
+  'postcss': '-'
+  '@tailwindcss/node>lightningcss@1.32.0': '1.33.0'
+ignoredOptionalDependencies:
+  - 'fsevents'
+  - 'esbuild'
 minimumReleaseAgeIgnoreMissingTime: false
 minimumReleaseAgeStrict: true
 minimumReleaseAge: 1440
