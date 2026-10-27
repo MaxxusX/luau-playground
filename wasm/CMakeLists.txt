@@ -12,7 +12,7 @@
 #   emcmake cmake ..
 #   emmake make
 #
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 4.4)
 project(LuauPlayground LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -24,7 +24,7 @@ set(LUAU_SOURCE_DIR "${CMAKE_SOURCE_DIR}/luau" CACHE PATH "Path to Luau source")
 if(NOT EXISTS "${LUAU_SOURCE_DIR}/CMakeLists.txt")
     message(FATAL_ERROR 
         "Luau source not found at ${LUAU_SOURCE_DIR}. "
-        "Please clone the Luau repository: git clone https://github.com/Roblox/luau.git luau"
+        "Please clone the Luau repository: git clone https://github.com/luau-lang/luau.git luau"
     )
 endif()
 
