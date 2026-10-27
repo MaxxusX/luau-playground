@@ -59,5 +59,5 @@ sed 's/(new URL("luau.wasm",import.meta.url))/(new URL(\/* @vite-ignore *\/ "lua
 echo ''
 echo 'Build complete!'
 echo 'Output files:'
-[ -f "$OUTPUT_DIR/luau.wasm" ] && echo "  - $OUTPUT_DIR/luau.wasm"
+[[ -f "$OUTPUT_DIR/luau.wasm" ]] && echo "  - $OUTPUT_DIR/luau.wasm"
 echo "  - $SRC_OUTPUT (bundled)"
