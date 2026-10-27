@@ -27,7 +27,7 @@ export default defineConfig({
 		reportCompressedSize: false,
 		rolldownOptions: {
 			optimization: {
-				inlineConst: { mode: "all", pass: 5 },
+				inlineConst: { mode: "all", pass: 10 },
 			},
 			output: {
 				minify: {
