@@ -174,6 +174,11 @@ target_compile_options(Luau.Common PRIVATE ${LUAU_COMPILE_OPTIONS})
 target_compile_options(Luau.Require PRIVATE ${LUAU_COMPILE_OPTIONS})
 target_compile_options(Luau.CodeGen PRIVATE ${LUAU_COMPILE_OPTIONS})
 
+if(NOT MSVC)
+    # disable support for math_errno which allows compilers to lower sqrt() into a single CPU instruction
+    target_compile_options(Luau.VM PRIVATE -fno-math-errno)
+endif()
+
 # Emscripten-specific settings
 if(EMSCRIPTEN)
     set_target_properties(luau_playground PROPERTIES
