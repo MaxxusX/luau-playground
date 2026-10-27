@@ -39,7 +39,7 @@ export function prerenderPlugin(): Plugin {
 					rolldownOptions: {
 						input: path.resolve(import.meta.dirname, "entry-server.ts"),
 						optimization: {
-							inlineConst: { mode: "all", pass: 5 },
+							inlineConst: { mode: "all", pass: 10 },
 						},
 						output: {
 							minify: {
