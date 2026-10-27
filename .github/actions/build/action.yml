@@ -58,7 +58,12 @@ runs:
       shell: bash
       run: |
         if [[ ! -d 'wasm/luau' ]]; then
-          git clone --depth 1 --branch "$TAG" https://github.com/luau-lang/luau.git wasm/luau
+          git clone --branch "$TAG" --filter=tree:0 --no-checkout --no-tags --depth 1 --sparse https://github.com/luau-lang/luau.git wasm/luau
+          cd wasm/luau
+          git sparse-checkout add '/Analysis' '/Ast' '/Bytecode' '/CLI' '/CodeGen' '/Common' '/Compiler' '/Config' '/Inliner' '/Require' '/VM'
+          git checkout
+          echo "${ ls; }"
+          cd ../
         else
           cd wasm/luau
           git fetch origin "$TAG"
