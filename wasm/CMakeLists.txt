@@ -204,12 +204,13 @@ if(EMSCRIPTEN)
         -sMAX_WEBGL_VERSION=0
         
         # Exported functions - includes BOTH execution and analysis
-        "-sEXPORTED_FUNCTIONS=['_malloc','_free','_luau_execute','_luau_add_module','_luau_clear_modules','_luau_get_modules','_luau_set_source','_luau_clear_sources','_luau_get_diagnostics','_luau_autocomplete','_luau_hover','_luau_signature_help','_luau_dump_bytecode']"
-        "-sEXPORTED_RUNTIME_METHODS=['ccall','cwrap','UTF8ToString','stringToUTF8','lengthBytesUTF8','getValue','setValue']"
+        #"-sEXPORTED_FUNCTIONS=['_luau_execute','_luau_add_module','_luau_clear_modules','_luau_get_modules','_luau_set_source','_luau_clear_sources','_luau_get_diagnostics','_luau_autocomplete','_luau_hover','_luau_signature_help','_luau_dump_bytecode']"
+        "-sEXPORTED_FUNCTIONS=[]"
+        "-sEXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
         
         # Optimization
         -O3
-        -flto
+        #-flto
         
         # Dead code elimination
         -Wl,--gc-sections
