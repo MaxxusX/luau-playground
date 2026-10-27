@@ -209,7 +209,6 @@ if(EMSCRIPTEN)
         -sMAX_WEBGL_VERSION=0
         
         -sSTRICT=1
-        -sSTRICT_JS=1
         -sIGNORE_MISSING_MAIN=0
         "-sINCOMING_MODULE_JS_API=[]"
         -sAUTO_JS_LIBRARIES=0
@@ -220,7 +219,6 @@ if(EMSCRIPTEN)
         -sMIN_FIREFOX_VERSION=153
         -sMIN_SAFARI_VERSION=260500
         -sMIN_CHROME_VERSION=151
-        -sMIN_NODE_VERSION=261201
         -sPOLYFILL=0
         
         # Exported functions - includes BOTH execution and analysis
