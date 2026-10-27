@@ -37,9 +37,6 @@
 #include "Luau/ToString.h"
 #include "Luau/TypeInfer.h"
 
-// Feature flags for new solver
-LUAU_FASTFLAG(LuauSolverV2)
-
 // this is defined in a unit we exclude in our build system, so I guess we can do this.
 LUAU_FASTFLAGVARIABLE(LuauCodegenProtectData)
 
@@ -1110,9 +1107,6 @@ static void registerFastFlags(std::unordered_map<std::string, std::string>& fast
 static void ensureAnalysisInit() {
     if (g_frontend) return;
     
-    // Set feature flags for the new solver before any initialization
-    FFlag::LuauSolverV2.value = g_useNewSolver;
-    
     g_fileResolver = std::make_unique<PlaygroundFileResolver>();
     g_configResolver = std::make_unique<PlaygroundConfigResolver>();
     
@@ -1124,17 +1118,11 @@ static void ensureAnalysisInit() {
     options.runLintChecks = true;
     
     g_frontend = std::make_unique<Luau::Frontend>(
+        g_useNewSolver ? Luau::SolverMode::New : Luau::SolverMode::Old,
         g_fileResolver.get(),
         g_configResolver.get(),
         options
     );
-    
-    // Set solver mode
-    if (g_useNewSolver) {
-        g_frontend->useNewLuauSolver.store(Luau::SolverMode::New);
-    } else {
-        g_frontend->useNewLuauSolver.store(Luau::SolverMode::Old);
-    }
     
     // Register built-in types
     Luau::registerBuiltinGlobals(*g_frontend, g_frontend->globals, false);
@@ -1183,10 +1171,6 @@ EXPORT void luau_set_mode(int mode) {
  */
 EXPORT void luau_set_solver(bool useNew) {
     g_useNewSolver = useNew;
-    
-    // Set feature flags for the new solver
-    // Both flags are needed: LuauSolverV2 enables the new solver globally,
-    FFlag::LuauSolverV2.value = useNew;
     
     // Reset frontend to apply new solver (solver mode is set at initialization)
     if (g_frontend) {
