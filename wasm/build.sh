@@ -23,13 +23,8 @@ fi
 # Check for Luau source
 LUAU_DIR="$SCRIPT_DIR/luau"
 if [[ ! -d "$LUAU_DIR" ]] || [[ ! -f "$LUAU_DIR/CMakeLists.txt" ]]; then
-    echo 'Luau source not found. Cloning...'
-    git clone --filter=tree:0 --no-checkout --no-tags --depth 1 --sparse https://github.com/luau-lang/luau "$LUAU_DIR"
-    cd "$LUAU_DIR"
-    git sparse-checkout add '/Analysis' '/Ast' '/Bytecode' '/CLI' '/CodeGen' '/Common' '/Compiler' '/Config' '/Inliner' '/Require' '/VM'
-    git checkout
-    echo "${ ls; }"
-    cd ../
+    echo 'Luau source not found.'
+    exit 1
 fi
 
 # Create build directory
