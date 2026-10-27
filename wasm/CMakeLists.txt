@@ -208,9 +208,23 @@ if(EMSCRIPTEN)
         -sMIN_WEBGL_VERSION=0
         -sMAX_WEBGL_VERSION=0
         
+        -sSTRICT=1
+        -sSTRICT_JS=1
+        -sIGNORE_MISSING_MAIN=0
+        "-sINCOMING_MODULE_JS_API=[]"
+        -sAUTO_JS_LIBRARIES=0
+        -sAUTO_NATIVE_LIBRARIES=0
+        -sALLOW_UNIMPLEMENTED_SYSCALLS=0
+        -sEVAL_CTORS=1
+        -sTEXTDECODER=2
+        -sMIN_FIREFOX_VERSION=153
+        -sMIN_SAFARI_VERSION=260500
+        -sMIN_CHROME_VERSION=151
+        -sMIN_NODE_VERSION=261201
+        -sPOLYFILL=0
+        
         # Exported functions - includes BOTH execution and analysis
-        #"-sEXPORTED_FUNCTIONS=['_luau_execute','_luau_add_module','_luau_clear_modules','_luau_get_modules','_luau_set_source','_luau_clear_sources','_luau_get_diagnostics','_luau_autocomplete','_luau_hover','_luau_signature_help','_luau_dump_bytecode']"
-        "-sEXPORTED_FUNCTIONS=[]"
+        "-sEXPORTED_FUNCTIONS=['_luau_execute','_luau_add_module','_luau_clear_modules','_luau_get_modules','_luau_set_source','_luau_clear_sources','_luau_get_diagnostics','_luau_autocomplete','_luau_hover','_luau_signature_help','_luau_dump_bytecode']"
         "-sEXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
         
         # Optimization
