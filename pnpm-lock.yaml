@@ -218,7 +218,7 @@ importers:
         specifier: ^26.6.5
         version: 26.6.5
       node:
-        specifier: runtime:>=26.12.1
+        specifier: runtime:^26.12.1
         version: runtime:26.12.1
       oniguruma-to-es:
         specifier: ^4.3.6
