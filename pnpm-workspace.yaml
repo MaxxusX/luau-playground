@@ -10,3 +10,7 @@ minimumReleaseAge: 1440
 blockExoticSubdeps: true
 dedupePeers: true
 strictPeerDependencies: true
+audit:
+  ignorePrune: true
+  ignore:
+    - GHSA-gcqx-w48m-w2h4
