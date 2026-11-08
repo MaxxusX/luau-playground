@@ -60,7 +60,7 @@ jobs:
         run: pnpm install --no-frozen-lockfile --lockfile-only
 
       - name: Update Vulnerable Packages
-        run: pnpm audit --fix=update
+        run: pnpm audit --fix=update --audit-level=info
 
       - name: Dedupe Dependencies
         run: pnpm dedupe
