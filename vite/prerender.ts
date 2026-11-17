@@ -29,7 +29,7 @@ export function prerenderPlugin(): Plugin {
 				plugins: [compileGrammarPlugin(), svelte(), tailwindcss()],
 				resolve: { alias: { $lib: path.resolve(rootDir, "./src/lib") } },
 				build: {
-					target: ["chrome151", "edge151", "firefox153", "safari26.5", "ios26.5"],
+					target: ["chrome156", "edge156", "firefox158", "safari27.2", "ios27.2"],
 					sourcemap: false,
 					minify: "oxc",
 					cssMinify: "lightningcss",
@@ -44,7 +44,7 @@ export function prerenderPlugin(): Plugin {
 						output: {
 							minify: {
 								compress: {
-									target: ["chrome151", "edge151", "firefox153", "safari26.5", "ios26.5"],
+									target: ["chrome156", "edge156", "firefox158", "safari27.2", "ios27.2"],
 									dropConsole: true,
 									unused: true,
 									treeshake: {
@@ -61,7 +61,7 @@ export function prerenderPlugin(): Plugin {
 					},
 				},
 				oxc: {
-					target: ["chrome151", "edge151", "firefox153", "safari26.5", "ios26.5"],
+					target: ["chrome156", "edge156", "firefox158", "safari27.2", "ios27.2"],
 					assumptions: {
 						noDocumentAll: true,
 						pureGetters: true,
@@ -77,11 +77,11 @@ export function prerenderPlugin(): Plugin {
 					lightningcss: {
 						errorRecovery: false,
 						targets: {
-							chrome: 151 << 16,
-							edge: 151 << 16,
-							firefox: 153 << 16,
-							safari: (26 << 16) | (5 << 8),
-							ios_saf: (26 << 16) | (5 << 8),
+							chrome: 156 << 16,
+							edge: 156 << 16,
+							firefox: 158 << 16,
+							safari: (27 << 16) | (2 << 8),
+							ios_saf: (27 << 16) | (2 << 8),
 						},
 					},
 				},
