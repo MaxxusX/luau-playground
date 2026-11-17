@@ -30,7 +30,7 @@
 	"devDependencies": {
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@tailwindcss/vite": "^4.3.5",
-		"@tsconfig/svelte": "^5.0.8",
+		"@tsconfig/svelte": "^5.0.9",
 		"@types/node": "^26.6.6",
 		"oniguruma-to-es": "^4.3.6",
 		"prettier": "3.9.10",
