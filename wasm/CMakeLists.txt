@@ -216,9 +216,9 @@ if(EMSCRIPTEN)
         -sALLOW_UNIMPLEMENTED_SYSCALLS=0
         -sEVAL_CTORS=1
         -sTEXTDECODER=2
-        -sMIN_FIREFOX_VERSION=153
-        -sMIN_SAFARI_VERSION=260500
-        -sMIN_CHROME_VERSION=151
+        -sMIN_FIREFOX_VERSION=158
+        -sMIN_SAFARI_VERSION=270200
+        -sMIN_CHROME_VERSION=156
         -sPOLYFILL=0
         
         # Exported functions - includes BOTH execution and analysis
