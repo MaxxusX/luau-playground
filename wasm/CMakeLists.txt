@@ -5,7 +5,7 @@
 #
 # Prerequisites:
 #   - Emscripten SDK (https://emscripten.org/docs/getting_started/downloads.html)
-#   - Luau source code (git clone https://github.com/Roblox/luau.git luau)
+#   - Luau source code (git clone https://github.com/luau-lang/luau.git luau)
 #
 # Build instructions:
 #   mkdir build && cd build
@@ -183,7 +183,7 @@ endif()
 if(EMSCRIPTEN)
     set_target_properties(luau_playground PROPERTIES
         OUTPUT_NAME "luau"
-        SUFFIX ".js"
+        SUFFIX ".mjs"
     )
     
     # Emscripten link options
@@ -222,8 +222,8 @@ if(EMSCRIPTEN)
         -sPOLYFILL=0
         
         # Exported functions - includes BOTH execution and analysis
-        "-sEXPORTED_FUNCTIONS=['_luau_execute','_luau_add_module','_luau_clear_modules','_luau_get_modules','_luau_set_source','_luau_clear_sources','_luau_get_diagnostics','_luau_autocomplete','_luau_hover','_luau_signature_help','_luau_dump_bytecode']"
-        "-sEXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
+        -sEXPORTED_FUNCTIONS=_luau_execute,_luau_add_module,_luau_clear_modules,_luau_get_modules,_luau_set_source,_luau_clear_sources,_luau_get_diagnostics,_luau_autocomplete,_luau_hover,_luau_signature_help,_luau_dump_bytecode
+        -sEXPORTED_RUNTIME_METHODS=ccall
         
         # Optimization
         -O3
