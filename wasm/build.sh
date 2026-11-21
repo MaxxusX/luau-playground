@@ -3,7 +3,7 @@
 #
 # Prerequisites:
 #   - Emscripten SDK (source emsdk_env.sh before running)
-#   - CMake 3.16+
+#   - CMake 4.4+
 #
 # Usage:
 #   ./build.sh [Debug|Release]
