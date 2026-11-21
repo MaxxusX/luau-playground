@@ -6,7 +6,7 @@ execution** (VM) and **analysis** (type checking, autocomplete, hover) capabilit
 ## Prerequisites
 
 1. **Emscripten SDK**: Install from https://emscripten.org/docs/getting_started/downloads.html
-2. **CMake 3.16+**
+2. **CMake 4.4+**
 
 ## Building
 
@@ -15,10 +15,10 @@ execution** (VM) and **analysis** (type checking, autocomplete, hover) capabilit
 source ~/emsdk/emsdk_env.sh
 
 # Build release version
-./build.sh release
+./build.sh Release
 
 # Or debug version
-./build.sh debug
+./build.sh Debug
 ```
 
 The build script will:
