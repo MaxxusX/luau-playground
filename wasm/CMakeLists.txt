@@ -226,7 +226,8 @@ if(EMSCRIPTEN)
         -sEXPORTED_RUNTIME_METHODS=ccall
         
         # Optimization
-        -O3
+        -O2
+        #-O3
         #-flto
         
         # Dead code elimination
