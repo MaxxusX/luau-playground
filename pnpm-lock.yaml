@@ -209,8 +209,8 @@ importers:
         specifier: ^6.7.6
         version: 6.7.6
       '@codemirror/view':
-        specifier: ^6.44.0
-        version: 6.44.0
+        specifier: ^6.44.2
+        version: 6.44.2
       '@lezer/highlight':
         specifier: ^1.2.5
         version: 1.2.5
@@ -287,8 +287,8 @@ packages:
   '@codemirror/streamparser@6.0.0':
     resolution: {integrity: sha512-JTFPF6xrfjt0mnfGPgzcLiMwYmvIyNaoizp8BYzv8FE8KrT6GBGDZ190rtt+O7Wke3gG/MFHyiY9YGNeimof4w==}
 
-  '@codemirror/view@6.44.0':
-    resolution: {integrity: sha512-kAUekx35l9u64jW/NzdO054l80lz+ri+Z5ZFS+dMpMrCbG5pFiTz58twWcWghzBEInWno0SPaURNSCnHHvipnQ==}
+  '@codemirror/view@6.44.2':
+    resolution: {integrity: sha512-7yxTh7+iCbxIV9QCJAVlkYjWV/TCHD0zmLIaIR3NOb47YpCWwVUuFUnHwkRC3z+8cXNgeJzrCy4QtlR3fVt5kg==}
 
   '@emnapi/core@2.0.0-beta.2':
     resolution: {integrity: sha512-MzCVoWtcg4Pm2B3je5mMvYMvj3MmBKw+fU7vbsJc9/iT8ip6/eYIHo/Dsm/mr+wsHB6SEyJDuxB09Yy6r/8+4A==}
@@ -1020,21 +1020,21 @@ snapshots:
     dependencies:
       '@codemirror/language': 6.13.1
       '@codemirror/state': 6.7.6
-      '@codemirror/view': 6.44.0
+      '@codemirror/view': 6.44.2
       '@lezer/common': 1.5.5
 
   '@codemirror/commands@6.11.2':
     dependencies:
       '@codemirror/language': 6.13.1
       '@codemirror/state': 6.7.6
-      '@codemirror/view': 6.44.0
+      '@codemirror/view': 6.44.2
       '@lezer/common': 1.5.5
 
   '@codemirror/language@6.13.1':
     dependencies:
       '@codemirror/state': 6.7.6
       '@codemirror/streamparser': 6.0.0
-      '@codemirror/view': 6.44.0
+      '@codemirror/view': 6.44.2
       '@lezer/common': 1.5.5
       '@lezer/highlight': 1.2.5
       '@lezer/lr': 1.4.12
@@ -1043,13 +1043,13 @@ snapshots:
   '@codemirror/lint@6.9.8':
     dependencies:
       '@codemirror/state': 6.7.6
-      '@codemirror/view': 6.44.0
+      '@codemirror/view': 6.44.2
       crelt: 1.0.7
 
   '@codemirror/search@6.7.3':
     dependencies:
       '@codemirror/state': 6.7.6
-      '@codemirror/view': 6.44.0
+      '@codemirror/view': 6.44.2
       crelt: 1.0.7
 
   '@codemirror/state@6.7.6':
@@ -1058,7 +1058,7 @@ snapshots:
 
   '@codemirror/streamparser@6.0.0': {}
 
-  '@codemirror/view@6.44.0':
+  '@codemirror/view@6.44.2':
     dependencies:
       '@codemirror/state': 6.7.6
       crelt: 1.0.7
